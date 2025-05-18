@@ -1,7 +1,7 @@
 import { signIn } from '@/auth';
 import React from 'react'
 
-export default function page() {
+export default function Login() {
   return (
     <div>
         <form

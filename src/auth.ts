@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google"
+import Google from "next-auth/providers/google";
 import connectDb from "./lib/db";
 import { User } from "./models/UserSchema";
-
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -15,6 +14,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
+    async session({ session, token }) {
+      if (token?.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+    async jwt({ token }) {
+      return token;
+    },
+
     signIn: async ({ user, account }) => {
       if (account?.provider === "google") {
         try {
@@ -23,8 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const existingUser = await User.findOne({ email });
           if (!existingUser) {
             await User.create({ name, email, image, authProviderId: id });
-          }
-          else {
+          } else {
             return true;
           }
         } catch (error) {
