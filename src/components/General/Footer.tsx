@@ -2,51 +2,73 @@ import React from 'react'
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 export default function Footer() {
     return (
-    <footer className="bg-white text-black py-10 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* BioFarm Logo and Tagline */}
+    <footer className="bg-black text-white px-6 py-10 md:py-16">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+        {/* Logo and Navigation */}
         <div>
-          <h1 className="text-2xl font-bold">Bio-Farm</h1>
-          <p className="mt-2 text-sm text-gray-700">
-            Natural. Sustainable. Global.  
-            Premium organic fertilizers for the modern farm.
-          </p>
+          <div className="flex items-center gap-2 mb-4">
+            {/* Logo placeholder */}
+            <div className="bg-white text-black rounded-full p-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M13 4L3 14h7v6l10-10h-7V4z" strokeWidth="2" />
+              </svg>
+            </div>
+          </div>
+          <ul className="space-y-2 text-sm text-gray-300">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Product</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
         </div>
 
-        {/* Navigation */}
+        {/* Social Media */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Explore</h2>
-          <ul className="space-y-2 text-sm text-gray-700">
-            <li><a href="#" className="hover:text-black hover:underline">Home</a></li>
-            <li><a href="#" className="hover:text-black hover:underline">About Us</a></li>
-            <li><a href="#" className="hover:text-black hover:underline">Products</a></li>
-            <li><a href="#" className="hover:text-black hover:underline">Blog</a></li>
+          <h4 className="text-gray-400 mb-3 font-medium">Social Media</h4>
+          <ul className="space-y-2 text-sm text-gray-300">
+            <li><a href="#">LinkedIn</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Instagram</a></li>
           </ul>
         </div>
 
         {/* Contact Info */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Contact</h2>
-          <p className="text-sm text-gray-700">Email: support@biofarm.com</p>
-          <p className="text-sm text-gray-700">Phone: +91 98765 43210</p>
-          <p className="text-sm text-gray-700">Kangra, Himachal Pradesh, India</p>
+          <h4 className="text-gray-400 mb-3 font-medium">Contact Info</h4>
+          <p className="text-sm text-gray-300 mb-2">+88032423423423523</p>
+          <p className="text-sm text-gray-300">hello@fibostudio.com</p>
         </div>
 
-        {/* Social Media */}
+        {/* Address */}
         <div>
-          <h2 className="text-lg font-semibold mb-3">Follow Us</h2>
-          <div className="flex space-x-4 mt-2 text-gray-700">
-            <a href="#" aria-label="Facebook" className="hover:text-black"><FaFacebookF /></a>
-            <a href="#" aria-label="Twitter" className="hover:text-black"><FaTwitter /></a>
-            <a href="#" aria-label="Instagram" className="hover:text-black"><FaInstagram /></a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-black"><FaLinkedinIn /></a>
-          </div>
+          <h4 className="text-gray-400 mb-3 font-medium">Address</h4>
+          <p className="text-sm text-gray-300">
+            336 East Shewrapara, Mirpur,<br />
+            Dhaka, Bangladesh
+          </p>
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="mt-10 border-t border-gray-200 pt-4 text-center text-sm text-gray-600">
-        &copy; {new Date().getFullYear()} BioFarm. All rights reserved.
+      {/* Large Background Text */}
+      <div className="mt-16 text-center">
+        <h1 className="text-[10vw] sm:text-[7vw] md:text-[5vw] font-bold text-gray-800 tracking-tight">
+          Eco-Friendly Fertilizer
+        </h1>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="mt-12 border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400 gap-4">
+        <p>2025 Bio-Farms, All rights reserved.</p>
+        <div className="flex space-x-6">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Services</a>
+          <a href="#">Accessibility</a>
+        </div>
       </div>
     </footer>
   );
