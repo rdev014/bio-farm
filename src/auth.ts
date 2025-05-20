@@ -5,6 +5,7 @@ import { User } from "./models/UserSchema";
 import { compare } from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
 
+
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -21,7 +22,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google,
     Credentials({
       name: " Credentials",
-
       credentials: {
         email: {
           type: "email",
@@ -52,8 +52,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("Invalid Password");
         }
         const userData = {
-          firstName: user.firstname,
-          lastName: user.lastname,
+          firstname: user.firstname,
+          lastname: user.lastname,
           email: user.email,
           role: user.role,
           id: user._id,
@@ -73,7 +73,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return session;
     },
-    async jwt({ token }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
       return token;
     },
 
@@ -85,6 +88,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const existingUser = await User.findOne({ email });
           if (!existingUser) {
             await User.create({ name, email, image, authProviderId: id });
+            console.log('Nothing happening');
+            return true;
           } else {
             return true;
           }

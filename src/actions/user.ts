@@ -8,20 +8,20 @@ import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 
 const register = async (formData: FormData) => {
-  const firstName = formData.get("firstName") as string;
-  const lastName = formData.get("lastName") as string;
+  const firstname = formData.get("firstname") as string;
+  const lastname = formData.get("lastname") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  if (!firstName || !lastName || !email || !password) {
+  if (!firstname || !lastname || !email || !password) {
     throw new Error("All fields Are Required");
   }
   await connectDb();
   const existingUser = await User.findOne({ email });
-  if (!existingUser) {
+  if (existingUser) {
     throw new Error("User Already Exist");
   }
   const hashpassword = await hash(password, 12);
-  await User.create({ firstName, lastName, email, password: hashpassword });
+  await User.create({ firstname, lastname, email, password: hashpassword });
   redirect("/login");
 };
 

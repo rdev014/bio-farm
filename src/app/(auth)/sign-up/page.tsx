@@ -106,7 +106,7 @@ export default async function SignUp() {
                 <input
                   id="firstName"
                   type="text"
-                  name="firstName"
+                  name="firstname"
                   className="w-full px-4 py-3 rounded-xl text-black border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                   placeholder="John"
                   required
@@ -122,7 +122,7 @@ export default async function SignUp() {
                 <input
                   id="lastName"
                   type="text"
-                  name="lastName"
+                  name="lastname"
                   className="w-full px-4 py-3 rounded-xl border text-black border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
                   placeholder="Doe"
                 />
