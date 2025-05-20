@@ -2,8 +2,15 @@ import { signIn } from '@/auth';
 import React from 'react';
 import Image from 'next/image';
 import { login } from '@/actions/user';
+import { getSession } from '@/lib/getSession';
+import { redirect } from 'next/navigation';
 
-export default function Login() {
+export default async function Login() {
+   const session = await getSession();
+    const user = session?.user;
+    if (user) {
+      redirect("/");
+    }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-green-50 via-white to-yellow-50 p-4">
       <div className="max-w-md w-full space-y-8 bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-xl">
