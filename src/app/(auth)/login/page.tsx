@@ -1,6 +1,7 @@
 import { signIn } from '@/auth';
 import React from 'react';
 import Image from 'next/image';
+import { login } from '@/actions/user';
 
 export default function Login() {
   return (
@@ -23,7 +24,14 @@ export default function Login() {
 
         {/* Social Login Options */}
         <div className="grid grid-cols-2 gap-4">
-          <button className="flex items-center justify-center gap-2 p-3 border border-gray-300 
+           <form
+          className="space-y-6"
+          action={async () => {
+            "use server"
+            await signIn('google')
+          }}
+        >
+           <button type='submit' className="flex items-center justify-center gap-2 p-3 border border-gray-300 
                            rounded-xl hover:bg-gray-50 transition-colors">
             <Image
               src="/google.svg"
@@ -33,16 +41,7 @@ export default function Login() {
             />
             <span className="text-sm font-medium text-gray-600">Google</span>
           </button>
-          <button className="flex items-center justify-center gap-2 p-3 border border-gray-300 
-                           rounded-xl hover:bg-gray-50 transition-colors">
-            <Image
-              src="/github.svg"
-              alt="GitHub"
-              width={20}
-              height={20}
-            />
-            <span className="text-sm font-medium text-gray-600">GitHub</span>
-          </button>
+         </form>
         </div>
 
         <div className="relative">
@@ -57,9 +56,9 @@ export default function Login() {
         {/* Login Form */}
         <form
           className="space-y-6"
-          action={async () => {
+          action={async (formData:FormData) => {
             "use server"
-            await signIn()
+            await login(formData)
           }}
         >
           <div>

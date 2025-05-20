@@ -1,13 +1,65 @@
-import NextAuth from "next-auth";
+import NextAuth, { CredentialsSignin, DefaultSession } from "next-auth";
 import Google from "next-auth/providers/google";
 import connectDb from "./lib/db";
 import { User } from "./models/UserSchema";
+import { compare } from "bcryptjs";
+import Credentials from "next-auth/providers/credentials";
 
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"];
+  }
+  interface User {
+    role: string;
+  }
+}
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    Google,
+    Credentials({
+      name: " Credentials",
+
+      credentials: {
+        email: {
+          type: "email",
+          label: "Email",
+        },
+        password: {
+          type: "password",
+          label: "Password",
+        },
+      },
+      authorize: async (credentials) => {
+        const email = credentials.email as string | undefined;
+        const password = credentials.password as string | undefined;
+
+        if (!email || !password) {
+          throw new CredentialsSignin("Please Provide Both Email & Password");
+        }
+        await connectDb();
+        const user = await User.findOne({ email }).select("+password +role");
+        if (!user) {
+          throw new Error("Invalid Email or Password");
+        }
+        if (!user.password) {
+          throw new Error("Invalid Email or Password");
+        }
+        const isMatch = await compare(password, user.password);
+        if (!isMatch) {
+          throw new Error("Invalid Password");
+        }
+        const userData = {
+          firstName: user.firstname,
+          lastName: user.lastname,
+          email: user.email,
+          role: user.role,
+          id: user._id,
+        };
+        return userData;
+      },
     }),
   ],
   pages: {
@@ -15,8 +67,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      if (token?.sub) {
+      if (token?.sub && typeof token.role === "string") {
         session.user.id = token.sub;
+        session.user.role = token.role;
       }
       return session;
     },
@@ -36,10 +89,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return true;
           }
         } catch (error) {
-          throw new Error("Something went wrong try again later");
+          throw new Error(`${error}`);
         }
       }
-      return false;
+      if (account?.provider === "credentials") {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 });
