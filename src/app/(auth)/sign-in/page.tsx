@@ -1,7 +1,7 @@
 import { signIn } from '@/auth';
 import React from 'react';
 import Image from 'next/image';
-import { login } from '@/actions/user';
+import { handleGoogleSignIn, login } from '@/actions/user';
 import { getSession } from '@/lib/getSession';
 import { redirect } from 'next/navigation';
 
@@ -33,10 +33,7 @@ export default async function Login() {
         <div className="grid grid-cols-2 gap-4">
            <form
           className="space-y-6"
-          action={async () => {
-            "use server"
-            await signIn('google')
-          }}
+          action={handleGoogleSignIn}
         >
            <button type='submit' className="flex items-center justify-center gap-2 p-3 border border-gray-300 
                            rounded-xl hover:bg-gray-50 transition-colors">

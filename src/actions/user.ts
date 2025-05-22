@@ -42,3 +42,7 @@ const login = async (formData: FormData) => {
   redirect("/");
 };
 export { login, register };
+
+export async function handleGoogleSignIn(){
+await signIn('google')
+}

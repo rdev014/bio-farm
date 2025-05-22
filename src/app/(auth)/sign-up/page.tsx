@@ -1,17 +1,89 @@
+'use client';
+
 import { signIn } from "@/auth";
 import Image from "next/image";
-import React from "react";
+import React, { useState, useTransition } from "react";
 import Link from "next/link";
-import { getSession } from "@/lib/getSession";
-import { redirect } from "next/navigation";
-import { register } from "@/actions/user";
+import { handleGoogleSignIn, register } from "@/actions/user";
+import { validatePassword, validateEmail, validateName } from "@/lib/validation";
+import { toast } from "react-hot-toast";
 
-export default async function SignUp() {
-  const session = await getSession();
-  const user = session?.user;
-  if (user) {
-    redirect("/");
-  }
+export default function SignUp() {
+  const [isPending, startTransition] = useTransition();
+  const [formErrors, setFormErrors] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    requirements: [] as string[],
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Clear previous error
+    setFormErrors(prev => ({ ...prev, [name]: '' }));
+
+    // Validate password in real-time
+    if (name === 'password') {
+      const { isValid, errors } = validatePassword(value);
+      setPasswordStrength({
+        score: isValid ? 100 : Math.min(60, (value.length / 8) * 100),
+        requirements: errors,
+      });
+    }
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    // Validate all fields
+    const firstNameValidation = validateName(formData.firstName);
+    const lastNameValidation = validateName(formData.lastName);
+    const emailValidation = validateEmail(formData.email);
+    const passwordValidation = validatePassword(formData.password);
+
+    // Collect all validation errors
+    const newErrors = {
+      firstName: firstNameValidation.error || '',
+      lastName: lastNameValidation.error || '',
+      email: emailValidation.error || '',
+      password: passwordValidation.errors[0] || '',
+    };
+
+    setFormErrors(newErrors);
+
+    // Check if there are any errors
+    if (Object.values(newErrors).some(error => error)) {
+      toast.error('Please fix the form errors before submitting');
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const formDataObj = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+          formDataObj.append(key, value);
+        });
+        
+        await register(formDataObj);
+        toast.success('Account created successfully!');
+      } catch (error) {
+        console.error('Registration error:', error);
+        toast.error(error instanceof Error ? error.message : 'Failed to create account');
+      }
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left: Image + Text */}
@@ -91,9 +163,12 @@ export default async function SignUp() {
                 Sign in
               </Link>
             </p>
-          </div>
-
-         <form action={register}>
+          </div>         <form onSubmit={handleSubmit} className="relative">
+           {isPending && (
+             <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+             </div>
+           )}
            <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -106,12 +181,21 @@ export default async function SignUp() {
                 <input
                   id="firstName"
                   type="text"
-                  name="firstname"
-                  className="w-full px-4 py-3 rounded-xl text-black border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-xl text-black border transition-colors ${
+                    formErrors.firstName 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-gray-300 focus:ring-green-500'
+                  } focus:border-transparent`}
                   placeholder="John"
                   required
+                  disabled={isPending}
                 />
-              </div>
+                {formErrors.firstName && (
+                  <p className="mt-1 text-sm text-red-500">{formErrors.firstName}</p>
+                )}              </div>
               <div>
                 <label
                   htmlFor="lastName"
@@ -122,14 +206,22 @@ export default async function SignUp() {
                 <input
                   id="lastName"
                   type="text"
-                  name="lastname"
-                  className="w-full px-4 py-3 rounded-xl border text-black border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-xl border text-black transition-colors ${
+                    formErrors.lastName 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-gray-300 focus:ring-green-500'
+                  } focus:border-transparent`}
                   placeholder="Doe"
+                  disabled={isPending}
                 />
+                {formErrors.lastName && (
+                  <p className="mt-1 text-sm text-red-500">{formErrors.lastName}</p>
+                )}
               </div>
-            </div>
-
-            <div>
+            </div>            <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1"
@@ -140,29 +232,86 @@ export default async function SignUp() {
                 id="email"
                 type="email"
                 name="email"
-                className="w-full px-4 py-3 rounded-xl border text-black border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-               placeholder="john@example.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 rounded-xl border text-black transition-colors ${
+                  formErrors.email 
+                    ? 'border-red-500 focus:ring-red-500' 
+                    : 'border-gray-300 focus:ring-green-500'
+                } focus:border-transparent`}
+                placeholder="john@example.com"
+                required
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                autoComplete="email"
+                disabled={isPending}
               />
-            </div>
-            <div>
+              {formErrors.email && (
+                <p className="mt-1 text-sm text-red-500">{formErrors.email}</p>
+              )}
+            </div>            <div>
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-900 mb-1"
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                name="password"
-                className="w-full px-4 py-3 rounded-xl text-black border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors"
-                placeholder="********"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 rounded-xl text-black border transition-colors ${
+                    formErrors.password 
+                      ? 'border-red-500 focus:ring-red-500' 
+                      : 'border-gray-300 focus:ring-green-500'
+                  } focus:border-transparent`}
+                  placeholder="********"
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  disabled={isPending}
+                />
+                {passwordStrength.requirements.length > 0 && (
+                  <div className="mt-2 space-y-2">
+                    <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full transition-all duration-300 ${
+                          passwordStrength.score >= 100 
+                            ? 'bg-green-500' 
+                            : passwordStrength.score >= 60 
+                            ? 'bg-yellow-500' 
+                            : 'bg-red-500'
+                        }`}
+                        style={{ width: `${passwordStrength.score}%` }}
+                      />
+                    </div>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      {passwordStrength.requirements.map((req, index) => (
+                        <li key={index} className="flex items-center space-x-2">
+                          <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {formErrors.password && (
+                  <p className="mt-1 text-sm text-red-500">{formErrors.password}</p>
+                )}
+              </div>
             </div>
 
-            <button type="submit"
-              className="w-full py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl font-medium 
-                           shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300"
+            <button 
+              type="submit"
+              disabled={isPending || passwordStrength.requirements.length > 0}              className={`w-full py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-xl font-medium 
+                           shadow-lg shadow-green-500/25 transition-all duration-300
+                           ${!isPending && 'hover:shadow-xl hover:shadow-green-500/40'}
+                           ${(isPending || passwordStrength.requirements.length > 0) && 
+                             'opacity-50 cursor-not-allowed'}`}
             >
               Create Account
             </button>
@@ -182,10 +331,7 @@ export default async function SignUp() {
 
           <div className="flex flex-col gap-4">
             <form
-              action={async () => {
-                "use server";
-                await signIn("google");
-              }}
+              action={handleGoogleSignIn}
             >
               <button
                 type="submit"
