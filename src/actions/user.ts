@@ -2,14 +2,16 @@
 
 import { signIn } from "@/auth";
 import connectDb from "@/lib/db";
+import { sendVerificationEmail } from "@/lib/email";
+import { generateVerificationToken } from "@/lib/token";
 import { User } from "@/models/UserSchema";
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 
 const register = async (formData: FormData) => {
-  const firstname = formData.get("firstname") as string;
-  const lastname = formData.get("lastname") as string;
+  const firstname = formData.get("firstName") as string;
+  const lastname = formData.get("lastName") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   if (!firstname || !lastname || !email || !password) {
@@ -21,8 +23,18 @@ const register = async (formData: FormData) => {
     throw new Error("User Already Exist");
   }
   const hashpassword = await hash(password, 12);
-  await User.create({ firstname, lastname, email, password: hashpassword });
-  redirect("/login");
+  const verificationToken = await generateVerificationToken();
+  const verificationTokenExpiry = new Date(Date.now() + 86400000); // 24 hours
+  await User.create({
+    firstname,
+    lastname,
+    email,
+    password: hashpassword,
+    verificationToken,
+    verificationTokenExpiry,
+  });
+  await sendVerificationEmail(email,verificationToken)
+  redirect("/verifysent");
 };
 
 const login = async (formData: FormData) => {
@@ -43,6 +55,6 @@ const login = async (formData: FormData) => {
 };
 export { login, register };
 
-export async function handleGoogleSignIn(){
-await signIn('google')
+export async function handleGoogleSignIn() {
+  await signIn("google");
 }

@@ -30,6 +30,26 @@ const UserSchema = new mongoose.Schema({
   authProviderId: {
     type: String,
   },
+  isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      select: false,
+    },
+    verificationTokenExpiry: {
+      type: Date,
+      select: false,
+    },
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordTokenExpiry: {
+      type: Date,
+      select: false,
+    },
   createdAt: {
     type: Date,
     default: Date.now,
