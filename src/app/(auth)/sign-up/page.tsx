@@ -1,6 +1,4 @@
 'use client';
-
-import { signIn } from "@/auth";
 import Image from "next/image";
 import React, { useState, useTransition } from "react";
 import Link from "next/link";

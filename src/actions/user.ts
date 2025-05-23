@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import connectDb from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
 import { generateVerificationToken } from "@/lib/token";
@@ -56,5 +56,8 @@ const login = async (formData: FormData) => {
 export { login, register };
 
 export async function handleGoogleSignIn() {
-  await signIn("google");
+  await signIn("google",{redirect:true,redirectTo:'/'});
+}
+export async function handleSignOut() {
+  await signOut();
 }

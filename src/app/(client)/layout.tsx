@@ -1,11 +1,12 @@
 import Footer from '@/components/General/Footer'
-import Header from '@/components/General/Header'
+import HeaderProvider from '@/components/General/HeaderProvider'
+
 import React from 'react'
 
 export default function Layout({children}:{children:React.ReactNode}) {
   return (
     <>
-    <Header/>
+   <HeaderProvider/>
     {children}
     <Footer/>
     </>
