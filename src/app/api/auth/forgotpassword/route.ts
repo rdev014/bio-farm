@@ -1,7 +1,6 @@
 import connectDb from "@/lib/db";
+import { generateResetToken } from "@/lib/token";
 import { User } from "@/models/UserSchema";
-import { hash } from "bcryptjs";
-import { error } from "console";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
     }
       // Generate reset token
       const resetToken = generateResetToken();
-      user.resetPasswordToken=resetToken();
+      user.resetPasswordToken=resetToken;
       user.resetPasswordTokenExpiry= new Date(Date.now()+3600000)
       await user.save();
        return NextResponse.json({ 
