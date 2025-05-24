@@ -1,234 +1,71 @@
-const data = [
-    {
-        id: "org-veg-001",
-        name: "Organic Baby Spinach",
-        description: "Fresh, tender baby spinach leaves grown without pesticides. Perfect for salads, smoothies, and cooking.",
-        price: 4.99,
-        category: "vegetables",
-        image: "/products/spinach.jpg",
-        unit: "250g",
-        stock: 150,
-        rating: 4.8,
-        reviews: 124,
-        organic: true,
-        seasonal: true,
-        farmLocation: "Green Valley Farm, California",
-        nutritionalInfo: {
-            calories: 23,
-            protein: "2.9g",
-            carbs: "3.6g",
-            fiber: "2.2g",
-            vitamins: ["A", "C", "K", "B6"]
-        },
-        tags: ["organic", "fresh", "leafy-greens", "seasonal"]
-    },
-    {
-        id: "org-fruit-002",
-        name: "Heritage Tomatoes Mix",
-        description: "A colorful mix of heritage tomato varieties, including Black Krim, Green Zebra, and Yellow Pear. Bursting with flavor.",
-        price: 6.99,
-        category: "fruits",
-        image: "/products/tomatoes.jpg",
-        unit: "500g",
-        stock: 75,
-        rating: 4.9,
-        reviews: 89,
-        organic: true,
-        seasonal: true,
-        farmLocation: "Sunshine Organic Farm, Florida",
-        nutritionalInfo: {
-            calories: 22,
-            protein: "1.1g",
-            carbs: "4.8g",
-            fiber: "1.5g",
-            vitamins: ["C", "K", "B9"]
-        },
-        tags: ["organic", "heritage", "seasonal", "colorful"]
-    },
-    {
-        id: "org-grain-003",
-        name: "Ancient Grain Quinoa",
-        description: "Sustainably grown ancient grain quinoa. High in protein and essential amino acids. Perfect for healthy meals.",
-        price: 8.99,
-        category: "grains",
-        image: "/products/quinoa.jpg",
-        unit: "1kg",
-        stock: 200,
-        rating: 4.7,
-        reviews: 156,
-        organic: true,
-        seasonal: false,
-        farmLocation: "Highland Farms, Peru",
-        nutritionalInfo: {
-            calories: 120,
-            protein: "4.4g",
-            carbs: "21.3g",
-            fiber: "2.8g",
-            vitamins: ["B1", "B6", "Folate"]
-        },
-        tags: ["organic", "gluten-free", "ancient-grain", "protein-rich"]
-    },
-    {
-        id: "dairy-004",
-        name: "Raw Honey",
-        description: "Pure, unprocessed honey from sustainable apiaries. Rich in enzymes and antioxidants.",
-        price: 12.99,
-        category: "honey",
-        image: "/products/honey.jpg",
-        unit: "500g",
-        stock: 85,
-        rating: 4.9,
-        reviews: 203,
-        organic: true,
-        seasonal: false,
-        farmLocation: "Meadow Bee Farm, Vermont",
-        nutritionalInfo: {
-            calories: 304,
-            protein: "0.3g",
-            carbs: "82.4g",
-            fiber: "0g",
-            minerals: ["Potassium", "Zinc", "Iron"]
-        },
-        tags: ["raw", "unprocessed", "sustainable", "natural-sweetener"]
-    },
-    {
-        id: "herb-005",
-        name: "Fresh Herb Bundle",
-        description: "Fresh-cut bundle of essential cooking herbs: basil, thyme, rosemary, and sage. Grown hydroponically.",
-        price: 5.99,
-        category: "herbs",
-        image: "/products/herbs.jpg",
-        unit: "bunch",
-        stock: 45,
-        rating: 4.6,
-        reviews: 67,
-        organic: true,
-        seasonal: true,
-        farmLocation: "Urban Greens Hydroponic Farm, New York",
-        nutritionalInfo: {
-            calories: 5,
-            protein: "0.3g",
-            carbs: "0.9g",
-            fiber: "0.8g",
-            vitamins: ["A", "C", "K"]
-        },
-        tags: ["fresh", "hydroponic", "culinary", "aromatic"]
-    },
-    {
-        id: "veg-006",
-        name: "Rainbow Swiss Chard",
-        description: "Vibrant, multicolored Swiss chard stalks with tender leaves. Rich in nutrients and perfect for sautéing.",
-        price: 3.99,
-        category: "vegetables",
-        image: "/products/chard.jpg",
-        unit: "bunch",
-        stock: 60,
-        rating: 4.7,
-        reviews: 45,
-        organic: true,
-        seasonal: true,
-        farmLocation: "Coastal Organic Farm, California",
-        nutritionalInfo: {
-            calories: 19,
-            protein: "1.8g",
-            carbs: "3.7g",
-            fiber: "1.6g",
-            vitamins: ["K", "A", "C", "E"]
-        },
-        tags: ["organic", "colorful", "leafy-greens", "nutrient-rich"]
-    },
-    {
-        id: "fruit-007",
-        name: "Seasonal Berry Mix",
-        description: "Fresh mix of seasonal berries including strawberries, blueberries, and blackberries. Perfect for snacking or baking.",
-        price: 9.99,
-        category: "fruits",
-        image: "/products/berries.jpg",
-        unit: "400g",
-        stock: 40,
-        rating: 4.9,
-        reviews: 178,
-        organic: true,
-        seasonal: true,
-        farmLocation: "Berry Fields Farm, Oregon",
-        nutritionalInfo: {
-            calories: 50,
-            protein: "0.7g",
-            carbs: "11.7g",
-            fiber: "2.4g",
-            vitamins: ["C", "K", "Manganese"]
-        },
-        tags: ["organic", "seasonal", "antioxidants", "fresh"]
-    },
-    {
-        id: "nut-008",
-        name: "Raw Mixed Nuts",
-        description: "Premium blend of organic raw almonds, walnuts, and pecans. Perfect for snacking or adding to recipes.",
-        price: 14.99,
-        category: "nuts",
-        image: "/products/nuts.jpg",
-        unit: "500g",
-        stock: 100,
-        rating: 4.8,
-        reviews: 92,
-        organic: true,
-        seasonal: false,
-        farmLocation: "Valley Nut Farms, California",
-        nutritionalInfo: {
-            calories: 607,
-            protein: "20g",
-            carbs: "20g",
-            fiber: "12g",
-            vitamins: ["E", "B6", "Magnesium"]
-        },
-        tags: ["organic", "raw", "protein-rich", "healthy-fats"]
-    },
-    {
-        id: "veg-009",
-        name: "Microgreens Assortment",
-        description: "Fresh assortment of nutrient-dense microgreens including radish, sunflower, and pea shoots.",
-        price: 7.99,
-        category: "vegetables",
-        image: "/products/microgreens.jpg",
-        unit: "100g",
-        stock: 30,
-        rating: 4.9,
-        reviews: 56,
-        organic: true,
-        seasonal: false,
-        farmLocation: "Urban Microgreens, Chicago",
-        nutritionalInfo: {
-            calories: 25,
-            protein: "2.5g",
-            carbs: "4g",
-            fiber: "1.5g",
-            vitamins: ["A", "C", "E", "K"]
-        },
-        tags: ["organic", "microgreens", "nutrient-dense", "fresh"]
-    },
-    {
-        id: "grain-010",
-        name: "Ancient Grain Bundle",
-        description: "Collection of ancient grains including amaranth, teff, and buckwheat. Perfect for diverse, nutritious meals.",
-        price: 16.99,
-        category: "grains",
-        image: "/products/ancient-grains.jpg",
-        unit: "1.5kg",
-        stock: 75,
-        rating: 4.7,
-        reviews: 83,
-        organic: true,
-        seasonal: false,
-        farmLocation: "Heritage Grain Collective, Montana",
-        nutritionalInfo: {
-            calories: 350,
-            protein: "13g",
-            carbs: "72g",
-            fiber: "7g",
-            vitamins: ["B1", "B3", "Iron", "Magnesium"]
-        },
-        tags: ["organic", "ancient-grains", "gluten-free", "nutritious"]
-    }
+// data/products.js
+
+const products = [
+  {
+    id: 1,
+    title: "Fully Dry Cow Dung Fertilizer",
+    slug: "fully-dry-cow-dung",
+    category: "Fertilizers",
+    description:
+      "Naturally sun-dried cow dung ideal for all types of crops. 100% organic and chemical-free. Perfect for export and local sustainable farming.",
+    images: ["1.jpg", "2.jpg", "3.jpg"], // stored in /public/products/fully-dry-cow-dung/
+    price: 4.99,
+    stock: 120,
+    dryingStage: "Fully Dry",
+    tags: ["organic", "cow dung", "fertilizer", "export"],
+  },
+  {
+    id: 2,
+    title: "Semi-Dry Cow Dung Fertilizer",
+    slug: "semi-dry-cow-dung",
+    category: "Fertilizers",
+    description:
+      "Balanced moisture cow dung suitable for mixing with compost or soil beds. Ideal for near-term usage.",
+    images: ["1.jpg", "2.jpg"],
+    price: 3.49,
+    stock: 100,
+    dryingStage: "Semi-Dry",
+    tags: ["semi-dry", "organic", "natural farming"],
+  },
+  {
+    id: 3,
+    title: "Slightly Dry Cow Dung Fertilizer",
+    slug: "slightly-dry-cow-dung",
+    category: "Fertilizers",
+    description:
+      "Slightly dried and nutrient-rich cow dung ideal for immediate soil mixing and moisture-retaining crops.",
+    images: ["1.jpg", "2.jpg"],
+    price: 2.99,
+    stock: 80,
+    dryingStage: "Slightly Dry",
+    tags: ["moist", "organic", "eco farming"],
+  },
+  {
+    id: 4,
+    title: "Neem-Based Organic Pest Repellent",
+    slug: "neem-organic-repellent",
+    category: "Pest Control",
+    description:
+      "Natural neem extract repellent to protect your crops from pests without harming soil quality or plant growth.",
+    images: ["1.jpg", "2.jpg"],
+    price: 6.99,
+    stock: 60,
+    dryingStage: null,
+    tags: ["neem", "pesticide", "organic", "natural"],
+  },
+  {
+    id: 5,
+    title: "Vermicompost Enriched Soil Booster",
+    slug: "vermicompost-soil-booster",
+    category: "Compost",
+    description:
+      "Premium vermicompost for soil regeneration, rich in nutrients and microbial life to boost crop yields.",
+    images: ["1.jpg", "2.jpg"],
+    price: 5.99,
+    stock: 75,
+    dryingStage: null,
+    tags: ["vermicompost", "compost", "soil health"],
+  }
 ];
 
-export default data;
+export default products;
