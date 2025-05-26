@@ -8,9 +8,87 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import { useState, useRef } from "react";
+import Link from "next/link";
+import { Leaf, CircuitBoard, Award, Globe, FlaskConical, HeadsetIcon, 
+  BadgeCheck, Calculator, NewspaperIcon, ArrowRightIcon } from "lucide-react";
+import { ReactNode } from "react";
+
+interface Feature {
+  title: string;
+  description: string;
+  icon: ReactNode;
+  color: string;
+  lightColor: string;
+}
+
+interface Process {
+  step: string;
+  title: string;
+  description: string;
+  icon: string;
+  gradient: string;
+}
+
+interface Product {
+  title: string;
+  description: string;
+  image: string;
+  price: string;
+  badge: string;
+  badgeColor: string;
+}
+
+interface ImpactStat {
+  number: string;
+  label: string;
+}
+
+interface Testimonial {
+  name: string;
+  role: string;
+  content: string;
+  image: string;
+}
+
+interface Article {
+  title: string;
+  category: string;
+  date: string;
+  image: string;
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5
+    }
+  }
+};
 
 export default function Home() {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [landSize, setLandSize] = useState<number>(0);
+  const [cropType, setCropType] = useState<string>("");
+  const [recommendations, setRecommendations] = useState<{
+    name: string;
+    amount: string;
+    price: string;
+  }[]>([]);
+  const [isCalculating, setIsCalculating] = useState(false);
+  
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -20,22 +98,182 @@ export default function Home() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.5]);
   const heroScale = useTransform(scrollYProgress, [0, 0.7], [1, 0.97]);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, duration: 0.7 },
+  const features: Feature[] = [
+    {
+      title: "Eco-Friendly Farming",
+      description:
+        "Sustainable practices that protect our environment while delivering exceptional results.",
+      icon: <Leaf className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-green-500/90 to-emerald-600/90",
+      lightColor: "from-green-50 to-emerald-50",
     },
+    {
+      title: "Advanced Technology",
+      description:
+        "Cutting-edge solutions that optimize growth and maximize yield sustainably.",
+      icon: <CircuitBoard className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-blue-500/90 to-cyan-600/90",
+      lightColor: "from-blue-50 to-cyan-50",
+    },
+    {
+      title: "Premium Quality",
+      description:
+        "Rigorous testing ensures top-tier results for your plants every time.",
+      icon: <Award className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-purple-500/90 to-indigo-600/90",
+      lightColor: "from-purple-50 to-indigo-50",
+    },
+    {
+      title: "Global Impact",
+      description:
+        "Creating positive change for farmers and communities worldwide.",
+      icon: <Globe className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-amber-500/90 to-orange-600/90",
+      lightColor: "from-amber-50 to-orange-50",
+    },
+    {
+      title: "Research Driven",
+      description:
+        "Continuous innovation through scientific research and development.",
+      icon: <FlaskConical className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-pink-500/90 to-rose-600/90",
+      lightColor: "from-pink-50 to-rose-50",
+    },
+    {
+      title: "Expert Support",
+      description: "24/7 guidance from our team of agricultural experts.",
+      icon: <HeadsetIcon className="w-7 h-7 text-white stroke-[1.5]" />,
+      color: "from-teal-500/90 to-emerald-600/90",
+      lightColor: "from-teal-50 to-emerald-50",
+    },
+  ];
+
+  const processes: Process[] = [
+    {
+      step: "01",
+      title: "Sustainable Sourcing",
+      description: "Premium organic materials from trusted suppliers globally.",
+      icon: "🌾",
+      gradient: "from-green-500 to-emerald-500",
+    },
+    {
+      step: "02",
+      title: "Quality Testing",
+      description: "Rigorous testing to ensure the highest standards.",
+      icon: "🔍",
+      gradient: "from-blue-500 to-cyan-500",
+    },
+    {
+      step: "03",
+      title: "Smart Processing",
+      description: "Advanced eco-friendly manufacturing process.",
+      icon: "🌿",
+      gradient: "from-purple-500 to-indigo-500",
+    },
+    {
+      step: "04",
+      title: "Swift Delivery",
+      description: "Fast and efficient delivery to your doorstep.",
+      icon: "🚚",
+      gradient: "from-amber-500 to-orange-500",
+    },
+  ];
+
+  const products: Product[] = [
+    {
+      title: "Organic Fertilizers",
+      description: "Natural, nutrient-rich formulas for optimal plant growth",
+      image: "/plant.png",
+      price: "$29.99",
+      badge: "Best Seller",
+      badgeColor: "bg-amber-500"
+    },
+    {
+      title: "Soil Enrichment",
+      description: "Premium soil blends for maximum yield",
+      image: "/plant.png",
+      price: "$24.99",
+      badge: "Organic",
+      badgeColor: "bg-emerald-500"
+    },
+    {
+      title: "Growth Boosters",
+      description: "Natural supplements for accelerated growth",
+      image: "/plant.png",
+      price: "$34.99",
+      badge: "New",
+      badgeColor: "bg-blue-500"
+    }
+  ];
+
+  // Farm calculator logic
+  const calculateRequirements = () => {
+    setIsCalculating(true);
+    
+    // Base ratios per acre
+    const baseRatios = {
+      Vegetables: {
+        fertilizer: 2000, // 2000 kg per acre
+        soilEnhancer: 800, // 800 kg per acre
+        pestControl: 5 // 5 units per acre
+      },
+      Fruits: {
+        fertilizer: 1500,
+        soilEnhancer: 600,
+        pestControl: 4
+      },
+      Grains: {
+        fertilizer: 1200,
+        soilEnhancer: 500,
+        pestControl: 3
+      }
+    };
+
+    if (!landSize || !cropType || landSize <= 0) {
+      setRecommendations([]);
+      setIsCalculating(false);
+      return;
+    }
+
+    const ratio = baseRatios[cropType as keyof typeof baseRatios];
+    if (!ratio) {
+      setIsCalculating(false);
+      return;
+    }
+
+    const fertilizerAmount = ratio.fertilizer * landSize;
+    const soilEnhancerAmount = ratio.soilEnhancer * landSize;
+    const pestControlAmount = ratio.pestControl * landSize;
+
+    // Product prices (in dollars per unit)
+    const prices = {
+      fertilizer: 3, // $3 per kg
+      soilEnhancer: 2.5, // $2.5 per kg
+      pestControl: 30 // $30 per unit
+    };
+
+    const newRecommendations = [
+      {
+        name: "Organic Fertilizer",
+        amount: `${fertilizerAmount.toFixed(0)} kg`,
+        price: `$${(fertilizerAmount * prices.fertilizer).toLocaleString()}`
+      },
+      {
+        name: "Soil Enhancer",
+        amount: `${soilEnhancerAmount.toFixed(0)} kg`,
+        price: `$${(soilEnhancerAmount * prices.soilEnhancer).toLocaleString()}`
+      },
+      {
+        name: "Neem-Based Pest Control",
+        amount: `${pestControlAmount.toFixed(0)} units`,
+        price: `$${(pestControlAmount * prices.pestControl).toLocaleString()}`
+      }
+    ];
+
+    setRecommendations(newRecommendations);
+    setIsCalculating(false);
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.7, ease: [0.33, 1, 0.68, 1] },
-    },
-  };
   return (
     <main className="overflow-hidden">
       {/* Hero Section */}
@@ -187,24 +425,30 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 lg:py-32 bg-gradient-to-b from-white to-emerald-50/50 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-green-100/40 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 lg:mb-16"
+            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
           >
-            <span className="text-emerald-600 font-semibold tracking-wider text-sm uppercase">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Why Choose Us
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mt-3 mb-4 tracking-tight">
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
               Sustainable Growth, Naturally
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-              Combining eco-conscious practices with innovative solutions for
-              thriving gardens.
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              Experience the perfect blend of eco-conscious practices and innovative solutions for your thriving garden.
             </p>
           </motion.div>
 
@@ -213,61 +457,32 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
           >
-            {[
-              {
-                title: "Eco-Friendly Farming",
-                icon: "🌱",
-                description: "Sustainable practices that nurture the earth.",
-              },
-              {
-                title: "Innovative Technology",
-                icon: "🔬",
-                description: "Advanced solutions for optimal growth.",
-              },
-              {
-                title: "Premium Quality",
-                icon: "✨",
-                description: "Rigorous testing for top-tier results.",
-              },
-              {
-                title: "Zero Waste",
-                icon: "♻️",
-                description: "Closed-loop systems for sustainability.",
-              },
-              {
-                title: "Community Support",
-                icon: "🌍",
-                description: "Empowering farmers globally.",
-              },
-              {
-                title: "Research-Driven",
-                icon: "📊",
-                description: "Innovating through science.",
-              },
-            ].map((feature, i) => (
+            {features.map((feature, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
                 whileHover={{
-                  scale: 1.03,
-                  boxShadow: "0 8px 16px rgba(0, 128, 64, 0.1)",
+                  scale: 1.02,
+                  transition: { duration: 0.2 },
                 }}
-                className="p-4 sm:p-6 lg:p-8 bg-white rounded-2xl border border-gray-100 group transition-all duration-300"
+                className="group relative"
               >
-                <motion.div
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-lg flex items-center justify-center text-lg sm:text-xl mb-3 sm:mb-4 text-emerald-600"
-                >
-                  {feature.icon}
-                </motion.div>
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
-                  {feature.description}
-                </p>
+                <div className={`absolute inset-0 ${feature.lightColor} rounded-2xl transform transition-transform group-hover:scale-105 duration-300`}></div>
+                <div className="relative p-6 lg:p-8">
+                  <div className="mb-6">
+                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-2xl shadow-lg transform transition-transform group-hover:-translate-y-1 duration-300`}>
+                      {feature.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
+                    {feature.description}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -275,131 +490,142 @@ export default function Home() {
       </section>
 
       {/* Process Section */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-gray-50">
+      <section className="py-16 lg:py-32 bg-white relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
+          <div className="absolute -left-48 top-1/4 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute -right-48 bottom-1/4 w-96 h-96 bg-green-100/30 rounded-full blur-3xl"></div>
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 lg:mb-16"
+            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
           >
-            <span className="text-emerald-600 font-semibold tracking-wider text-sm uppercase">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               Our Process
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mt-3 mb-4 tracking-tight">
-              From Soil to Success
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              From Seed to Success
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-              A seamless, eco-friendly journey from cultivation to your garden.
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              We've refined our approach to ensure optimal results at every stage of your farming journey.
             </p>
           </motion.div>
 
-          <div className="relative">
-            <motion.div
-              className="absolute top-1/2 left-0 w-full h-0.5 bg-emerald-200 transform -translate-y-1/2 hidden lg:block"
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              transition={{ duration: 1 }}
-            />
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
-            >
-              {[
-                {
-                  step: "01",
-                  title: "Sustainable Sourcing",
-                  description: "Organic materials, responsibly sourced.",
-                  icon: "🌾",
-                },
-                {
-                  step: "02",
-                  title: "Quality Assurance",
-                  description: "Rigorous testing for excellence.",
-                  icon: "🔍",
-                },
-                {
-                  step: "03",
-                  title: "Eco Packaging",
-                  description: "Biodegradable, sustainable packaging.",
-                  icon: "📦",
-                },
-                {
-                  step: "04",
-                  title: "Swift Delivery",
-                  description: "Fast, eco-conscious delivery.",
-                  icon: "🚚",
-                },
-              ].map((step, i) => (
-                <motion.div
-                  key={i}
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.03 }}
-                  className="relative"
-                >
-                  <div className="bg-white rounded-2xl p-4 sm:p-6 lg:p-8 shadow-md border border-gray-100">
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-600 rounded-lg flex items-center justify-center text-lg sm:text-xl text-white mb-3 sm:mb-4"
-                    >
-                      {step.icon}
-                    </motion.div>
-                    <span className="text-3xl sm:text-4xl font-bold text-emerald-100 absolute top-4 right-4">
-                      {step.step}
-                    </span>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm sm:text-base">
-                      {step.description}
-                    </p>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid lg:grid-cols-4 gap-6 lg:gap-8"
+          >
+            {[
+              {
+                step: "01",
+                title: "Planning",
+                description: "Expert consultation to understand your goals and create a tailored strategy.",
+                icon: "📋",
+                gradient: "from-blue-500 to-cyan-500"
+              },
+              {
+                step: "02",
+                title: "Preparation",
+                description: "Setting up sustainable systems and optimal growing conditions.",
+                icon: "🌱",
+                gradient: "from-emerald-500 to-green-500"
+              },
+              {
+                step: "03",
+                title: "Growth",
+                description: "Monitoring and nurturing your crops with precision technology.",
+                icon: "📈",
+                gradient: "from-amber-500 to-orange-500"
+              },
+              {
+                step: "04",
+                title: "Success",
+                description: "Harvesting results and ensuring sustainable long-term outcomes.",
+                icon: "🎯",
+                gradient: "from-rose-500 to-pink-500"
+              }
+            ].map((process, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                className="relative group"
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <div className="relative p-6 lg:p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                  <div className="absolute -top-4 -right-4 w-16 h-16 rounded-2xl bg-gradient-to-r shadow-lg flex items-center justify-center text-2xl transform -rotate-6 group-hover:rotate-0 transition-transform duration-300">
+                    {process.icon}
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </section>
+                  <div className={`text-4xl font-black bg-gradient-to-r ${process.gradient} text-transparent bg-clip-text mb-4`}>
+                    {process.step}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {process.title}
+                  </h3>
+                  <p className="text-gray-600">
+                    {process.description}
+                  </p>
+                  <div className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${process.gradient} w-0 group-hover:w-full transition-all duration-300 rounded-b-2xl`}></div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
 
-      {/* Products Showcase */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-gradient-to-b from-white to-emerald-50 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={itemVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 mb-10 sm:mb-12 lg:mb-16"
+            className="text-center mt-12 lg:mt-16"
           >
-            <div>
-              <span className="text-emerald-600 font-semibold tracking-wider text-sm uppercase">
-                Our Products
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mt-2 tracking-tight">
-                Eco-Friendly Solutions
-              </h2>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
-              {["all", "organic", "new"].map((filter) => (
-                <motion.button
-                  key={filter}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`px-3 sm:px-5 py-2 sm:py-3 rounded-xl font-medium text-sm sm:text-base transition-all duration-300 ${
-                    activeFilter === filter
-                      ? "bg-emerald-600 text-white"
-                      : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
-                </motion.button>
-              ))}
-            </div>
+            <button className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              Start Your Journey
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Products Showcase Section */}
+      <section className="py-16 lg:py-32 bg-gradient-to-b from-white to-emerald-50/50 relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/4 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-green-100/40 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Our Products
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              Sustainable Solutions
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              Discover our range of eco-friendly products designed to enhance your farming experience.
+            </p>
           </motion.div>
 
           <motion.div
@@ -407,290 +633,670 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
           >
-            {[
+            {([
               {
-                name: "Premium Organic Fertilizer",
-                price: 29.99,
-                original: 39.99,
-                image: "/products/product-1.jpg",
-                tag: "New Arrival",
+                title: "Organic Fertilizers",
+                description: "Natural, nutrient-rich formulas for optimal plant growth",
+                image: "/plant.png",
+                price: "$29.99",
+                badge: "Best Seller",
+                badgeColor: "bg-amber-500"
               },
               {
-                name: "Eco-Grow Compost",
-                price: 24.99,
-                original: 34.99,
-                image: "/products/product-2.jpg",
-                tag: "Best Seller",
+                title: "Soil Enrichment",
+                description: "Premium soil blends for maximum yield",
+                image: "/plant.png",
+                price: "$24.99",
+                badge: "Organic",
+                badgeColor: "bg-emerald-500"
               },
               {
-                name: "Natural Soil Enhancer",
-                price: 34.99,
-                original: 44.99,
-                image: "/products/product-3.jpg",
-                tag: "Organic",
-              },
-            ]
-              .filter(
-                (item) =>
-                  activeFilter === "all" ||
-                  item.tag.toLowerCase().includes(activeFilter)
-              )
-              .map((item, i) => (
-                <motion.div
-                  key={i}
-                  variants={itemVariants}
-                  whileHover={{
-                    scale: 1.03,
-                    boxShadow: "0 8px 16px rgba(0, 128, 64, 0.1)",
-                  }}
-                  className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100"
-                >
-                  <div className="relative h-48 sm:h-60 lg:h-72">
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"
-                      initial={{ opacity: 0.2 }}
-                      whileHover={{ opacity: 0.4 }}
-                      transition={{ duration: 0.5 }}
-                    />
-                    <div className="absolute top-3 left-3 z-10">
-                      <span className="px-2 sm:px-3 py-1 bg-emerald-600 text-white text-xs sm:text-sm rounded-full font-medium">
-                        {item.tag}
-                      </span>
-                    </div>
+                title: "Growth Boosters",
+                description: "Natural supplements for accelerated growth",
+                image: "/plant.png",
+                price: "$34.99",
+                badge: "New",
+                badgeColor: "bg-blue-500"
+              }
+            ] as Product[]).map((product, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group relative"
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
+              >
+                <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
+                  <div className={`absolute top-4 left-4 ${product.badgeColor} text-white text-sm font-medium px-3 py-1 rounded-full z-10`}>
+                    {product.badge}
+                  </div>
+
+                  <div className="relative h-64 overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-100 transform group-hover:scale-105 transition-transform duration-500"></div>
                     <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      src={product.image}
+                      alt={product.title}
+                      className="absolute inset-0 w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
+                      width={400}
+                      height={300}
                     />
                   </div>
-                  <div className="p-4 sm:p-5 lg:p-6">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs sm:text-sm text-emerald-600 font-medium">
-                        Organic
-                      </span>
-                      <span className="w-1 h-1 rounded-full bg-gray-300" />
-                      <span className="text-xs sm:text-sm text-gray-600">
-                        In Stock
-                      </span>
-                    </div>
-                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                      {item.name}
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      {product.title}
                     </h3>
-                    <p className="text-gray-600 text-sm sm:text-base mb-4">
-                      Enhanced with natural minerals for optimal plant growth.
+                    <p className="text-gray-600 mb-4">
+                      {product.description}
                     </p>
                     <div className="flex items-center justify-between">
-                      <div>
-                        <span className="text-lg sm:text-xl font-bold text-gray-900">
-                          ${item.price}
-                        </span>
-                        <span className="text-xs sm:text-sm text-gray-500 ml-2 line-through">
-                          ${item.original}
-                        </span>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-3 sm:px-4 py-2 bg-emerald-600 text-white rounded-lg font-medium transition-colors flex items-center gap-2 text-sm sm:text-base"
-                      >
-                        Add to Cart
-                        <svg
-                          className="w-4 sm:w-5 h-4 sm:h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                          />
+                      <span className="text-2xl font-bold text-emerald-600">
+                        {product.price}
+                      </span>
+                      <button className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors duration-300">
+                        Learn More
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
                         </svg>
-                      </motion.button>
+                      </button>
                     </div>
                   </div>
-                </motion.div>
-              ))}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center mt-16"
+          >
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              View All Products
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
           </motion.div>
         </div>
       </section>
 
       {/* Impact Section */}
-      <section className="py-12 sm:py-16 lg:py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 lg:py-32 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Our Impact
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              Growing a Sustainable Future
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              Our commitment to sustainable farming practices has created lasting positive impact across communities and environments.
+            </p>
+          </motion.div>
+
           <motion.div
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center"
+            className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            <motion.div variants={itemVariants}>
-              <span className="text-emerald-600 font-semibold tracking-wider text-sm uppercase">
-                Our Impact
-              </span>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 mt-3 mb-4 tracking-tight">
-                Greening the Future
-              </h2>
-              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
-                Our sustainable practices empower communities and transform
-                agriculture for a healthier planet.
-              </p>
+            {([
+              { number: "100K+", label: "Farmers Supported" },
+              { number: "500K", label: "Trees Planted" },
+              { number: "80%", label: "Carbon Reduction" },
+              { number: "150+", label: "Communities Impacted" }
+            ] as ImpactStat[]).map((stat, index) => (
               <motion.div
-                variants={containerVariants}
-                className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8"
+                key={index}
+                variants={itemVariants}
+                className="text-center"
               >
-                {[
-                  { number: "2M+", label: "Trees Planted" },
-                  { number: "100K+", label: "Farmers Supported" },
-                  { number: "100%", label: "Organic Certified" },
-                  { number: "50+", label: "Countries Reached" },
-                ].map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    variants={itemVariants}
-                    whileHover={{ scale: 1.05 }}
-                    className="text-center p-4 sm:p-6 bg-emerald-50 rounded-2xl"
-                  >
-                    <p className="text-2xl sm:text-3xl font-bold text-emerald-600">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-green-500/10 rounded-2xl transform -rotate-6"></div>
+                  <div className="relative bg-white p-6 rounded-2xl shadow-xl">
+                    <div className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 text-transparent bg-clip-text mb-2">
                       {stat.number}
-                    </p>
-                    <p className="text-sm sm:text-base text-gray-600 mt-2">
+                    </div>
+                    <div className="text-gray-600 font-medium">
                       {stat.label}
-                    </p>
-                  </motion.div>
-                ))}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="mt-16 lg:mt-24 grid md:grid-cols-2 gap-8 lg:gap-12"
+          >
+            <motion.div
+              variants={itemVariants}
+              className="relative rounded-2xl overflow-hidden"
+            >
+              <div className="aspect-w-16 aspect-h-9">
+                <Image
+                  src="/plant.png"
+                  alt="Sustainable Farming"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  width={600}
+                  height={400}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/30 to-transparent"></div>
+              </div>
             </motion.div>
 
             <motion.div
               variants={itemVariants}
-              className="relative h-[300px] sm:h-[400px] lg:h-[500px] rounded-3xl overflow-hidden"
+              className="flex flex-col justify-center"
             >
-              {/* <Image
-                src="/impact.jpg"
-                alt="Our Impact"
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-              /> */}              <video 
-                autoPlay 
-                muted 
-                loop 
-                playsInline
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              >
-                <source src="https://videos.pexels.com/video-files/30876559/13202358_1920_1080_24fps.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-gray-900/30 to-transparent"
-                initial={{ opacity: 0.3 }}
-                whileHover={{ opacity: 0.5 }}
-                transition={{ duration: 0.5 }}
-              />
-              <motion.div
-                initial={{ y: 50, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.7 }}
-                className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 p-3 sm:p-4 bg-white/90 backdrop-blur-sm rounded-xl"
-              >
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
-                  Sustainability First
-                </h3>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Every purchase supports a greener planet.
+              <h3 className="text-2xl lg:text-3xl font-bold mb-6">
+                Committed to Environmental Stewardship
+              </h3>
+              <div className="space-y-4">
+                <p className="text-gray-600">
+                  Our sustainable farming practices go beyond organic certification. We're committed to regenerative agriculture that enriches soil health, promotes biodiversity, and ensures long-term environmental sustainability.
                 </p>
-              </motion.div>
+                <p className="text-gray-600">
+                  Through innovative technologies and traditional wisdom, we're building a future where farming works in harmony with nature.
+                </p>
+              </div>
+              <div className="mt-8">
+                <Link
+                  href="/sustainability"
+                  className="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors"
+                >
+                  Learn about our sustainability initiatives
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </Link>
+              </div>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              What Our Customers Say
-            </h2>
-            <p className="text-lg text-gray-600">
-              Join thousands of satisfied customers who trust our organic
-              solutions
-            </p>
-          </div>
+      <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-72 h-72 bg-green-100/30 rounded-full blur-3xl"></div>
+        </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map((item) => (
-              <div
-                key={item}
-                className="p-8 bg-green-50 rounded-2xl hover:shadow-lg transition-all duration-300"
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Testimonials
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              What Our Clients Say
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              Discover why farmers and gardeners trust our sustainable solutions for their growing needs.
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {([
+              {
+                name: "John Smith",
+                role: "Organic Farmer",
+                content: "The sustainable solutions provided by Bio-Farms have transformed our farming practices. We've seen incredible improvements in soil health and crop yields.",
+                image: "/plant.png"
+              },
+              {
+                name: "Sarah Johnson",
+                role: "Community Garden Director",
+                content: "Their commitment to environmental stewardship and community support has made them an invaluable partner in our urban farming initiatives.",
+                image: "/plant.png"
+              },
+              {
+                name: "Michael Chen",
+                role: "Agricultural Consultant",
+                content: "I've recommended Bio-Farms to countless clients. Their innovative approach to sustainable farming consistently delivers outstanding results.",
+                image: "/plant.png"
+              }
+            ] as Testimonial[]).map((testimonial, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group"
+                whileHover={{
+                  scale: 1.02,
+                  transition: { duration: 0.2 }
+                }}
               >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-green-200 rounded-full overflow-hidden">
-                    <img
-                      src={`/avatar-${item}.jpg`}
-                      alt="Customer"
-                      className="w-full h-full object-cover"
+                <div className="relative bg-white p-6 rounded-2xl shadow-xl">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-500 rounded-t-2xl"></div>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                      <Image
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        className="object-cover"
+                        fill
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">{testimonial.name}</h3>
+                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                    </div>
+                  </div>
+                  <blockquote className="text-gray-600 leading-relaxed">
+                    "{testimonial.content}"
+                  </blockquote>
+                  <div className="mt-4 flex justify-end">
+                    <svg className="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                    </svg>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Partners & Certifications Section */}
+      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <BadgeCheck className="w-4 h-4" />
+              Trusted Globally
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              Our Partners & Certifications
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              We collaborate with leading organizations and maintain the highest industry standards
+            </p>
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12"
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((partner, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                whileHover={{ scale: 1.05 }}
+                className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="aspect-w-16 aspect-h-9">
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Image
+                      src="/plant.png"
+                      alt={`Partner ${partner}`}
+                      width={120}
+                      height={60}
+                      className="object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-300"
                     />
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">
-                      Customer Name
-                    </h4>
-                    <p className="text-sm text-gray-600">Verified Buyer</p>
-                  </div>
                 </div>
-                <p className="text-gray-600 italic">
-                  "Amazing results with this organic fertilizer! My plants have
-                  never looked better."
-                </p>
-                <div className="flex items-center gap-1 mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 text-yellow-400"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500 to-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/about-us#partners"
+              className="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors"
+            >
+              View all our partnerships and certifications
+              <ArrowRightIcon className="w-4 h-4" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Farm Calculator Section */}
+      <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-green-100/30 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+                <Calculator className="w-4 h-4" />
+                Interactive Tool
+              </span>
+              <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+                Calculate Your Farm's Needs
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Use our intelligent calculator to estimate the perfect amount of organic fertilizer and other products for your farming needs.
+              </p>
+              <div className="space-y-6">
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-700">Land Size (acres)</label>
+                  <input
+                    type="number"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    placeholder="Enter land size"
+                    value={landSize > 0 ? landSize : ""}
+                    onChange={(e) => setLandSize(Number(e.target.value))}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-gray-700">Crop Type</label>
+                  <select
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                    value={cropType}
+                    onChange={(e) => setCropType(e.target.value)}
+                  >
+                    <option value="">Select crop type</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Fruits">Fruits</option>
+                    <option value="Grains">Grains</option>
+                  </select>
+                </div>
+                <button
+                  onClick={calculateRequirements}
+                  className="w-full px-8 py-4 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  {isCalculating ? "Calculating..." : "Calculate Requirements"}
+                </button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="relative bg-white rounded-2xl shadow-xl p-8">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl transform rotate-6"></div>
+                <div className="relative space-y-6">
+                  <h3 className="text-2xl font-bold text-gray-900">Recommended Products</h3>
+                  <div className="space-y-4">
+                    {recommendations.length > 0 ? (
+                      recommendations.map((product, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-emerald-50 transition-colors duration-300"
+                        >
+                          <div>
+                            <h4 className="font-medium text-gray-900">{product.name}</h4>
+                            <p className="text-sm text-gray-600">{product.amount}</p>
+                          </div>
+                          <span className="font-bold text-emerald-600">{product.price}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-4">Enter your land size and crop type to see recommendations.</p>
+                    )}
+                  </div>
+                  {recommendations.length > 0 && (
+                    <div className="pt-6 border-t border-gray-100">
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-medium text-gray-900">Total Estimate</span>
+                        <span className="text-2xl font-bold text-emerald-600">
+                          ${recommendations.reduce((total, product) => {
+                            const price = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
+                            return total + price;
+                          }, 0).toLocaleString()}
+                        </span>
+                      </div>
+                      <button className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-0.5">
+                        Add All to Cart
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <section className="py-24 bg-green-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center text-white">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Join Our Green Community
+      {/* Latest News & Insights */}
+      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center max-w-3xl mx-auto mb-16"
+          >
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+              <NewspaperIcon className="w-4 h-4" />
+              Latest Updates
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+              News & Insights
             </h2>
-            <p className="text-lg text-green-100 mb-8">
-              Subscribe to receive gardening tips and exclusive offers
+            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+              Stay updated with the latest developments in sustainable farming
             </p>
-            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          </motion.div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {([
+              {
+                title: "The Future of Organic Farming",
+                category: "Industry Trends",
+                date: "May 25, 2025",
+                image: "/plant.png"
+              },
+              {
+                title: "Sustainable Practices in Modern Agriculture",
+                category: "Best Practices",
+                date: "May 23, 2025",
+                image: "/plant.png"
+              },
+              {
+                title: "Innovation in Eco-Friendly Fertilizers",
+                category: "Research",
+                date: "May 20, 2025",
+                image: "/plant.png"
+              }
+            ] as Article[]).map((article, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="group"
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                  <div className="relative h-48">
+                    <Image
+                      src={article.image}
+                      alt={article.title}
+                      className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
+                      width={400}
+                      height={300}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                    <div className="absolute bottom-4 left-4">
+                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium rounded-full">
+                        {article.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="text-sm text-gray-500 mb-2">{article.date}</div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors">
+                      {article.title}
+                    </h3>
+                    <Link
+                      href="/blogs"
+                      className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+                    >
+                      Read More
+                      <ArrowRightIcon className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <motion.div
+            variants={itemVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/blogs"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              View All Articles
+              <ArrowRightIcon className="w-5 h-5" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-16 lg:py-32 bg-gradient-to-br from-emerald-900 to-green-900 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <motion.div
+              variants={itemVariants}
+              className="mb-8"
+            >
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700 text-emerald-100 font-medium text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                Stay Connected
+              </span>
+            </motion.div>
+
+            <motion.h2
+              variants={itemVariants}
+              className="text-4xl lg:text-5xl font-bold text-white mb-6"
+            >
+              Join Our Growing Community
+            </motion.h2>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-lg text-emerald-100 mb-8 max-w-2xl mx-auto"
+            >
+              Subscribe to our newsletter for the latest sustainable farming tips, exclusive offers, and updates on our environmental initiatives.
+            </motion.p>
+
+            <motion.form
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+              onSubmit={(e) => e.preventDefault()}
+            >
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-2 
-                         focus:ring-green-400"
+                className="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-400/30 text-white placeholder-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
               />
               <button
-                className="px-8 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 
-                               transition-colors"
+                type="submit"
+                className="px-8 py-3 bg-gradient-to-r from-emerald-400 to-green-400 text-white font-semibold rounded-full hover:from-emerald-500 hover:to-green-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 Subscribe
               </button>
-            </form>
-          </div>
+            </motion.form>
+
+            <motion.p
+              variants={itemVariants}
+              className="mt-4 text-sm text-emerald-300"
+            >
+              We respect your privacy. Unsubscribe at any time.
+            </motion.p>
+          </motion.div>
         </div>
       </section>
     </main>
