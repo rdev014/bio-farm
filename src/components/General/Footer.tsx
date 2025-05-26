@@ -1,7 +1,25 @@
 import React from 'react'
+import Link from 'next/link'
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaLeaf } from 'react-icons/fa';
 
 export default function Footer() {
+  const quickLinks = [
+    { name: 'About Us', href: '/about-us' },
+    { name: 'Products', href: '/products' },
+    { name: 'Our Farms', href: '/our-farms' },
+    { name: 'Sustainability', href: '/sustainability' },
+    { name: 'Blog', href: '/blogs' }, 
+    { name: 'Guides', href: '/guides' },
+    { name: 'FAQ', href: '/faq' },
+    { name: 'Contact Us', href: '/contact-us' },
+  ];
+
+  const legalLinks = [
+    { name: 'Privacy Policy', href: '/legal/privacy' },
+    { name: 'Terms of Service', href: '/legal/terms' },
+    { name: 'Support', href: '/support' },
+  ];
+
     return (
     <footer className="bg-gradient-to-b from-gray-900 to-black text-white px-6 py-16 relative overflow-hidden">
       {/* Decorative Background Elements */}
@@ -41,14 +59,17 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold text-white mb-6">Quick Links</h4>
             <ul className="space-y-4">
-              {['About Us', 'Products', 'Sustainability', 'FAQ'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-400 hover:text-green-400 transition-colors 
-                                       duration-300 flex items-center gap-2 group">
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    href={link.href} 
+                    className="text-gray-400 hover:text-green-400 transition-colors 
+                             duration-300 flex items-center gap-2 group"
+                  >
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 opacity-0 
                                    group-hover:opacity-100 transition-opacity"></span>
-                    {item}
-                  </a>
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -112,11 +133,14 @@ export default function Footer() {
                        justify-between items-center gap-6 text-gray-400">
           <p>© {new Date().getFullYear()} Bio-Farms. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-8">
-            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
-              <a key={item} href="#" 
-                 className="hover:text-green-400 transition-colors duration-300">
-                {item}
-              </a>
+            {legalLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="hover:text-green-400 transition-colors duration-300"
+              >
+                {link.name}
+              </Link>
             ))}
           </div>
         </div>
