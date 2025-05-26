@@ -1,7 +1,7 @@
 "use client";
 
 import { handleSignOut } from "@/actions/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 type User = { name?: string; email?: string } | null;
@@ -12,18 +12,52 @@ export default function Header({ user }: { user: User }) {
 
   const closeAllMenus = () => {
     setIsActionMenuOpen("");
+    setIsMobileMenuOpen(false);
   };
 
   const toggleMenu = (menuName: string) => {
     setIsActionMenuOpen(isActionMenuOpen === menuName ? "" : menuName);
-  };
+    // Close mobile menu when opening a dropdown
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+  };  // Close menus when clicking outside or pressing escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[role="menu"]') && !target.closest('button')) {
+        closeAllMenus();
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeAllMenus();
+      }
+    };
+
+    // Close menus when route changes
+    const handleRouteChange = () => {
+      closeAllMenus();
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
+    window.addEventListener('popstate', handleRouteChange);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, []);
 
   return (
     <header className="fixed w-full top-0 z-50 transition-all duration-300 bg-white/95 backdrop-blur-md shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-2" onClick={closeAllMenus}>
             <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
               Bio-Farms
             </span>
@@ -56,7 +90,14 @@ export default function Header({ user }: { user: User }) {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden sm:flex items-center space-x-6">
+          <div className="hidden sm:flex items-center space-x-6">            {user && (
+              <Link
+                href="/dashboard"
+                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+              >
+                Dashboard
+              </Link>
+            )}
             <div className="relative group">
               <button
                 onClick={() => toggleMenu("products")}
@@ -65,16 +106,18 @@ export default function Header({ user }: { user: User }) {
                 Products
               </button>
               {isActionMenuOpen === "products" && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                <div role="menu" className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                   <Link
                     href="/products"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     All Products
                   </Link>
                   <Link
                     href="/seasonal-products"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Seasonal Products
                   </Link>
@@ -82,6 +125,7 @@ export default function Header({ user }: { user: User }) {
               )}
             </div>
 
+            {/* About Menu */}
             <div className="relative group">
               <button
                 onClick={() => toggleMenu("about")}
@@ -90,22 +134,25 @@ export default function Header({ user }: { user: User }) {
                 About
               </button>
               {isActionMenuOpen === "about" && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                <div role="menu" className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                   <Link
                     href="/about-us"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     About Us
                   </Link>
                   <Link
                     href="/our-farms"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Our Farms
                   </Link>
                   <Link
                     href="/sustainability"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Sustainability
                   </Link>
@@ -113,6 +160,7 @@ export default function Header({ user }: { user: User }) {
               )}
             </div>
 
+            {/* Resources Menu */}
             <div className="relative group">
               <button
                 onClick={() => toggleMenu("resources")}
@@ -121,22 +169,25 @@ export default function Header({ user }: { user: User }) {
                 Resources
               </button>
               {isActionMenuOpen === "resources" && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                <div role="menu" className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                   <Link
                     href="/blogs"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Blog
                   </Link>
                   <Link
                     href="/guides"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Guides
                   </Link>
                   <Link
                     href="/press-media"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Press & Media
                   </Link>
@@ -144,6 +195,7 @@ export default function Header({ user }: { user: User }) {
               )}
             </div>
 
+            {/* Support Menu */}
             <div className="relative group">
               <button
                 onClick={() => toggleMenu("support")}
@@ -152,22 +204,25 @@ export default function Header({ user }: { user: User }) {
                 Support
               </button>
               {isActionMenuOpen === "support" && (
-                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                <div role="menu" className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                   <Link
                     href="/support"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Help Center
                   </Link>
                   <Link
                     href="/contact-us"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     Contact Us
                   </Link>
                   <Link
                     href="/faq"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={closeAllMenus}
                   >
                     FAQ
                   </Link>
@@ -246,7 +301,7 @@ export default function Header({ user }: { user: User }) {
                 )}
               </button>
               {isActionMenuOpen === "user" && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
+                <div role="menu" className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-50">
                   {user?.email ? (
                     <>
                       <div className="px-4 py-2 border-b border-gray-100">
@@ -254,19 +309,24 @@ export default function Header({ user }: { user: User }) {
                           {user.email}
                         </p>
                       </div>
-                      <a
+                      <Link
                         href="/profile"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                        onClick={closeAllMenus}
                       >
                         Your Profile
-                      </a>
-                      <a
+                      </Link>
+                      <Link
                         href="/orders"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                        onClick={closeAllMenus}
                       >
                         Your Orders
-                      </a>
-                      <form action={handleSignOut}>
+                      </Link>
+                      <form action={async () => {
+                        closeAllMenus();
+                        await handleSignOut();
+                      }}>
                         <button
                           type="submit"
                           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
@@ -280,12 +340,14 @@ export default function Header({ user }: { user: User }) {
                       <Link
                         href="/sign-in"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                        onClick={closeAllMenus}
                       >
                         Sign In
                       </Link>
                       <Link
                         href="/sign-up"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
+                        onClick={closeAllMenus}
                       >
                         Create Account
                       </Link>
@@ -326,13 +388,14 @@ export default function Header({ user }: { user: User }) {
         >
           <div className="flex flex-col space-y-4 px-4">
             {["About", "Products", "FAQ", "Contact"].map((item) => (
-              <a
+              <Link
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                href={`/${item.toLowerCase()}`}
                 className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+                onClick={closeAllMenus}
               >
                 {item}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
