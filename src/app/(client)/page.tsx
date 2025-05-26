@@ -639,7 +639,7 @@ export default function Home() {
               {
                 title: "Organic Fertilizers",
                 description: "Natural, nutrient-rich formulas for optimal plant growth",
-                image: "/plant.png",
+                image: "/organic.png",
                 price: "$29.99",
                 badge: "Best Seller",
                 badgeColor: "bg-amber-500"
@@ -647,7 +647,7 @@ export default function Home() {
               {
                 title: "Soil Enrichment",
                 description: "Premium soil blends for maximum yield",
-                image: "/plant.png",
+                image: "/organic2.png",
                 price: "$24.99",
                 badge: "Organic",
                 badgeColor: "bg-emerald-500"
@@ -655,7 +655,7 @@ export default function Home() {
               {
                 title: "Growth Boosters",
                 description: "Natural supplements for accelerated growth",
-                image: "/plant.png",
+                image: "/organic3.jpeg",
                 price: "$34.99",
                 badge: "New",
                 badgeColor: "bg-blue-500"
