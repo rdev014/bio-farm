@@ -57,16 +57,123 @@ export default function Header({ user }: { user: User }) {
 
           {/* Desktop Navigation */}
           <div className="hidden sm:flex items-center space-x-6">
-            {["About", "Products", "FAQ", "Contact"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm relative group"
+            <div className="relative group">
+              <button
+                onClick={() => toggleMenu("products")}
+                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
               >
-                {item}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-green-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-              </a>
-            ))}
+                Products
+              </button>
+              {isActionMenuOpen === "products" && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                  <Link
+                    href="/products"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    All Products
+                  </Link>
+                  <Link
+                    href="/seasonal-products"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Seasonal Products
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="relative group">
+              <button
+                onClick={() => toggleMenu("about")}
+                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+              >
+                About
+              </button>
+              {isActionMenuOpen === "about" && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                  <Link
+                    href="/about-us"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    About Us
+                  </Link>
+                  <Link
+                    href="/our-farms"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Our Farms
+                  </Link>
+                  <Link
+                    href="/sustainability"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Sustainability
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="relative group">
+              <button
+                onClick={() => toggleMenu("resources")}
+                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+              >
+                Resources
+              </button>
+              {isActionMenuOpen === "resources" && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                  <Link
+                    href="/blogs"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Blog
+                  </Link>
+                  <Link
+                    href="/guides"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Guides
+                  </Link>
+                  <Link
+                    href="/press-media"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Press & Media
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            <div className="relative group">
+              <button
+                onClick={() => toggleMenu("support")}
+                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+              >
+                Support
+              </button>
+              {isActionMenuOpen === "support" && (
+                <div className="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
+                  <Link
+                    href="/support"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Help Center
+                  </Link>
+                  <Link
+                    href="/contact-us"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    Contact Us
+                  </Link>
+                  <Link
+                    href="/faq"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    FAQ
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Side Actions */}
