@@ -938,7 +938,7 @@ export default function Home() {
       </section>
 
       {/* Partners & Certifications Section */}
-      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+      {/* <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
         </div>
@@ -1009,7 +1009,7 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
       {/* Farm Calculator Section */}
       <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-white relative overflow-hidden">
