@@ -20,7 +20,7 @@ import {
 interface NavItem {
   title: string
   href: string
-  icon: JSX.Element
+  icon: React.ReactNode
 }
 
 const navItems: NavItem[] = [

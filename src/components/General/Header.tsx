@@ -59,7 +59,7 @@ export default function Header({ user }: { user: User }) {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" onClick={closeAllMenus}>
             <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-              Bio-Farms
+              BioFarms
             </span>
           </Link>
 

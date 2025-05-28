@@ -5,7 +5,6 @@ import { generateSlug } from "@/lib/utils";
 import Category from "@/models/categorySchema";
 import { revalidatePath } from "next/cache";
 
-
 // create
 export async function createCategory(formData: FormData) {
   try {
@@ -14,10 +13,15 @@ export async function createCategory(formData: FormData) {
       throw new Error("Name is required");
     }
     await connectDb();
-    await Category.create({ name });
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
+      throw new Error("Category Already Exist");
+    }
+    const category = await Category.create({ name });
     revalidatePath("/category");
     return {
       success: true,
+      category,
     };
   } catch (error) {
     return {
@@ -37,10 +41,15 @@ export async function updateCategory(formData: FormData) {
       throw new Error("Name , Id is required");
     }
     await connectDb();
-    await Category.findByIdAndUpdate(id, { name, slug });
+    const existingCategory = await Category.findOne({ name });
+    if (existingCategory) {
+      throw new Error("Category Already Exist");
+    }
+    const category = await Category.findByIdAndUpdate(id, { name, slug });
     revalidatePath("/category");
     return {
       success: true,
+      category,
     };
   } catch (error) {
     return {
