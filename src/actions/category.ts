@@ -21,7 +21,13 @@ export async function createCategory(formData: FormData) {
     revalidatePath("/category");
     return {
       success: true,
-      category,
+     category: {
+        _id: category._id,
+        name: category.name,
+        slug: category.slug,
+        createdAt: category.createdAt,
+        updatedAt: category.updatedAt,
+      },
     };
   } catch (error) {
     return {
@@ -49,7 +55,13 @@ export async function updateCategory(formData: FormData) {
     revalidatePath("/category");
     return {
       success: true,
-      category,
+      category: {
+        _id: category._id,
+        name: category.name,
+        slug: category.slug,
+        createdAt: category.createdAt,
+        updatedAt: category.updatedAt,
+      },
     };
   } catch (error) {
     return {
