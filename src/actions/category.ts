@@ -1,8 +1,10 @@
 "use server";
 
 import connectDb from "@/lib/db";
+import { generateSlug } from "@/lib/utils";
 import Category from "@/models/categorySchema";
 import { revalidatePath } from "next/cache";
+
 
 // create
 export async function createCategory(formData: FormData) {
@@ -28,17 +30,14 @@ export async function createCategory(formData: FormData) {
 //update
 export async function updateCategory(formData: FormData) {
   try {
-    const name = formData.get("name")?.toString();
+    const name = formData.get("name")?.toString() as string;
     const id = formData.get("id")?.toString();
+    const slug = generateSlug(name);
     if (!name || !id) {
       throw new Error("Name , Id is required");
     }
     await connectDb();
-    await Category.findOneAndUpdate(
-      { _id: id },
-      { $set: { name } },
-      { new: true, runValidators: true }
-    );
+    await Category.findByIdAndUpdate(id, { name, slug });
     revalidatePath("/category");
     return {
       success: true,
@@ -51,7 +50,6 @@ export async function updateCategory(formData: FormData) {
     };
   }
 }
-
 // delete
 export async function deleteCategory(formData: FormData) {
   try {
