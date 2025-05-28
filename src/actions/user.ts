@@ -3,6 +3,7 @@
 import { signIn, signOut } from "@/auth";
 import connectDb from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
+import { getSession } from "@/lib/getSession";
 import { generateVerificationToken } from "@/lib/token";
 import { User } from "@/models/UserSchema";
 import { hash } from "bcryptjs";
@@ -33,7 +34,7 @@ const register = async (formData: FormData) => {
     verificationToken,
     verificationTokenExpiry,
   });
-  await sendVerificationEmail(email,verificationToken)
+  await sendVerificationEmail(email, verificationToken);
   redirect("/verifysent");
 };
 
@@ -56,8 +57,12 @@ const login = async (formData: FormData) => {
 export { login, register };
 
 export async function handleGoogleSignIn() {
-  await signIn("google",{redirect:true,redirectTo:'/'});
+  await signIn("google", { redirect: true, redirectTo: "/" });
 }
 export async function handleSignOut() {
   await signOut();
+}
+export async function getUserSession() {
+  const session = await getSession();
+  return session?.user ?? null;
 }
