@@ -66,3 +66,10 @@ export async function getUserSession() {
   const session = await getSession();
   return session?.user ?? null;
 }
+
+
+export async function fetchAllUsers() {
+  await connectDb();
+  const users = await User.find({});
+  return users;
+};

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+
 import { motion } from 'framer-motion'
 import { 
   TrendingUp, 
@@ -78,18 +78,18 @@ const recentActivity = [
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 lg:space-y-8">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Dashboard Overview</h1>
-          <p className="text-gray-500 mt-1">Welcome back! Here's what's happening with your farm today.</p>
+          <p className="text-gray-500 mt-1 text-sm lg:text-base">Welcome back! Here&apos;s what&apos;s happening with your farm today.</p>
         </div>
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 
-                   transition-colors flex items-center gap-2"
+          className="px-4 py-2.5 bg-green-500 text-white rounded-xl hover:bg-green-600 
+                   transition-colors flex items-center gap-2 shadow-sm w-full sm:w-auto justify-center"
         >
           <BarChart className="w-4 h-4" />
           View Reports
@@ -97,14 +97,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white p-5 lg:p-6 rounded-xl shadow-sm hover:shadow-md transition-all"
           >
             <div className="flex justify-between items-start">
               <div className={`p-2 rounded-lg ${
@@ -130,39 +130,43 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          {recentActivity.map((activity, index) => (
-            <motion.div
-              key={activity.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <div className="p-2 bg-green-50 rounded-lg text-green-600">
-                {activity.icon}
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-gray-900">{activity.action}</h3>
-                <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
-              </div>
-              <span className="text-xs text-gray-400">{activity.timestamp}</span>
-            </motion.div>
-          ))}
+      <div className="bg-white rounded-xl shadow-sm">
+        <div className="p-5 lg:p-6 border-b border-gray-100">
+          <h2 className="text-lg font-semibold text-gray-900">Recent Activity</h2>
+        </div>
+        <div className="p-5 lg:p-6">
+          <div className="space-y-3">
+            {recentActivity.map((activity, index) => (
+              <motion.div
+                key={activity.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <div className="p-2 bg-green-50 rounded-lg text-green-600">
+                  {activity.icon}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-gray-900">{activity.action}</h3>
+                  <p className="text-sm text-gray-500 mt-0.5">{activity.description}</p>
+                </div>
+                <span className="text-xs text-gray-400">{activity.timestamp}</span>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         <motion.div
           whileHover={{ scale: 1.02 }}
           className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white cursor-pointer"
         >
           <Activity className="w-8 h-8 mb-4" />
           <h3 className="text-lg font-semibold mb-2">Track Farm Performance</h3>
-          <p className="text-green-100 text-sm">Monitor your farm's metrics and analytics in real-time.</p>
+          <p className="text-green-100 text-sm">Monitor your farm&apos;s metrics and analytics in real-time.</p>
         </motion.div>
         <motion.div
           whileHover={{ scale: 1.02 }}
