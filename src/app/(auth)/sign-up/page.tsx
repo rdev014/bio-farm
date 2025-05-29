@@ -90,14 +90,6 @@ export default function SignUp() {
           <div className="absolute top-20 left-10 w-96 h-96 bg-green-400 rounded-full blur-[128px] animate-pulse"></div>
           <div className="absolute bottom-20 right-10 w-[30rem] h-[30rem] bg-green-300 rounded-full blur-[128px] animate-pulse delay-700"></div>
         </div>
-        <Image
-          src="/farm-background.jpg"
-          alt="Organic Farming Background"
-          layout="fill"
-          objectFit="cover"
-          className="mix-blend-overlay opacity-50"
-          priority
-        />
         <div className="absolute inset-0 flex flex-col justify-center items-center px-8 text-center text-white">
           <div className="mb-8">
             <div className="w-16 h-16 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-6 mx-auto">
