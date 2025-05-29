@@ -21,12 +21,12 @@ export async function createCategory(formData: FormData) {
     revalidatePath("/category");
     return {
       success: true,
-     category: {
-        _id: category._id,
+      category: {
+        _id: category._id.toString(), 
         name: category.name,
         slug: category.slug,
-        createdAt: category.createdAt,
-        updatedAt: category.updatedAt,
+        createdAt: category.createdAt.toISOString(), 
+        updatedAt: category.updatedAt.toISOString(), 
       },
     };
   } catch (error) {
@@ -53,14 +53,14 @@ export async function updateCategory(formData: FormData) {
     }
     const category = await Category.findByIdAndUpdate(id, { name, slug });
     revalidatePath("/category");
-    return {
+     return {
       success: true,
       category: {
-        _id: category._id,
+        _id: category._id.toString(), 
         name: category.name,
         slug: category.slug,
-        createdAt: category.createdAt,
-        updatedAt: category.updatedAt,
+        createdAt: category.createdAt.toISOString(), 
+        updatedAt: category.updatedAt.toISOString(), 
       },
     };
   } catch (error) {
