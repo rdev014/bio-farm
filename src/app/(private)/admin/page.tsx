@@ -3,7 +3,7 @@ import { getSession } from "@/lib/getSession";
 import { User } from "@/models/UserSchema";
 import { redirect } from "next/navigation";
 
-const Settings = async () => {
+const Admin = async () => {
   const session = await getSession();
   const user = session?.user;
   if (!user) return redirect("/login");
@@ -49,4 +49,4 @@ const Settings = async () => {
   );
 };
 
-export default Settings;
+export default Admin;
