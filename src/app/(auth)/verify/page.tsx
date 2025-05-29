@@ -216,7 +216,7 @@ const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
               <h3 className="text-gray-900 font-medium mb-3">Having Issues?</h3>
               <p className="text-gray-600 text-sm">
                 If verification is taking too long, you can try 
-                <a href="/sign-in" className="text-green-600 hover:text-green-500 mx-1">
+                <a href="/login" className="text-green-600 hover:text-green-500 mx-1">
                   signing in again
                 </a>
                 {" "}or contact our{" "}
