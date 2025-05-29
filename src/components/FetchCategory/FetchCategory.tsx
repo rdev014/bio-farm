@@ -201,11 +201,7 @@ interface Category {
   updatedAt: string;
 }
 
-interface ActionResult {
-  success: boolean;
-  error?: string;
-  category?: Category;
-}
+
 
 
 // --- Main Component ---
@@ -276,7 +272,6 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
       try {
         setIsLoading(true);
         const result = await createCategory(formData);
-        console.log(result);
         setIsLoading(false);
 
         if (result.success && result.category) {
@@ -728,7 +723,7 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
           <div className="px-6 pb-6">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <p className="font-medium text-red-800 dark:text-red-200">
-                "{categoryToDelete?.name}" will be permanently removed.
+                {categoryToDelete?.name} will be permanently removed.
               </p>
             </div>
           </div>

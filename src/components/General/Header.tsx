@@ -4,9 +4,11 @@ import { handleSignOut } from "@/actions/user";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-type User = { name?: string; email?: string } | null;
+type User = { name?: string; email?: string; image?: string; role?: string } | null;
 
 export default function Header({ user }: { user: User }) {
+  console.log(user);
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isActionMenuOpen, setIsActionMenuOpen] = useState("");
 
@@ -90,14 +92,14 @@ export default function Header({ user }: { user: User }) {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden sm:flex items-center space-x-6">            {user && (
-              <Link
-                href="/dashboard"
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
-              >
-                Dashboard
-              </Link>
-            )}
+          <div className="hidden sm:flex items-center space-x-6">            {user?.role === 'user' && (
+            <Link
+              href="/dashboard"
+              className="text-gray-600 hover:text-green-600 font-medium transition-colors duration-300 text-sm"
+            >
+              Dashboard
+            </Link>
+          )}
             <div className="relative group">
               <button
                 onClick={() => toggleMenu("products")}
@@ -366,14 +368,12 @@ export default function Header({ user }: { user: User }) {
             >
               <div className="w-5 h-5 flex flex-col items-center justify-center gap-1.5">
                 <span
-                  className={`block w-5 h-0.5 bg-gray-600 transition-transform duration-300 ${
-                    isMobileMenuOpen ? "rotate-45 translate-y-1" : ""
-                  }`}
+                  className={`block w-5 h-0.5 bg-gray-600 transition-transform duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1" : ""
+                    }`}
                 ></span>
                 <span
-                  className={`block w-5 h-0.5 bg-gray-600 transition-transform duration-300 ${
-                    isMobileMenuOpen ? "-rotate-45 -translate-y-0.5" : ""
-                  }`}
+                  className={`block w-5 h-0.5 bg-gray-600 transition-transform duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-0.5" : ""
+                    }`}
                 ></span>
               </div>
             </button>
@@ -382,9 +382,8 @@ export default function Header({ user }: { user: User }) {
 
         {/* Mobile Menu */}
         <div
-          className={`${
-            isMobileMenuOpen ? "block" : "hidden"
-          } sm:hidden py-4 border-t border-gray-100 mt-3`}
+          className={`${isMobileMenuOpen ? "block" : "hidden"
+            } sm:hidden py-4 border-t border-gray-100 mt-3`}
         >
           <div className="flex flex-col space-y-4 px-4">
             {["About", "Products", "FAQ", "Contact"].map((item) => (
