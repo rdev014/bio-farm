@@ -48,7 +48,7 @@ export default function Footer() {
                 className="text-xl font-bold bg-gradient-to-r from-green-400 to-green-300 
                              bg-clip-text text-transparent"
               >
-                Bio-Farms
+                BioFarms
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
@@ -152,7 +152,7 @@ export default function Footer() {
           className="mt-16 pt-8 border-t border-gray-800 flex flex-col md:flex-row 
                        justify-between items-center gap-6 text-gray-400"
         >
-          <p>© {new Date().getFullYear()} Bio-Farms. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Bio-\Farms. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-8">
             {legalLinks.map((link) => (
               <Link

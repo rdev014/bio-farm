@@ -3,6 +3,7 @@
 import { handleSignOut } from "@/actions/user";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { FaLeaf } from "react-icons/fa";
 
 type User = { name?: string; email?: string; image?: string; role?: string } | null;
 
@@ -60,6 +61,9 @@ export default function Header({ user }: { user: User }) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" onClick={closeAllMenus}>
+          <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
+                          <FaLeaf className="w-4 h-4 text-white" />
+                        </div>
             <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
               BioFarms
             </span>
