@@ -58,7 +58,7 @@ CategorySchema.pre('save', function (next) {
 
 
 // Index for efficient querying
-CategorySchema.index({ slug: 1 });
+
 
 
 export const Category = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema);

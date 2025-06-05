@@ -362,7 +362,7 @@ export default async function Login() {
 
           {/* Sign Up Link */}
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <a
               href="/sign-up"
               className="font-medium text-green-600 hover:text-green-500"

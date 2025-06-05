@@ -32,7 +32,7 @@ export default function NotFound() {
             Oops! Page Not Found
           </h1>
           <p className="text-lg text-gray-600 mb-8">
-            The page you're looking for seems to have wandered off to greener pastures.
+            The page you&apos;re looking for seems to have wandered off to greener pastures.
           </p>
         </motion.div>
 

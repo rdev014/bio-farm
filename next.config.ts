@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
     domains: [
       "lh3.googleusercontent.com",
       "placehold.net",
+      "cdn.pixabay.com",
+      "media.istockphoto.com",
     ],
   }
 };

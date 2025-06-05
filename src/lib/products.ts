@@ -13,13 +13,13 @@ export async function getProducts(options: {
   await connectDb();
   const { category, organic, seasonal, featured, sort = 'createdAt', limit = 8, page = 1 } = options;
   
-  const query: any = {};
+  const query: Partial<Pick<IProduct, 'category' | 'organic' | 'seasonal' | 'featured'>> = {};
   if (category) query.category = category;
   if (organic !== undefined) query.organic = organic;
   if (seasonal !== undefined) query.seasonal = seasonal;
   if (featured !== undefined) query.featured = featured;
 
-  const sortQuery: any = {};
+  const sortQuery: Record<string, 1 | -1> = {};
   switch (sort) {
     case 'price-asc':
       sortQuery.price = 1;

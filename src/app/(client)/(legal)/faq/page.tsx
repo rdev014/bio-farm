@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 
@@ -207,7 +207,7 @@ export default function FaqPage() {
           className="mt-16 text-center"
         >
           <p className="text-gray-600 mb-4">
-            Can't find what you're looking for?
+            Can&apos;t find what you&apos;re looking for?
           </p>
           <a
             href="/contact-us"

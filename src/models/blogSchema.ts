@@ -15,7 +15,7 @@ export interface IBlog extends Document {
   readTime: number;
   publishedAt: Date;
   updatedAt: Date;
-  status: 'draft' | 'published';
+  status: 'draft' | 'publish';
   seo: {
     metaTitle?: string;
     metaDescription?: string;
@@ -82,7 +82,7 @@ const BlogSchema = new Schema<IBlog>(
     },
     status: {
       type: String,
-      enum: ['draft', 'published'],
+      enum: ['draft', 'publish'],
       default: 'draft',
     },
     seo: {
@@ -121,10 +121,6 @@ BlogSchema.pre('validate', function(next) {
   next();
 });
 
-// Compound index for efficient querying
-BlogSchema.index({ status: 1, publishedAt: -1 });
-BlogSchema.index({ slug: 1 }, { unique: true });
-BlogSchema.index({ categories: 1 });
-BlogSchema.index({ tags: 1 });
 
-export const Blog = mongoose.models.Blog || mongoose.model<IBlog>('Blog', BlogSchema);
+
+export const Blog = mongoose.models?.Blog || mongoose.model<IBlog>('Blog', BlogSchema);

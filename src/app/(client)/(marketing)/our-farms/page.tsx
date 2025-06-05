@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MapPin, Droplet, Sun, Leaf, ArrowRight, Calendar } from 'lucide-react';
-import Link from 'next/link';
+
 
 interface Stat {
   value: string;
@@ -177,7 +177,7 @@ export default function OurFarms() {
               variants={fadeInUp}
               className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8 border-t border-white/20"
             >
-              {stats.map((stat, index) => (
+              {stats.map((stat) => (
                 <motion.div
                   key={stat.label}
                   whileHover={{ scale: 1.05 }}
@@ -361,7 +361,7 @@ export default function OurFarms() {
               </h2>
               <p className="text-white/90 text-lg leading-relaxed mb-8">
                 Join our guided tours and witness sustainable farming practices in action. 
-                Learn about our methods and see how we're shaping the future of agriculture.
+                Learn about our methods and see how we&apos;re shaping the future of agriculture.
               </p>
               <div className="flex flex-wrap gap-4">
                 <motion.button 
