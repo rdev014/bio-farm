@@ -3,8 +3,9 @@ import { getProducts } from '@/lib/products';
 import { IProduct } from '@/models/ProductSchema';
 import ProductCard from '@/components/products/ProductCard';
 import ProductsFilter from '@/components/products/ProductsFilter';
-import { ProductsSort } from '@/components/products/ProductsSort';
+
 import { Pagination } from '@/components/ui/pagination';
+import { ProductsSort } from '@/components/products/ProductsSort';
 
 export const metadata = {
   title: 'Products | Bio-Farms',
@@ -14,14 +15,16 @@ export const metadata = {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  // Handle search params properly for Next.js server component
-  const page = Number(searchParams?.page) || 1;
-  const category = typeof searchParams?.category === 'string' ? searchParams.category : undefined;
-  const sort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'createdAt';
-  const organic = searchParams?.organic === 'true';
-  const seasonal = searchParams?.seasonal === 'true';
+  // Await searchParams to resolve the Promise
+  const resolvedSearchParams = await searchParams;
+  
+  const page = Number(resolvedSearchParams?.page) || 1;
+  const category = typeof resolvedSearchParams?.category === 'string' ? resolvedSearchParams.category : undefined;
+  const sort = typeof resolvedSearchParams?.sort === 'string' ? resolvedSearchParams.sort : 'createdAt';
+  const organic = resolvedSearchParams?.organic === 'true';
+  const seasonal = resolvedSearchParams?.seasonal === 'true';
 
   const { products, pagination } = await getProducts({
     page,
@@ -30,7 +33,7 @@ export default async function ProductsPage({
     organic,
     seasonal,
   });
-console.log(products)
+
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -40,7 +43,8 @@ console.log(products)
           <div className="absolute bottom-20 right-10 w-[30rem] h-[30rem] bg-yellow-100/50 rounded-full blur-[128px] animate-pulse"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">          <div className="text-center max-w-3xl mx-auto mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="text-center max-w-3xl mx-auto mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Farm Fresh Products
             </h1>
@@ -64,13 +68,11 @@ console.log(products)
 
       {/* Products Grid */}
       <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">          <Suspense fallback={
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Suspense fallback={
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {[...Array(8)].map((_, i) => (
-                <div
-                  key={i}
-                  className="animate-pulse space-y-4"
-                >
+                <div key={i} className="animate-pulse space-y-4">
                   <div className="aspect-square rounded-xl bg-gray-200" />
                   <div className="space-y-2">
                     <div className="h-4 bg-gray-200 rounded w-3/4" />
@@ -89,7 +91,7 @@ console.log(products)
                 <ProductCard key={product.slug} product={product} />
               ))}
             </div>
-            
+
             <div className="mt-12 flex justify-center">
               <Pagination
                 currentPage={pagination.current}
@@ -99,7 +101,9 @@ console.log(products)
             </div>
           </Suspense>
         </div>
-      </section>      {/* Features Section */}
+      </section>
+
+      {/* Features Section */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
@@ -111,8 +115,7 @@ console.log(products)
             ].map((feature) => (
               <div 
                 key={feature.title}
-                className="group text-center p-6 bg-white rounded-xl border border-gray-100
-                         hover:shadow-lg hover:border-green-100 transition duration-300"
+                className="group text-center p-6 bg-white rounded-xl border border-gray-100 hover:shadow-lg hover:border-green-100 transition duration-300"
               >
                 <span className="text-4xl mb-4 block transform group-hover:scale-110 transition-transform">
                   {feature.icon}
@@ -128,7 +131,7 @@ console.log(products)
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 bg-gradient-to-br from-green-600 to-green-700">
+      <section className="py-16urea bg-gradient-to-br from-green-600 to-green-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="text-white">
@@ -139,13 +142,9 @@ console.log(products)
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="w-64 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white
-                         placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/30
-                         border border-white/20"
+                className="w-64 px-6 py-3 rounded-xl bg-white/10 backdrop-blur-sm text-white placeholder:text-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 border border-white/20"
               />
-              <button className="px-6 py-3 bg-white text-green-600 rounded-xl font-medium
-                               hover:bg-green-50 transition-colors duration-300
-                               focus:outline-none focus:ring-2 focus:ring-white/30">
+              <button className="px-6 py-3 bg-white text-green-600 rounded-xl font-medium hover:bg-green-50 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white/30">
                 Subscribe
               </button>
             </div>

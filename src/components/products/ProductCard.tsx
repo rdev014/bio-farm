@@ -20,7 +20,7 @@ export default function ProductCard({ product }: { product: IProduct }) {
             Organic
           </Badge>
         )}
-        {product.seasonal && !product.inSeason && (
+        {product.seasonal && !product.seasonal && (
           <Badge variant="warning" className="absolute left-2 top-2">
             Out of Season
           </Badge>

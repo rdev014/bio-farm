@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion} from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Leaf, Lightbulb, Users, Globe, Shield, Sprout, 
-         ChartBar, Target, Award, Droplet } from 'lucide-react';
+         ChartBar, Target, Award } from 'lucide-react';
 
 interface Stat {
   value: string;
@@ -60,14 +60,7 @@ const staggerContainer = {
   }
 };
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5 }
-  }
-};
+
 
 export default function AboutUs() {
   const stats: Stat[] = [
@@ -175,8 +168,8 @@ export default function AboutUs() {
     }
   ];
 
-  const { scrollYProgress } = useScroll();
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+
+
 
   return (
     <main className="overflow-hidden">
@@ -217,7 +210,7 @@ export default function AboutUs() {
               variants={fadeIn}
               className="text-xl text-gray-600 leading-relaxed mb-12 max-w-2xl mx-auto"
             >
-              At Bio-Farms, we're revolutionizing agriculture through innovative sustainable 
+              At Bio-Farms, we&apos;re revolutionizing agriculture through innovative sustainable 
               practices and cutting-edge organic solutions, ensuring a healthier planet for 
               generations to come.
             </motion.p>
@@ -309,7 +302,7 @@ export default function AboutUs() {
                 className="absolute bottom-8 left-8 right-8 bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-xl"
               >
                 <p className="text-lg font-medium text-gray-900">
-                  "Committed to revolutionizing agriculture through sustainable innovation."
+                  Committed to revolutionizing agriculture through sustainable innovation.
                 </p>
                 <div className="mt-4 flex items-center gap-4 border-t border-gray-100 pt-4">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">

@@ -121,10 +121,6 @@ BlogSchema.pre('validate', function(next) {
   next();
 });
 
-// Compound index for efficient querying
-BlogSchema.index({ status: 1, publishedAt: -1 });
-BlogSchema.index({ slug: 1 }, { unique: true });
-BlogSchema.index({ categories: 1 });
-BlogSchema.index({ tags: 1 });
+
 
 export const Blog = mongoose.models?.Blog || mongoose.model<IBlog>('Blog', BlogSchema);

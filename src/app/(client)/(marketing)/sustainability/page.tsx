@@ -149,7 +149,7 @@ export default function Sustainability() {
               className="text-xl text-gray-200 mb-12 leading-relaxed"
             >
               Pioneering environmental stewardship through innovative agricultural practices 
-              and unwavering commitment to our planet's future.
+              and unwavering commitment to our planet&apos;s future.
             </motion.p>
 
             <motion.div 
@@ -268,7 +268,7 @@ export default function Sustainability() {
               variants={fadeInUp}
               className="text-lg text-gray-600"
             >
-              Discover how we're implementing innovative solutions to create a more sustainable future
+              Discover how we&apos;re implementing innovative solutions to create a more sustainable future
             </motion.p>
           </motion.div>
 
@@ -414,7 +414,7 @@ export default function Sustainability() {
               variants={fadeInUp}
               className="text-lg text-gray-200 mb-12 max-w-2xl"
             >
-              Download our comprehensive sustainability report and discover how we're 
+              Download our comprehensive sustainability report and discover how we&apos;re 
               making a positive impact on the environment.
             </motion.p>
 
