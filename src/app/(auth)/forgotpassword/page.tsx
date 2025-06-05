@@ -61,7 +61,7 @@ export default async function ForgotPassword() {
               Reset Your Password
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
-              Don't worry! It happens to the best of us. Enter your email address and we'll send you 
+              Don&apos;t worry! It happens to the best of us. Enter your email address and we&apos;ll send you 
               instructions to reset your password.
             </p>
           </div>
@@ -79,7 +79,7 @@ export default async function ForgotPassword() {
               <ul className="space-y-3 text-white/70">
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-3" />
-                  We'll send a secure reset link to your email
+                  We&apos;ll send a secure reset link to your email
                 </li>
                 <li className="flex items-center">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-3" />
@@ -148,7 +148,7 @@ export default async function ForgotPassword() {
           <div className="mt-8 p-6 bg-gray-50 border border-gray-100 rounded-2xl">
             <h3 className="text-gray-900 font-medium mb-3">Need Help?</h3>
             <p className="text-gray-600 text-sm">
-              If you're having trouble accessing your account, please contact our 
+              If you&apos;re having trouble accessing your account, please contact our 
               <a href="/support" className="text-green-600 hover:text-green-500 ml-1">
                 support team
               </a>.

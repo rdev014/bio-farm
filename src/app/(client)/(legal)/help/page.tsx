@@ -22,7 +22,7 @@ export default function Support() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          Need Help? We're Here for You
+          Need Help? We&apos;re Here for You
         </motion.h1>
         <motion.p
           className="mt-4 text-lg text-gray-700 max-w-2xl mx-auto"

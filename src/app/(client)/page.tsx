@@ -1,16 +1,13 @@
 "use client";
 
 import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
+  motion
 } from "framer-motion";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Leaf, CircuitBoard, Award, Globe, FlaskConical, HeadsetIcon, 
-  BadgeCheck, Calculator, NewspaperIcon, ArrowRightIcon } from "lucide-react";
+ Calculator, NewspaperIcon, ArrowRightIcon } from "lucide-react";
 import { ReactNode } from "react";
 
 interface Feature {
@@ -21,13 +18,7 @@ interface Feature {
   lightColor: string;
 }
 
-interface Process {
-  step: string;
-  title: string;
-  description: string;
-  icon: string;
-  gradient: string;
-}
+
 
 interface Product {
   title: string;
@@ -79,7 +70,6 @@ const itemVariants = {
 };
 
 export default function Home() {
-  const [activeFilter, setActiveFilter] = useState("all");
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
   const [recommendations, setRecommendations] = useState<{
@@ -89,14 +79,10 @@ export default function Home() {
   }[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   
-  const heroRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
 
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0.5]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.7], [1, 0.97]);
+
+
+
 
   const features: Feature[] = [
     {
@@ -148,63 +134,9 @@ export default function Home() {
     },
   ];
 
-  const processes: Process[] = [
-    {
-      step: "01",
-      title: "Sustainable Sourcing",
-      description: "Premium organic materials from trusted suppliers globally.",
-      icon: "🌾",
-      gradient: "from-green-500 to-emerald-500",
-    },
-    {
-      step: "02",
-      title: "Quality Testing",
-      description: "Rigorous testing to ensure the highest standards.",
-      icon: "🔍",
-      gradient: "from-blue-500 to-cyan-500",
-    },
-    {
-      step: "03",
-      title: "Smart Processing",
-      description: "Advanced eco-friendly manufacturing process.",
-      icon: "🌿",
-      gradient: "from-purple-500 to-indigo-500",
-    },
-    {
-      step: "04",
-      title: "Swift Delivery",
-      description: "Fast and efficient delivery to your doorstep.",
-      icon: "🚚",
-      gradient: "from-amber-500 to-orange-500",
-    },
-  ];
 
-  const products: Product[] = [
-    {
-      title: "Organic Fertilizers",
-      description: "Natural, nutrient-rich formulas for optimal plant growth",
-      image: "/plant.png",
-      price: "$29.99",
-      badge: "Best Seller",
-      badgeColor: "bg-amber-500"
-    },
-    {
-      title: "Soil Enrichment",
-      description: "Premium soil blends for maximum yield",
-      image: "/plant.png",
-      price: "$24.99",
-      badge: "Organic",
-      badgeColor: "bg-emerald-500"
-    },
-    {
-      title: "Growth Boosters",
-      description: "Natural supplements for accelerated growth",
-      image: "/plant.png",
-      price: "$34.99",
-      badge: "New",
-      badgeColor: "bg-blue-500"
-    }
-  ];
+
+
 
   // Farm calculator logic
   const calculateRequirements = () => {
@@ -298,7 +230,7 @@ export default function Home() {
 
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight text-gray-900">
-                  Nature's Best
+                  Nature&apos;s Best
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-400">
                     Organic Fertilizer
                   </span>
@@ -306,7 +238,7 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-gray-600/90 max-w-xl">
                   Transform your garden with our premium organic fertilizers.
                   Made from 100% recycled food waste, supporting both your
-                  plants and our planet's future.
+                  plants and our planet&apos;s future.
                 </p>
               </div>
 
@@ -381,9 +313,10 @@ export default function Home() {
                   className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent 
                               group-hover:from-black/30 transition-all duration-300"
                 ></div>
-                <img
+                <Image
                   src="https://media.istockphoto.com/id/684977254/photo/farmer-hand-giving-plant-organic-humus-fertilizer-to-plant.jpg?s=612x612&w=0&k=20&c=SjD1diUDXEBmXRF1My6lDdwV9BGpPTD1yWUCwz8235U="
-                  alt="Organic Fertilizer Product"
+                  alt="Organic Fertilizer Product"   width={1400}
+                      height={300}
                   className="object-cover w-full h-full rounded-2xl transform 
                            group-hover:scale-105 transition-transform duration-700"
                 />
@@ -514,7 +447,7 @@ export default function Home() {
               From Seed to Success
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              We've refined our approach to ensure optimal results at every stage of your farming journey.
+              We&apos;ve refined our approach to ensure optimal results at every stage of your farming journey.
             </p>
           </motion.div>
 
@@ -821,10 +754,10 @@ export default function Home() {
               </h3>
               <div className="space-y-4">
                 <p className="text-gray-600">
-                  Our sustainable farming practices go beyond organic certification. We're committed to regenerative agriculture that enriches soil health, promotes biodiversity, and ensures long-term environmental sustainability.
+                  Our sustainable farming practices go beyond organic certification. We&apos;re committed to regenerative agriculture that enriches soil health, promotes biodiversity, and ensures long-term environmental sustainability.
                 </p>
                 <p className="text-gray-600">
-                  Through innovative technologies and traditional wisdom, we're building a future where farming works in harmony with nature.
+                  Through innovative technologies and traditional wisdom, we&apos;re building a future where farming works in harmony with nature.
                 </p>
               </div>
               <div className="mt-8">
@@ -923,7 +856,7 @@ export default function Home() {
                     </div>
                   </div>
                   <blockquote className="text-gray-600 leading-relaxed">
-                    "{testimonial.content}"
+                    {testimonial.content}
                   </blockquote>
                   <div className="mt-4 flex justify-end">
                     <svg className="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
@@ -937,79 +870,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Partners & Certifications Section */}
-      {/* <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
-              <BadgeCheck className="w-4 h-4" />
-              Trusted Globally
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
-              Our Partners & Certifications
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              We collaborate with leading organizations and maintain the highest industry standards
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12"
-          >
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((partner, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
-              >
-                <div className="aspect-w-16 aspect-h-9">
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Image
-                      src="/plant.png"
-                      alt={`Partner ${partner}`}
-                      width={120}
-                      height={60}
-                      className="object-contain opacity-60 group-hover:opacity-100 transition-opacity duration-300"
-                    />
-                  </div>
-                </div>
-                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500 to-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Link
-              href="/about-us#partners"
-              className="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors"
-            >
-              View all our partnerships and certifications
-              <ArrowRightIcon className="w-4 h-4" />
-            </Link>
-          </motion.div>
-        </div>
-      </section> */}
 
       {/* Farm Calculator Section */}
       <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-white relative overflow-hidden">
@@ -1032,7 +892,7 @@ export default function Home() {
                 Interactive Tool
               </span>
               <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
-                Calculate Your Farm's Needs
+                Calculate Your Farm&apos;s Needs
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Use our intelligent calculator to estimate the perfect amount of organic fertilizer and other products for your farming needs.

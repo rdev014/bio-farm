@@ -198,7 +198,7 @@ const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
                 </svg>
               </div>
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Verification Failed</h2>
-              <p className="text-gray-600 mb-8">We couldn't verify your email. The verification link may have expired or is invalid.</p>
+              <p className="text-gray-600 mb-8">We couldn&apos;t verify your email. The verification link may have expired or is invalid.</p>
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <a href="/sign-up" 
                    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">

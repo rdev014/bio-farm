@@ -1,20 +1,34 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { ArrowLeft, ImagePlus, Plus, X } from "lucide-react";
-import toast from "react-hot-toast";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { toast } from "sonner";
 import { createBlog } from "@/actions/blog";
 import { getCategories } from "@/actions/category";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { 
+  ArrowLeft, 
+  ImagePlus, 
+  Plus, 
+  X, 
+  Loader2, 
+  Save,
+  Eye,
+  FileText,
+  User,
+  Clock,
+  Tags,
+  Search
+} from "lucide-react";
 
 interface Category {
   _id: string;
@@ -23,22 +37,40 @@ interface Category {
 }
 
 const blogSchema = z.object({
-  title: z.string().min(5, "Title must be at least 5 characters").max(150, "Title cannot exceed 150 characters"),
-  content: z.string().min(100, "Content must be at least 100 characters"),
-  excerpt: z.string().min(50, "Excerpt must be at least 50 characters").max(300, "Excerpt cannot exceed 300 characters"),
-  authorName: z.string().min(2, "Author name is required"),
-  authorImage: z.string().url("Please enter a valid URL").optional().or(z.literal("")),
-  featuredImage: z.string().url("Please enter a valid URL"),
-  readTime: z.number().min(1, "Reading time must be at least 1 minute"),
-  metaTitle: z.string().max(60, "Meta title cannot exceed 60 characters").optional().or(z.literal("")),
-  metaDescription: z.string().max(160, "Meta description cannot exceed 160 characters").optional().or(z.literal("")),
+  title: z.string()
+    .min(5, "Title must be at least 5 characters")
+    .max(150, "Title cannot exceed 150 characters"),
+  content: z.string()
+    .min(100, "Content must be at least 100 characters")
+    .transform(str => str.trim()),
+  excerpt: z.string()
+    .min(50, "Excerpt must be at least 50 characters")
+    .max(300, "Excerpt cannot exceed 300 characters"),
+  authorName: z.string()
+    .min(2, "Author name is required"),
+  authorImage: z.string()
+    .url("Please enter a valid URL")
+    .optional()
+    .or(z.literal("")),
+  featuredImage: z.string()
+    .url("Please enter a valid URL"),
+  readTime: z.number()
+    .min(1, "Reading time must be at least 1 minute"),
+  metaTitle: z.string()
+    .max(60, "Meta title cannot exceed 60 characters")
+    .optional()
+    .or(z.literal("")),
+  metaDescription: z.string()
+    .max(160, "Meta description cannot exceed 160 characters")
+    .optional()
+    .or(z.literal("")),
 });
 
 type BlogFormData = z.infer<typeof blogSchema>;
 
 export default function CreateBlogPage() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
@@ -46,11 +78,14 @@ export default function CreateBlogPage() {
   const [keywords, setKeywords] = useState<string[]>([]);
   const [newKeyword, setNewKeyword] = useState("");
   const [isLoadingCategories, setIsLoadingCategories] = useState(true);
-
+  const [saveAction, setSaveAction] = useState<"draft" | "publish">("draft");
+  
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
+    watch,
+    setValue
   } = useForm<BlogFormData>({
     resolver: zodResolver(blogSchema),
     defaultValues: {
@@ -64,7 +99,28 @@ export default function CreateBlogPage() {
       metaTitle: "",
       metaDescription: "",
     },
+    mode: "onChange"
   });
+
+  const watchedTitle = watch("title");
+  const watchedContent = watch("content");
+
+  // Auto-generate meta title from title
+  useEffect(() => {
+    if (watchedTitle && !watch("metaTitle")) {
+      setValue("metaTitle", watchedTitle.slice(0, 60));
+    }
+  }, [watchedTitle, setValue, watch]);
+
+  // Auto-calculate read time based on content
+  useEffect(() => {
+    if (watchedContent) {
+      const wordsPerMinute = 200;
+      const wordCount = watchedContent.split(/\s+/).length;
+      const estimatedReadTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+      setValue("readTime", estimatedReadTime);
+    }
+  }, [watchedContent, setValue]);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -96,9 +152,11 @@ export default function CreateBlogPage() {
 
   const addTag = () => {
     const trimmedTag = newTag.trim();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
+    if (trimmedTag && !tags.includes(trimmedTag) && tags.length < 10) {
       setTags((prev) => [...prev, trimmedTag]);
       setNewTag("");
+    } else if (tags.length >= 10) {
+      toast.warning("Maximum 10 tags allowed");
     }
   };
 
@@ -108,9 +166,11 @@ export default function CreateBlogPage() {
 
   const addKeyword = () => {
     const trimmedKeyword = newKeyword.trim();
-    if (trimmedKeyword && !keywords.includes(trimmedKeyword)) {
+    if (trimmedKeyword && !keywords.includes(trimmedKeyword) && keywords.length < 15) {
       setKeywords((prev) => [...prev, trimmedKeyword]);
       setNewKeyword("");
+    } else if (keywords.length >= 15) {
+      toast.warning("Maximum 15 keywords allowed");
     }
   };
 
@@ -119,326 +179,475 @@ export default function CreateBlogPage() {
   };
 
   const onSubmit = async (data: BlogFormData) => {
-    setIsSubmitting(true);
-    try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          formData.append(key, value.toString());
-        }
-      });
-      formData.append("categories", JSON.stringify(selectedCategories));
-      formData.append("tags", JSON.stringify(tags));
-      formData.append("keywords", JSON.stringify(keywords));
-      formData.append("status", "draft");
-
-      const result = await createBlog(formData);
-      if (result.success) {
-        toast.success("Blog created successfully!");
-        router.push("/blogs");
-      } else {
-        toast.error(result.error || "Failed to create blog");
-      }
-    } catch (err) {
-      toast.error("An error occurred while creating the blog");
-      console.error("Client-side error:", err);
-    } finally {
-      setIsSubmitting(false);
+    if (selectedCategories.length === 0) {
+      toast.error("Please select at least one category");
+      return;
     }
+
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        
+        // Add all form data
+        Object.entries(data).forEach(([key, value]) => {
+          if (value !== undefined && value !== null && value !== "") {
+            formData.append(key, value.toString());
+          }
+        });
+        
+        formData.append("categories", JSON.stringify(selectedCategories));
+        formData.append("tags", JSON.stringify(tags));
+        formData.append("keywords", JSON.stringify(keywords));
+        formData.append("status", saveAction);
+
+        const result = await createBlog(formData);
+        
+        if (result?.success) {
+          toast.success(
+            saveAction === "draft" 
+              ? "Blog saved as draft successfully!" 
+              : "Blog published successfully!"
+          );
+          router.push("/blogs");
+          router.refresh();
+        } else {
+          toast.error(result?.error || "Failed to create blog");
+        }
+      } catch (err) {
+        toast.error("An error occurred while creating the blog");
+        console.error("Client-side error:", err);
+      }
+    });
+  };
+
+  const handleSaveAsDraft = () => {
+    setSaveAction("draft");
+  };
+
+  const handlePublish = () => {
+    setSaveAction("publish");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <button
-          onClick={() => router.push("/blogs")}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-6"
-          aria-label="Back to blogs"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to Blogs
-        </button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/blogs")}
+              className="hover:bg-white/60"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Blogs
+            </Button>
+            <div className="h-6 w-px bg-gray-300" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Create New Blog Post</h1>
+              <p className="text-sm text-gray-600 mt-1">Share your thoughts with the world</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="bg-white/60">
+              {isValid ? "✓ Valid" : "⚠ Issues"}
+            </Badge>
+          </div>
+        </div>
 
-        <Card className="p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Create New Blog Post</h1>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 gap-6">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  {...register("title")}
-                  placeholder="Enter blog title"
-                  className="mt-1"
-                  aria-invalid={errors.title ? "true" : "false"}
-                />
-                {errors.title && (
-                  <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="content">Content</Label>
-                <Textarea
-                  id="content"
-                  {...register("content")}
-                  placeholder="Enter blog content"
-                  className="mt-1 min-h-[200px]"
-                  aria-invalid={errors.content ? "true" : "false"}
-                />
-                {errors.content && (
-                  <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="excerpt">Excerpt</Label>
-                <Textarea
-                  id="excerpt"
-                  {...register("excerpt")}
-                  placeholder="Enter a short excerpt"
-                  className="mt-1"
-                  rows={4}
-                  aria-invalid={errors.excerpt ? "true" : "false"}
-                />
-                {errors.excerpt && (
-                  <p className="text-red-500 text-sm mt-1">{errors.excerpt.message}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="authorName">Author Name</Label>
-                  <Input
-                    id="authorName"
-                    {...register("authorName")}
-                    placeholder="Enter author name"
-                    className="mt-1"
-                    aria-invalid={errors.authorName ? "true" : "false"}
-                  />
-                  {errors.authorName && (
-                    <p className="text-red-500 text-sm mt-1">{errors.authorName.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="authorImage">Author Image URL</Label>
-                  <Input
-                    id="authorImage"
-                    {...register("authorImage")}
-                    placeholder="Enter author image URL"
-                    className="mt-1"
-                    aria-invalid={errors.authorImage ? "true" : "false"}
-                  />
-                  {errors.authorImage && (
-                    <p className="text-red-500 text-sm mt-1">{errors.authorImage.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="featuredImage">Featured Image URL</Label>
-                <div className="mt-1 flex rounded-md shadow-sm">
-                  <Input
-                    id="featuredImage"
-                    {...register("featuredImage")}
-                    placeholder="Enter featured image URL"
-                    className="flex-1"
-                    aria-invalid={errors.featuredImage ? "true" : "false"}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="ml-2"
-                    onClick={() => {
-                      toast.info("Image upload functionality to be implemented");
-                    }}
-                    aria-label="Upload featured image"
-                  >
-                    <ImagePlus className="w-4 h-4" />
-                  </Button>
-                </div>
-                {errors.featuredImage && (
-                  <p className="text-red-500 text-sm mt-1">{errors.featuredImage.message}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label>Categories</Label>
-                  <div className="mt-2 space-y-2">
-                    {isLoadingCategories ? (
-                      <p className="text-gray-500 text-sm">Loading categories...</p>
-                    ) : availableCategories.length === 0 ? (
-                      <p className="text-gray-500 text-sm">No categories available</p>
-                    ) : (
-                      availableCategories.map((category) => (
-                        <label key={category._id} className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={selectedCategories.includes(category._id)}
-                            onChange={() => handleCategoryChange(category._id)}
-                            className="rounded border-gray-300 focus:ring-blue-500"
-                            aria-checked={selectedCategories.includes(category._id)}
-                          />
-                          <span>{category.name}</span>
-                        </label>
-                      ))
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Basic Information */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    <CardTitle className="text-lg">Basic Information</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="title" className="text-sm font-medium">
+                      Title <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      id="title"
+                      {...register("title")}
+                      placeholder="Enter an engaging blog title..."
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    {errors.title && (
+                      <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
                     )}
                   </div>
-                </div>
 
-                <div>
-                  <Label>Tags</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                      >
-                        {tag}
-                        <button
-                          type="button"
-                          onClick={() => removeTag(tag)}
-                          className="ml-1 inline-flex items-center justify-center"
-                          aria-label={`Remove tag ${tag}`}
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-2 flex">
-                    <Input
-                      value={newTag}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewTag(e.target.value)}
-                      placeholder="Add a tag"
-                      className="flex-1"
-                      onKeyPress={(e: React.KeyboardEvent) => e.key === "Enter" && (e.preventDefault(), addTag())}
-                      aria-label="Add new tag"
+                  <div>
+                    <Label htmlFor="excerpt" className="text-sm font-medium">
+                      Excerpt <span className="text-red-500">*</span>
+                    </Label>
+                    <Textarea
+                      id="excerpt"
+                      {...register("excerpt")}
+                      placeholder="Write a compelling excerpt that summarizes your post..."
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      rows={3}
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="ml-2"
-                      onClick={addTag}
-                      aria-label="Add tag"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
+                    {errors.excerpt && (
+                      <p className="text-red-500 text-sm mt-1">{errors.excerpt.message}</p>
+                    )}
                   </div>
-                </div>
-              </div>
 
-              <div>
-                <Label htmlFor="readTime">Reading Time (minutes)</Label>
-                <Input
-                  id="readTime"
-                  type="number"
-                  {...register("readTime", { valueAsNumber: true })}
-                  className="mt-1"
-                  min={1}
-                  aria-invalid={errors.readTime ? "true" : "false"}
-                />
-                {errors.readTime && (
-                  <p className="text-red-500 text-sm mt-1">{errors.readTime.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">SEO Settings</h3>
-                <div>
-                  <Label htmlFor="metaTitle">Meta Title</Label>
-                  <Input
-                    id="metaTitle"
-                    {...register("metaTitle")}
-                    placeholder="Enter meta title"
-                    className="mt-1"
-                    aria-invalid={errors.metaTitle ? "true" : "false"}
-                  />
-                  {errors.metaTitle && (
-                    <p className="text-red-500 text-sm mt-1">{errors.metaTitle.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="metaDescription">Meta Description</Label>
-                  <Textarea
-                    id="metaDescription"
-                    {...register("metaDescription")}
-                    placeholder="Enter meta description"
-                    className="mt-1"
-                    rows={3}
-                    aria-invalid={errors.metaDescription ? "true" : "false"}
-                  />
-                  {errors.metaDescription && (
-                    <p className="text-red-500 text-sm mt-1">{errors.metaDescription.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label>Keywords</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {keywords.map((keyword) => (
-                      <span
-                        key={keyword}
-                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                      >
-                        {keyword}
-                        <button
-                          type="button"
-                          onClick={() => removeKeyword(keyword)}
-                          className="ml-1 inline-flex items-center justify-center"
-                          aria-label={`Remove keyword ${keyword}`}
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="mt-2 flex">
-                    <Input
-                      value={newKeyword}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewKeyword(e.target.value)}
-                      placeholder="Add a keyword"
-                      className="flex-1"
-                      onKeyPress={(e: React.KeyboardEvent) => e.key === "Enter" && (e.preventDefault(), addKeyword())}
-                      aria-label="Add new keyword"
+                  <div>
+                    <Label htmlFor="content" className="text-sm font-medium">
+                      Content <span className="text-red-500">*</span>
+                    </Label>
+                    <Textarea
+                      id="content"
+                      {...register("content")}
+                      placeholder="Write your blog content here..."
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500 min-h-[300px]"
                     />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="ml-2"
-                      onClick={addKeyword}
-                      aria-label="Add keyword"
-                    >
-                      <Plus className="w-4 h-4" />
-                    </Button>
+                    {errors.content && (
+                      <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+                    )}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
+
+              {/* Media & Author */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-2">
+                    <User className="w-5 h-5 text-green-600" />
+                    <CardTitle className="text-lg">Media & Author</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="featuredImage" className="text-sm font-medium">
+                      Featured Image <span className="text-red-500">*</span>
+                    </Label>
+                    <div className="mt-1.5 flex rounded-lg border border-gray-200 bg-white overflow-hidden">
+                      <Input
+                        id="featuredImage"
+                        {...register("featuredImage")}
+                        placeholder="Enter featured image URL..."
+                        className="flex-1 border-0 focus:ring-0"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="px-3"
+                        onClick={() => toast.info("Image upload functionality coming soon")}
+                      >
+                        <ImagePlus className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    {errors.featuredImage && (
+                      <p className="text-red-500 text-sm mt-1">{errors.featuredImage.message}</p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="authorName" className="text-sm font-medium">
+                        Author Name <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="authorName"
+                        {...register("authorName")}
+                        placeholder="Enter author name..."
+                        className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                      {errors.authorName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.authorName.message}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="authorImage" className="text-sm font-medium">
+                        Author Image URL
+                      </Label>
+                      <Input
+                        id="authorImage"
+                        {...register("authorImage")}
+                        placeholder="Enter author image URL..."
+                        className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      />
+                      {errors.authorImage && (
+                        <p className="text-red-500 text-sm mt-1">{errors.authorImage.message}</p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* SEO Settings */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-2">
+                    <Search className="w-5 h-5 text-purple-600" />
+                    <CardTitle className="text-lg">SEO Settings</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="metaTitle" className="text-sm font-medium">
+                      Meta Title
+                    </Label>
+                    <Input
+                      id="metaTitle"
+                      {...register("metaTitle")}
+                      placeholder="SEO optimized title..."
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {watch("metaTitle")?.length || 0}/60 characters
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="metaDescription" className="text-sm font-medium">
+                      Meta Description
+                    </Label>
+                    <Textarea
+                      id="metaDescription"
+                      {...register("metaDescription")}
+                      placeholder="SEO meta description..."
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      rows={3}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {watch("metaDescription")?.length || 0}/160 characters
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium">SEO Keywords</Label>
+                    <div className="mt-2">
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {keywords.map((keyword) => (
+                          <Badge key={keyword} variant="secondary" className="bg-purple-100 text-purple-800">
+                            {keyword}
+                            <button
+                              type="button"
+                              onClick={() => removeKeyword(keyword)}
+                              className="ml-1.5 hover:text-purple-900"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input
+                          value={newKeyword}
+                          onChange={(e) => setNewKeyword(e.target.value)}
+                          placeholder="Add SEO keyword..."
+                          className="flex-1 bg-white border-gray-200"
+                          onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addKeyword())}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addKeyword}
+                          disabled={keywords.length >= 15}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {keywords.length}/15 keywords
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="flex justify-end space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.push("/blogs")}
-                aria-label="Cancel and return to blogs"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                aria-label={isSubmitting ? "Creating blog..." : "Create blog"}
-              >
-                {isSubmitting ? "Creating..." : "Create Blog"}
-              </Button>
+            {/* Sidebar */}
+            <div className="space-y-6">
+              {/* Categories & Tags */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-2">
+                    <Tags className="w-5 h-5 text-orange-600" />
+                    <CardTitle className="text-lg">Categories & Tags</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label className="text-sm font-medium">
+                      Categories <span className="text-red-500">*</span>
+                    </Label>
+                    <div className="mt-2">
+                      {isLoadingCategories ? (
+                        <div className="flex items-center space-x-2 py-4">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <p className="text-gray-500 text-sm">Loading categories...</p>
+                        </div>
+                      ) : availableCategories.length === 0 ? (
+                        <p className="text-gray-500 text-sm py-4">No categories available</p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto">
+                          {availableCategories.map((category) => (
+                            <label
+                              key={category._id}
+                              className="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-50 cursor-pointer transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedCategories.includes(category._id)}
+                                onChange={() => handleCategoryChange(category._id)}
+                                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                              />
+                              <span className="text-sm text-gray-700">{category.name}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <Label className="text-sm font-medium">Tags</Label>
+                    <div className="mt-2">
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {tags.map((tag) => (
+                          <Badge key={tag} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                            {tag}
+                            <button
+                              type="button"
+                              onClick={() => removeTag(tag)}
+                              className="ml-1.5 hover:text-blue-900"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input
+                          value={newTag}
+                          onChange={(e) => setNewTag(e.target.value)}
+                          placeholder="Add tag..."
+                          className="flex-1 bg-white border-gray-200"
+                          onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addTag())}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={addTag}
+                          disabled={tags.length >= 10}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {tags.length}/10 tags
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Reading Time */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-5 h-5 text-indigo-600" />
+                    <CardTitle className="text-lg">Reading Time</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div>
+                    <Label htmlFor="readTime" className="text-sm font-medium">
+                      Estimated Reading Time (minutes)
+                    </Label>
+                    <Input
+                      id="readTime"
+                      type="number"
+                      {...register("readTime", { valueAsNumber: true })}
+                      className="mt-1.5 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+                      min={1}
+                    />
+                    {errors.readTime && (
+                      <p className="text-red-500 text-sm mt-1">{errors.readTime.message}</p>
+                    )}
+                    <p className="text-xs text-gray-500 mt-1">
+                      Auto-calculated based on content length
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Actions */}
+              <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    <Button
+                      type="submit"
+                      onClick={handleSaveAsDraft}
+                      variant="outline"
+                      className="w-full justify-center"
+                      disabled={isPending}
+                    >
+                      {isPending && saveAction === "draft" ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Saving Draft...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4 mr-2" />
+                          Save as Draft
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button
+                      type="submit"
+                      onClick={handlePublish}
+                      className="w-full justify-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                      disabled={isPending || !isValid || selectedCategories.length === 0}
+                    >
+                      {isPending && saveAction === "publish" ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Publishing...
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-4 h-4 mr-2" />
+                          Publish Blog
+                        </>
+                      )}
+                    </Button>
+                    
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="w-full justify-center"
+                      onClick={() => router.push("/blogs")}
+                      disabled={isPending}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </form>
-        </Card>
+          </div>
+        </form>
       </div>
     </div>
   );

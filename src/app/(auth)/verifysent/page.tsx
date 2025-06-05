@@ -61,7 +61,7 @@ export default async function VerificationSent() {
               Check Your Email
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
-              We've sent you a verification link to secure your account. Follow the instructions 
+              We&apos;ve sent you a verification link to secure your account. Follow the instructions 
               in the email to complete your verification.
             </p>
           </div>
@@ -117,7 +117,7 @@ export default async function VerificationSent() {
           <div className="text-center space-y-4 mb-12">
             <h2 className="text-3xl font-bold text-gray-900">Verification Email Sent!</h2>
             <p className="text-gray-600 max-w-sm mx-auto">
-              We've sent a verification link to your email address. Please check your inbox and follow the instructions.
+              We&apos;ve sent a verification link to your email address. Please check your inbox and follow the instructions.
             </p>
           </div>
 
@@ -149,7 +149,7 @@ export default async function VerificationSent() {
 
           {/* Help Box */}
           <div className="mt-8 p-6 bg-gray-50 border border-gray-100 rounded-2xl">
-            <h3 className="text-gray-900 font-medium mb-3">Didn't receive the email?</h3>
+            <h3 className="text-gray-900 font-medium mb-3">Didn&apos;t receive the email?</h3>
             <p className="text-gray-600 text-sm">
               Check your spam folder or contact our 
               <a href="/support" className="text-green-600 hover:text-green-500 ml-1">

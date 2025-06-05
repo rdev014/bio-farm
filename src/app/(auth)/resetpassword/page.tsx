@@ -61,7 +61,7 @@ export default async function ResetPassword() {
               Create New Password
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
-              Choose a strong password that you haven't used before. A good password is the key to keeping your account secure.
+              Choose a strong password that you haven&apos;t used before. A good password is the key to keeping your account secure.
             </p>
           </div>
 

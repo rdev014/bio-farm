@@ -39,6 +39,8 @@ export default function ContactPage() {
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } catch (error) {
       setSubmitStatus('error');
+      console.log(error);
+      
       setTimeout(() => setSubmitStatus('idle'), 5000);
     } finally {
       setIsSubmitting(false);
@@ -96,7 +98,7 @@ export default function ContactPage() {
             variants={fadeInUp}
             className="text-lg text-gray-600"
           >
-            Have questions about our sustainable solutions? Send us a message and we'll get back to you soon.
+            Have questions about our sustainable solutions? Send us a message and we&apos;ll get back to you soon.
           </motion.p>
         </motion.div>
 
