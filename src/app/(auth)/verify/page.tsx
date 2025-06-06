@@ -57,7 +57,7 @@ export default function VerifyEmail() {
             </h1>
             <p className="text-xl text-white/80 leading-relaxed">
               Please wait while we verify your email address. This helps ensure the security of your account
-              and gives you access to all Bio-Farms features.
+              and gives you access to allArkin features.
             </p>
           </div>
 

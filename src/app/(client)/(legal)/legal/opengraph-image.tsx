@@ -27,7 +27,7 @@ export default async function Image() {
           justifyContent: 'center',
         }}
       >
-       Bio Farm
+      Arkin
       </div>
     ),
    

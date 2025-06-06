@@ -40,7 +40,7 @@ export default function RootLayout({
             position: "top-center",
           }}
           />
-          {/* <Footer/> */}
+       
       </body>
     </html>
   );

@@ -5,7 +5,7 @@ export default function LegalPage() {
   const legalDocs = [
     {
       title: 'Terms of Service',
-      description: 'Our terms and conditions for using Bio-Farms services and products',
+      description: 'Our terms and conditions for usingArkin services and products',
       lastUpdated: 'May 15, 2024',
       icon: '📋'
     },

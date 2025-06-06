@@ -93,7 +93,7 @@ export default async function VerificationSent() {
                   <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mr-4 flex-shrink-0">
                     3
                   </div>
-                  <p>Return to Bio-Farms to complete setup</p>
+                  <p>Return toArkin to complete setup</p>
                 </li>
               </ul>
             </div>

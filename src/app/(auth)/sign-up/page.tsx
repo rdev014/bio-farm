@@ -113,7 +113,7 @@ export default function SignUp() {
               Naturally.
             </h2>
             <p className="text-lg md:text-xl text-green-50/90 max-w-md mx-auto">
-              Join the sustainable farming revolution with Bio-Farms organic
+              Join the sustainable farming revolution withArkin organic
               solutions.
             </p>
           </div>

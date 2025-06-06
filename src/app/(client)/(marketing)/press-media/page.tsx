@@ -18,7 +18,7 @@ export default function PressMedia() {
               Press & Media Center
             </h1>
             <p className="text-lg text-gray-600">
-              Stay updated with the latest news and developments from Bio-Farms
+              Stay updated with the latest news and developments fromArkin
             </p>
           </div>
         </div>
@@ -42,7 +42,7 @@ export default function PressMedia() {
                 <div className="space-y-3">
                   <span className="text-sm text-green-600 font-medium">May 20, 2024</span>
                   <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors">
-                    Bio-Farms Launches New Organic Fertilizer Line
+                   Arkin Launches New Organic Fertilizer Line
                   </h3>
                   <p className="text-gray-600">
                     Introducing our latest innovation in sustainable farming solutions...
@@ -66,7 +66,7 @@ export default function PressMedia() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Press Kit</h2>
             <p className="text-gray-600">
-              Download official Bio-Farms media resources
+              Download officialArkin media resources
             </p>
           </div>
           

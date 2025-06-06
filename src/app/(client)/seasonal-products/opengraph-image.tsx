@@ -109,7 +109,7 @@ export default async function Image() {
                 letterSpacing: '-0.02em',
               }}
             >
-              Bio Farm
+              Arkin
             </h1>
             <p
               style={{

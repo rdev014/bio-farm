@@ -51,7 +51,7 @@ export default async function Login() {
                 />
                 <Image
                   src="/plant.png"
-                  alt="Bio-Farms Logo"
+                  alt="Arkin Logo"
                   width={32}
                   height={32}
                   className="object-contain object-center relative z-10"
@@ -59,7 +59,7 @@ export default async function Login() {
               </div>
               <div className="flex flex-col">
                 <span className="text-white/90 text-2xl font-bold tracking-wide">
-                  Bio-Farms
+                 Arkin
                 </span>
                 <span className="text-white/60 text-sm">
                   Sustainable Agriculture
@@ -247,7 +247,7 @@ export default async function Login() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-            <p className="text-gray-600">Sign in to your Bio-Farms account</p>
+            <p className="text-gray-600">Sign in to yourArkin account</p>
           </div>
 
           {/* Social Login Options */}

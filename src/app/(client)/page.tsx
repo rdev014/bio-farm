@@ -814,7 +814,7 @@ export default function Home() {
               {
                 name: "John Smith",
                 role: "Organic Farmer",
-                content: "The sustainable solutions provided by Bio-Farms have transformed our farming practices. We've seen incredible improvements in soil health and crop yields.",
+                content: "The sustainable solutions provided byArkin have transformed our farming practices. We've seen incredible improvements in soil health and crop yields.",
                 image: "/plant.png"
               },
               {
@@ -826,7 +826,7 @@ export default function Home() {
               {
                 name: "Michael Chen",
                 role: "Agricultural Consultant",
-                content: "I've recommended Bio-Farms to countless clients. Their innovative approach to sustainable farming consistently delivers outstanding results.",
+                content: "I've recommendedArkin to countless clients. Their innovative approach to sustainable farming consistently delivers outstanding results.",
                 image: "/plant.png"
               }
             ] as Testimonial[]).map((testimonial, index) => (

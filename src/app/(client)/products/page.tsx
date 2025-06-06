@@ -8,7 +8,7 @@ import { Pagination } from '@/components/ui/pagination';
 import { ProductsSort } from '@/components/products/ProductsSort';
 
 export const metadata = {
-  title: 'Products | Bio-Farms',
+  title: 'Products |Arkin',
   description: 'Browse our selection of fresh, organic produce directly from local farms',
 };
 

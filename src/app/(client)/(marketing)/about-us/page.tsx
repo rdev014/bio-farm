@@ -210,7 +210,7 @@ export default function AboutUs() {
               variants={fadeIn}
               className="text-xl text-gray-600 leading-relaxed mb-12 max-w-2xl mx-auto"
             >
-              At Bio-Farms, we&apos;re revolutionizing agriculture through innovative sustainable 
+              AtArkin, we&apos;re revolutionizing agriculture through innovative sustainable 
               practices and cutting-edge organic solutions, ensuring a healthier planet for 
               generations to come.
             </motion.p>

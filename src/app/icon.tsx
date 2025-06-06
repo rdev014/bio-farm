@@ -24,7 +24,7 @@ export default function Icon() {
           color: 'white',
         }}
       >
-       B
+       A
       </div>
     ),
     // ImageResponse options
