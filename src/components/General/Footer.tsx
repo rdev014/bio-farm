@@ -48,7 +48,7 @@ export default function Footer() {
                 className="text-xl font-bold bg-gradient-to-r from-green-400 to-green-300 
                              bg-clip-text text-transparent"
               >
-                BioFarms
+                Arkin
               </span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">

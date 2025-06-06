@@ -65,7 +65,7 @@ export default function Header({ user }: { user: User }) {
                           <FaLeaf className="w-4 h-4 text-white" />
                         </div>
             <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-green-600 to-green-400 bg-clip-text text-transparent">
-              BioFarms
+              Arkin
             </span>
           </Link>
 
