@@ -98,7 +98,7 @@ export default function VerifyEmailClient() {
               </svg>
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Email Verified!</h2>
-            <p className="text-gray-600 mb-8">Your email has been successfully verified. You can now access all Bio-Farms features.</p>
+            <p className="text-gray-600 mb-8">Your email has been successfully verified. You can now access allArkin features.</p>
             <a href="/sign-in" 
                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
               Sign In

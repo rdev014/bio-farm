@@ -57,9 +57,9 @@ const Sidebar = () => {
             >
               <Link href="/" className="flex items-center gap-2.5">
                 <div className="bg-green-600 rounded-xl w-9 h-9 flex items-center justify-center text-white font-bold shadow-sm">
-                  BF
+                  A
                 </div>
-                <span className="text-lg font-semibold text-gray-800">BioFarms</span>
+                <span className="text-lg font-semibold text-gray-800">Arkin</span>
               </Link>
             </motion.div>
           )}

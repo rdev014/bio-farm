@@ -4,6 +4,7 @@ import Image from "next/image";
 import { handleGoogleSignIn, login } from "@/actions/user";
 import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
+import { FaLeaf } from "react-icons/fa";
 
 export default async function Login() {
   const session = await getSession();
@@ -49,13 +50,9 @@ export default async function Login() {
                   className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 
                               group-hover:opacity-100 transition-opacity duration-500"
                 />
-                <Image
-                  src="/plant.png"
-                  alt="Arkin Logo"
-                  width={32}
-                  height={32}
-                  className="object-contain object-center relative z-10"
-                />
+              <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
+                              <FaLeaf className="w-6 h-6 text-white" />
+                            </div>
               </div>
               <div className="flex flex-col">
                 <span className="text-white/90 text-2xl font-bold tracking-wide">

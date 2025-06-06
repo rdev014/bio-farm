@@ -5,6 +5,7 @@ import Link from "next/link";
 import { handleGoogleSignIn, register } from "@/actions/user";
 import { validatePassword, validateEmail, validateName } from "@/lib/validation";
 import { toast } from "react-hot-toast";
+import { FaLeaf } from "react-icons/fa";
 
 export default function SignUp() {
   const [isPending, startTransition] = useTransition();
@@ -93,19 +94,9 @@ export default function SignUp() {
         <div className="absolute inset-0 flex flex-col justify-center items-center px-8 text-center text-white">
           <div className="mb-8">
             <div className="w-16 h-16 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center mb-6 mx-auto">
-              <svg
-                className="w-8 h-8 text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                />
-              </svg>
+              <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
+                              <FaLeaf className="w-6 h-6 text-white" />
+                            </div>
             </div>
             <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
               Grow Better,

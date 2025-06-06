@@ -20,7 +20,7 @@ export default function Cta() {
               <span className="block">Agricultural Practice?</span>
             </h2>
             <p className="text-green-50 text-lg">
-              Join thousands of farmers who have already switched to sustainable organic farming with Bio-Farms solutions.
+              Join thousands of farmers who have already switched to sustainable organic farming withArkin solutions.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link 
