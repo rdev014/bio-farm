@@ -344,7 +344,7 @@ export default function Header({ user }: { user: User }) {
                   ) : (
                     <>
                       <Link
-                        href="/sign-in"
+                        href="/login"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600"
                         onClick={closeAllMenus}
                       >
