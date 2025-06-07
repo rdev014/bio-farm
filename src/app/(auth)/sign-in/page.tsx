@@ -248,16 +248,16 @@ export default async function Login() {
           </div>
 
           {/* Social Login Options */}
-          <div className="grid grid-cols-2 gap-4">
-            <form className="space-y-6" action={handleGoogleSignIn}>
+          <div className="grid grid-cols-1 gap-4">
+            <form className="space-y-6 w-full  " action={handleGoogleSignIn}>
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 p-3 bg-white border border-gray-300 
+                className="flex min-w-full items-center justify-center gap-2 p-3 bg-white border border-gray-300 
                                rounded-xl hover:bg-gray-50 transition-colors"
               >
                 <Image src="/google.svg" alt="Google" width={20} height={20} />
                 <span className="text-sm font-medium text-gray-600">
-                  Google
+                  Continue with Google
                 </span>
               </button>
             </form>

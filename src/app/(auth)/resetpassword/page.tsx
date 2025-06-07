@@ -193,7 +193,7 @@ export default async function ResetPassword() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                       d="M11 17l-5-5m0 0l5-5m-5 5h12" />
               </svg>
-              <a href="/login" 
+              <a href="/sign-in" 
                  className="text-green-600 hover:text-green-500 font-medium transition-colors">
                 Back to Sign in
               </a>
