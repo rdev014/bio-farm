@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Image from 'next/image';
 import VerifyEmailClient from '@/components/General/VerifyEmailClient';
+import { FaLeaf } from 'react-icons/fa';
 
 
 export default function VerifyEmail() {
@@ -36,16 +37,12 @@ export default function VerifyEmail() {
                           shadow-lg shadow-black/5 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 
                             group-hover:opacity-100 transition-opacity duration-500" />
-              <Image
-                src="/plant.png"
-                alt="Bio-Farms Logo"
-                width={32}
-                height={32}
-                className="object-contain relative z-10"
-              />
+             <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
+                               <FaLeaf className="w-6 h-6 text-white" />
+                             </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-white/90 text-2xl font-bold tracking-wide">Bio-Farms</span>
+              <span className="text-white/90 text-2xl font-bold tracking-wide">Arkin</span>
               <span className="text-white/60 text-sm">Account Verification</span>
             </div>
           </div>

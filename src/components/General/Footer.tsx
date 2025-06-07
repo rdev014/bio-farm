@@ -17,8 +17,8 @@ export default function Footer() {
   ];
   const knowMore = [
     { name: "Blog", href: "/blogs" },
-    { name: "Guides", href: "/guides" },
     { name: "FAQ", href: "/faq" },
+    { name: "Support", href: "/support" },
     { name: "Contact Us", href: "/contact-us" },
   ];
   const legalLinks = [

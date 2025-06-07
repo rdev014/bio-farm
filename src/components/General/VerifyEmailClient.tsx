@@ -78,11 +78,11 @@ export default function VerifyEmailClient() {
               <h3 className="text-gray-900 font-medium mb-3">Having Issues?</h3>
               <p className="text-gray-600 text-sm">
                 If verification is taking too long, you can try 
-                <a href="/login" className="text-green-600 hover:text-green-500 mx-1">
+                <a href="/sign-in" className="text-green-600 hover:text-green-500 mx-1">
                   signing in again
                 </a>
                 {" "}or contact our{" "}
-                <a href="/support" className="text-green-600 hover:text-green-500 ml-1">
+                <a href="/help" className="text-green-600 hover:text-green-500 ml-1">
                   support team
                 </a>.
               </p>
@@ -120,7 +120,7 @@ export default function VerifyEmailClient() {
                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
                 Try Again
               </a>
-              <a href="/support" 
+              <a href="/help" 
                  className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                 Contact Support
               </a>

@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { getSession } from '@/lib/getSession';
 import { redirect } from 'next/navigation';
+import { FaLeaf } from 'react-icons/fa';
 
 export default async function ForgotPassword() {
   const session = await getSession();
@@ -41,16 +42,12 @@ export default async function ForgotPassword() {
                           shadow-lg shadow-black/5 relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 
                             group-hover:opacity-100 transition-opacity duration-500" />
-              <Image
-                src="/plant.png"
-                alt="Bio-Farms Logo"
-                width={32}
-                height={32}
-                className="object-contain relative z-10"
-              />
+             <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
+                               <FaLeaf className="w-6 h-6 text-white" />
+                             </div>
             </div>
             <div className="flex flex-col">
-              <span className="text-white/90 text-2xl font-bold tracking-wide">Bio-Farms</span>
+              <span className="text-white/90 text-2xl font-bold tracking-wide">Arkin</span>
               <span className="text-white/60 text-sm">Account Recovery</span>
             </div>
           </div>
@@ -137,7 +134,7 @@ export default async function ForgotPassword() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                       d="M11 17l-5-5m0 0l5-5m-5 5h12" />
               </svg>
-              <a href="/sing-in" 
+              <a href="/sign-in" 
                  className="text-green-600 hover:text-green-500 font-medium transition-colors">
                 Back to Sign in
               </a>
