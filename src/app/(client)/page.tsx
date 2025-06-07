@@ -243,7 +243,8 @@ export default function Home() {
               </div>
 
               <div className="flex flex-wrap gap-6">
-                <button
+                <Link
+                href='/products'
                   className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 
                                  text-white rounded-xl font-medium shadow-lg shadow-green-500/25
                                  hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 
@@ -266,15 +267,16 @@ export default function Home() {
                                 transform scale-x-0 group-hover:scale-x-100 transition-transform 
                                 origin-left duration-300"
                   ></div>
-                </button>
+                </Link>
 
-                <button
+                <Link
+                href='/blogs'
                   className="px-8 py-4 border-2 border-gray-800 text-gray-800 rounded-xl 
                                  font-medium hover:bg-gray-800 hover:text-white transition-all
                                  duration-300 hover:shadow-xl"
                 >
                   Learn More
-                </button>
+                </Link>
               </div>
 
               {/* Enhanced Trust Indicators */}
