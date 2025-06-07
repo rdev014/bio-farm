@@ -152,7 +152,7 @@ export default async function VerificationSent() {
             <h3 className="text-gray-900 font-medium mb-3">Didn&apos;t receive the email?</h3>
             <p className="text-gray-600 text-sm">
               Check your spam folder or contact our 
-              <a href="/help" className="text-green-600 hover:text-green-500 ml-1">
+              <a href="/support" className="text-green-600 hover:text-green-500 ml-1">
                 support team
               </a> for assistance.
             </p>

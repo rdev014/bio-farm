@@ -152,7 +152,7 @@ export default function Footer() {
           className="mt-16 pt-8 border-t border-gray-800 flex flex-col md:flex-row 
                        justify-between items-center gap-6 text-gray-400"
         >
-          <p>© {new Date().getFullYear()} Bio-\Farms. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Arkin-\Organics. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-8">
             {legalLinks.map((link) => (
               <Link
