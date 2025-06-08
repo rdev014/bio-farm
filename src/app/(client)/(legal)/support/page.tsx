@@ -126,7 +126,7 @@ export default function SupportPage() {
             Dedicated Support for Your Success
           </h1>
           <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-10 max-w-2xl mx-auto">
-            We're here to help you every step of the way. Find answers, connect with our experts,
+            We&apos;re here to help you every step of the way. Find answers, connect with our experts,
             or explore resources designed to make your journey with Arkin seamless.
           </p>
           <a

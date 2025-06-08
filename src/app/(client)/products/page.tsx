@@ -61,7 +61,7 @@ export default async function ProductsPage({
         <BackgroundTextureSVG />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight mb-6 animate-fade-in-up">
-            Nurturing Nature's Growth
+            Nurturing Nature&apos;s Growth
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-10 animate-fade-in-up delay-100">
             Discover our premium organic fertilizers, crafted for vibrant soil health and exceptional yields.

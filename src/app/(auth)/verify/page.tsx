@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import Image from 'next/image';
 import VerifyEmailClient from '@/components/General/VerifyEmailClient';
 import { FaLeaf } from 'react-icons/fa';
 

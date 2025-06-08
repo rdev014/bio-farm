@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { getSession } from '@/lib/getSession';
 import { redirect } from 'next/navigation';
 import { FaLeaf } from 'react-icons/fa';
