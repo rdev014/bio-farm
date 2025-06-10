@@ -148,7 +148,7 @@ export default function SupportPage() {
             variants={itemVariants}
             className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-5 drop-shadow-sm"
           >
-            Need Help? We're Here.
+            Need Help? We&apos;re Here.
           </motion.h1>
           <motion.p
             variants={itemVariants}
@@ -228,7 +228,7 @@ export default function SupportPage() {
             className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed"
           >
             For any specific inquiries, feedback, or assistance, our support team is ready to help.
-            Feel free to send us an email, and we'll get back to you promptly.
+            Feel free to send us an email, and we&apos;ll get back to you promptly.
           </motion.p>
 
           <motion.a

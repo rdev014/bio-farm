@@ -51,7 +51,7 @@ export default function ContactPage() {
           variants={itemVariants}
           className="text-lg text-gray-700 mb-10 max-w-md mx-auto leading-relaxed"
         >
-          For direct inquiries and support, please reach out to us via email. We're here to help.
+          For direct inquiries and support, please reach out to us via email. We&apos;re here to help.
         </motion.p>
 
         <motion.a
