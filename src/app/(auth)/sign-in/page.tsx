@@ -338,7 +338,7 @@ export default async function Login() {
               </div>
 
               <a
-                href="/forgotpassword"
+                href="/forgot-password"
                 className="text-sm font-medium text-green-600 hover:text-green-500"
               >
                 Forgot password?
