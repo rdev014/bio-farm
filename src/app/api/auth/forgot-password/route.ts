@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const { email } = await req.json();
 
     if (!email) {
-      return NextResponse.json({ mullu: "Email is required" }, { status: 400 });
+      return NextResponse.json({ error: "Email is required" }, { status: 400 });
     }
     await connectDb();
     const user = await User.findOne({ email });
@@ -18,9 +18,9 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success:
-            "If an account exists with this email, a password reset link will be sent",
+            "A reset link will be sent if the account exists.",
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
     // Generate reset token
@@ -30,11 +30,11 @@ export async function POST(req: Request) {
     await user.save();
     await sendPasswordResetEmail(email, resetToken);
     return NextResponse.json({
-      message:
-        "If an account exists with this email, a password reset link will be sent",
+      success:
+        "A reset link will be sent if the account exists.",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+
     return NextResponse.json(
       { error: "Error processing request" },
       { status: 500 }

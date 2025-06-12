@@ -1,17 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { FaLeaf } from "react-icons/fa";
+import { FaLeaf, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
+
+    const load = toast.loading("Processing");
 
     try {
       const res = await fetch("/api/auth/forgot-password", {
@@ -19,24 +17,28 @@ export default function ForgotPassword() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      console.log(res);
+
+      const data = await res.json();
+      toast.dismiss(load);
+
       if (res.ok) {
-        const data = await res.json();
-        
-        setMessage(data.message || "Password reset link sent successfully.");
+        toast.success(data.success || "Password reset link sent successfully.", {
+          icon: <FaCheckCircle className="text-green-500" />,
+        });
       } else {
-        const data = await res.json()
-        toast.error(data.error || "Something went wrong")
+        toast.error(data.error || "Something went wrong", {
+          icon: <FaTimesCircle className="text-red-500" />,
+        });
       }
     } catch (err: unknown) {
       console.error("Error in forgot password submission:", err);
-
-      // Provide a user-friendly error message
-      setError(
-        "An error occurred while submitting the forgot password request. Please try again later."
-      );
+      toast.dismiss(load);
+      toast.error("Network error. Please try again later.", {
+        icon: <FaTimesCircle className="text-red-500" />,
+      });
     }
   };
+  
   return (
     <div className="min-h-screen flex">
       {/* Left Column - Professional Design */}

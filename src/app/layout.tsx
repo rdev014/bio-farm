@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -41,7 +41,7 @@ export default function RootLayout({
             position: "top-center",
           }}
           /> */}
-       <Toaster />
+       <Toaster position="top-right" richColors />
       </body>
     </html>
   );
