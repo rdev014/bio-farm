@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success:
         "A reset link will be sent if the account exists.",
-    });
+    },  { status: 200 });
   } catch (error) {
 console.error(error)
     return NextResponse.json(

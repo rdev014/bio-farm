@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     user.verificationTokenExpiry = undefined;
     await user.save();
 
-    return NextResponse.json({ message: "Email verified successfully" });
+    return NextResponse.json({ success: "Email verified successfully" }, {status:200});
   } catch (error) {
     console.error("Verification error:", error);
     return NextResponse.json(
