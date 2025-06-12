@@ -34,7 +34,7 @@ export async function POST(req: Request) {
         "A reset link will be sent if the account exists.",
     });
   } catch (error) {
-
+console.error(error)
     return NextResponse.json(
       { error: "Error processing request" },
       { status: 500 }

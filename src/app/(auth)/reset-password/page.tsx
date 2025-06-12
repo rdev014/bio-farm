@@ -1,53 +1,55 @@
-'use client'
+"use client";
 import React, { useState } from "react";
-import {  useRouter , useSearchParams } from "next/navigation";
-import { FaLeaf } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FaCheckCircle, FaLeaf, FaTimesCircle } from "react-icons/fa";
+import { toast } from "sonner";
 
 export default function ResetPassword() {
- 
   const [password, setPassword] = useState("");
   const [confirmpassword, setconfirPassword] = useState("");
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
-
+    const load = toast.loading("Processing");
     try {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token, password, confirmpassword }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        setMessage(data.message || "New Password set successfully.");
-        router.replace('/sign-in')
+        toast.success(data.message || "New Password set successfully.", {
+          icon: <FaCheckCircle className="text-green-500" />,
+        });
+        router.replace("/sign-in");
       } else {
         const errorText = await res.text();
         try {
           const errorData = JSON.parse(errorText);
-          setError(errorData.message || "An error occurred. Please try again.");
+          toast.error(
+            errorData.error || "An error occurred. Please try again.",
+            {
+              icon: <FaTimesCircle className="text-red-500" />,
+            }
+          );
         } catch {
-          setError("Unknown error occurred.");
+          toast.error("Unknown error occurred.");
         }
       }
     } catch (err: unknown) {
-      console.error("Error in forgot password submission:", err);
-
-      // Provide a user-friendly error message
-      setError(
-        "An error occurred while submitting the forgot password request. Please try again later."
-      );
+      console.error("Error in password submission:", err);
+      toast.error("Network error. Please try again later.", {
+        icon: <FaTimesCircle className="text-red-500" />,
+      });
     }
+    toast.dismiss(load);
   };
   return (
     <div className="min-h-screen flex">
@@ -175,7 +177,7 @@ export default function ResetPassword() {
                     name="password"
                     type="password"
                     value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                     className="block w-full px-4 py-3.5 rounded-xl border border-gray-300 
                              focus:ring-2 focus:ring-green-500 focus:border-transparent
@@ -220,10 +222,10 @@ export default function ResetPassword() {
                 <div className="relative">
                   <input
                     id="confirm-password"
-                    name="confirm-password"
+                    name="confirmpassword"
                     type="password"
-                     value={confirmpassword}
-                    onChange={(e)=>setconfirPassword(e.target.value)}
+                    value={confirmpassword}
+                    onChange={(e) => setconfirPassword(e.target.value)}
                     required
                     className="block w-full px-4 py-3.5 rounded-xl border border-gray-300 
                              focus:ring-2 focus:ring-green-500 focus:border-transparent

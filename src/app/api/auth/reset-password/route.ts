@@ -5,10 +5,16 @@ import { hash } from "bcryptjs";
 import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
-    const { token, password } = await req.json();
-    if (!token || !password) {
+    const { token, password, confirmpassword } = await req.json();
+    if (!token || !password || !confirmpassword) {
       return NextResponse.json(
         { error: "Token and password required" },
+        { status: 400 }
+      );
+    }
+    if (password !== confirmpassword) {
+      return NextResponse.json(
+        { error: "Passwords do not match" },
         { status: 400 }
       );
     }
