@@ -13,7 +13,7 @@ export default async function Login() {
     redirect("/");
   }
   return(
-    <AuthLayout title="Welcome Lodu" desc="Ki haa hai" leftDesc="yo yo lele mera" leftheading="kullu gandu">
+    <AuthLayout title="Welcome Back" desc="Sign in to your account" leftDesc="Join our ecosystem of sustainable agriculture and be part of the revolution in organic farming practices." leftheading="Welcome to the Future of Farming">
       {/* Social Login Options */}
           <div className="grid grid-cols-1 gap-4">
             <form className="space-y-6 w-full  " action={handleGoogleSignIn}>

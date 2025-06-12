@@ -7,12 +7,15 @@ export default function AuthLayout({
   leftDesc,
   title,
   desc,
+  leftSection,
+  
 }: {
   children: React.ReactNode;
   leftheading: string;
   leftDesc: string;
   title?: string;
   desc?: string;
+  leftSection?: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen max-h-screen flex">
@@ -67,7 +70,7 @@ export default function AuthLayout({
             </div>
 
             {/* Welcome Text */}
-            <div className="space-y-6 max-w-lg mb-2">
+            <div className="space-y-6 max-w-2xl mb-2">
               <h1 className="text-6xl font-bold text-white tracking-tight leading-tight">
                 {leftheading}
               </h1>
@@ -78,7 +81,8 @@ export default function AuthLayout({
           </div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-2 gap-4 mt-auto">
+         {
+          leftSection? <>{leftSection}</>: <div className="grid grid-cols-2 gap-4 mt-auto">
             {/* Feature Cards with hover effects */}
             <div
               className="group flex space-x-4 md:space-x-6 bg-gradient-to-br from-white-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5 md:p-6
@@ -237,6 +241,7 @@ export default function AuthLayout({
               </div>
             </div>
           </div>
+         }
         </div>
       </div>
 

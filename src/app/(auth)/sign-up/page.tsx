@@ -90,11 +90,7 @@ export default function SignUp() {
   };
 
   return (
-    <AuthLayout
-      title="Welcome To Arkin Fertilizers"
-      leftDesc="yo yo lele mera"
-      leftheading="kullu gandu"
-    >
+   <AuthLayout title="Create Account" desc="Already have an account? Sign in" leftDesc="Join our ecosystem of sustainable agriculture and be part of the revolution in organic farming practices." leftheading="Welcome to the Future of Farming">
       <div className="w-full max-w-md space-y-4">
 
         {/* Social Sign-up Options */}
