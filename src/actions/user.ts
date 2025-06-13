@@ -11,11 +11,9 @@ import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
 
 const register = async (formData: FormData) => {
-  const firstname = formData.get("firstName") as string;
-  const lastname = formData.get("lastName") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  if (!firstname || !lastname || !email || !password) {
+  if ( !email || !password) {
     throw new Error("All fields Are Required");
   }
   await connectDb();
@@ -27,8 +25,6 @@ const register = async (formData: FormData) => {
   const verificationToken = await generateVerificationToken();
   const verificationTokenExpiry = new Date(Date.now() + 86400000); // 24 hours
   await User.create({
-    firstname,
-    lastname,
     email,
     password: hashpassword,
     verificationToken,
