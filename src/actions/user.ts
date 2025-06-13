@@ -13,7 +13,7 @@ import { redirect } from "next/navigation";
 const register = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  if ( !email || !password) {
+  if (!email || !password) {
     throw new Error("All fields Are Required");
   }
   await connectDb();
@@ -37,18 +37,24 @@ const register = async (formData: FormData) => {
 const login = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  if (!email || !password) {
+    return { error: "All fields required" }
+  }
   try {
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       redirect: false,
       callbackUrl: "/",
       email,
       password,
     });
+    if (res?.error) {
+      return { error: res.error }
+    }
+    redirect("/");
   } catch (error) {
     const authError = error as CredentialsSignin;
     return authError.cause;
   }
-  redirect("/");
 };
 export { login, register };
 

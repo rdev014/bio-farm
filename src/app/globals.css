@@ -120,3 +120,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+@keyframes leaf-sway {
+  0%, 100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+
+.animate-leaf-sway {
+  animation: leaf-sway 2s ease-in-out infinite;
+}
