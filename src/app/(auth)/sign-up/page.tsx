@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import AuthLayout from "@/components/General/authLayout";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 export default function SignUp() {
   const [isPending, startTransition] = useTransition();
@@ -85,19 +87,18 @@ export default function SignUp() {
 
   return (
     <AuthLayout
-      title="Create Account"
-      desc="Already have an account? Sign in"
-      leftDesc="Join our ecosystem of sustainable agriculture and be part of the revolution in organic farming practices."
+      title="Create an account"
+      desc="Enter your details below to create your account"
       leftheading="Welcome to the Future of Farming"
+      leftDesc="Join our ecosystem of sustainable agriculture and be part of the revolution in organic farming practices."
     >
-      <div className="w-full max-w-md space-y-6"> {/* Increased space-y from 4 to 6 for better separation */}
-        {/* Social Sign-up Options */}
+      <div className="w-full max-w-md ">
         <div className="grid grid-cols-1 gap-4">
-          <form className="w-full" action={handleGoogleSignIn}> {/* Removed unnecessary space-y-6 */}
+          <form className="w-full" action={handleGoogleSignIn}>
             <button
               type="submit"
-              className="flex min-w-full items-center justify-center gap-3 p-3.5 bg-white border border-gray-300
-                         rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-base font-semibold text-gray-700" // Enhanced button styles
+              className="flex min-w-full items-center justify-center gap-3 p-3.5 bg-white border border-zinc-300
+                         rounded-xl hover:bg-zinc-50 transition-colors shadow-sm text-base font-semibold text-zinc-700 cursor-pointer"
               disabled={isPending}
             >
               <Image src="/google.svg" alt="Google" width={20} height={20} />
@@ -108,86 +109,21 @@ export default function SignUp() {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-200"></div>
+            <div className="w-full border-t border-zinc-200"></div>
           </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-4 bg-white text-gray-500 rounded-full"> {/* Changed bg-gray-50 to bg-white for better contrast */}
+          <div className="relative flex justify-center text-sm py-2">
+            <span className="px-4 bg-white text-zinc-500 rounded-full">
               or continue with
             </span>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="relative">
-          {isPending && (
-            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10 rounded-xl"> {/* Increased blur and rounded corners */}
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-green-500"></div> {/* Slightly larger spinner */}
-            </div>
-          )}
-          <div className="space-y-6"> 
-
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-5"> 
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-semibold text-gray-700 mb-2" 
-                >
-                  First Name
-                </label>
-                <input
-                  id="firstName"
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  className={`block w-full px-4 py-3 rounded-xl border transition-colors shadow-sm ${ 
-                    formErrors.firstName
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-green-500 focus:border-green-500" 
-                  } focus:border-transparent bg-white text-gray-900 placeholder:text-gray-400`}
-                  placeholder="John"
-                  required
-                  disabled={isPending}
-                />
-                {formErrors.firstName && (
-                  <p className="mt-2 text-sm text-red-500"> 
-                    {formErrors.firstName}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-semibold text-gray-700 mb-2" 
-                >
-                  Last Name
-                </label>
-                <input
-                  id="lastName"
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  className={`block w-full px-4 py-3 rounded-xl border transition-colors shadow-sm ${ 
-                    formErrors.lastName
-                      ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-green-500 focus:border-green-500" 
-                  } focus:border-transparent bg-white text-gray-900 placeholder:text-gray-400`}
-                  placeholder="Doe"
-                  required
-                  disabled={isPending}
-                />
-                {formErrors.lastName && (
-                  <p className="mt-2 text-sm text-red-500"> 
-                    {formErrors.lastName}
-                  </p>
-                )}
-              </div>
-            </div> */}
-
+          <div className="space-y-2.5">
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-semibold text-gray-700 mb-2" 
+                className="block text-sm font-semibold text-zinc-700 mb-2"
               >
                 Email address
               </label>
@@ -197,15 +133,14 @@ export default function SignUp() {
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`block w-full px-4 py-3 rounded-xl border transition-colors shadow-sm ${ 
-                  formErrors.email
-                    ? "border-red-500 focus:ring-red-500"
-                    : "border-gray-300 focus:ring-green-500 focus:border-green-500" 
-                } focus:border-transparent bg-white text-gray-900 placeholder:text-gray-400`}
+                className={`block w-full px-4 py-3 rounded-xl border transition-colors shadow-sm ${formErrors.email
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-zinc-300 focus:ring-green-500 focus:border-green-500"
+                  } focus:border-transparent bg-white text-zinc-900 placeholder:text-zinc-400`}
                 placeholder="john@example.com"
                 required
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-                autoComplete="email"
+                autoComplete="username"
                 disabled={isPending}
               />
               {formErrors.email && (
@@ -216,7 +151,7 @@ export default function SignUp() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-semibold text-gray-900 mb-2" // Bolder label, added mb
+                className="block text-sm font-semibold text-zinc-900 mb-2" // Bolder label, added mb
               >
                 Password
               </label>
@@ -230,18 +165,18 @@ export default function SignUp() {
                   className={`block w-full pr-12 px-4 py-3 rounded-xl border transition-colors shadow-sm ${ // Added pr-12 for eye button space
                     formErrors.password
                       ? "border-red-500 focus:ring-red-500"
-                      : "border-gray-300 focus:ring-green-500 focus:border-green-500" // Consistent green focus
-                  } focus:border-transparent bg-white text-gray-900 placeholder:text-gray-400`}
+                      : "border-zinc-300 focus:ring-green-500 focus:border-green-500" // Consistent green focus
+                    } focus:border-transparent bg-white text-zinc-900 placeholder:text-zinc-400`}
                   placeholder="********"
                   required
                   minLength={8}
-                  autoComplete="new-password"
+                  autoComplete="password"
                   disabled={isPending}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 hover:text-gray-700 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-zinc-500 hover:text-zinc-700 transition-colors"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? (
@@ -253,19 +188,18 @@ export default function SignUp() {
               </div>
               {passwordStrength.requirements.length > 0 && (
                 <div className="mt-3 space-y-2"> {/* Increased mt */}
-                  <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden"> {/* Slightly thicker bar */}
+                  <div className="h-2 w-full bg-zinc-200 rounded-full overflow-hidden"> {/* Slightly thicker bar */}
                     <div
-                      className={`h-full transition-all duration-300 ${
-                        passwordStrength.score >= 75 // Better visual progression for score
-                          ? "bg-green-500"
-                          : passwordStrength.score >= 50
+                      className={`h-full transition-all duration-300 ${passwordStrength.score >= 75 // Better visual progression for score
+                        ? "bg-green-500"
+                        : passwordStrength.score >= 50
                           ? "bg-yellow-500"
                           : "bg-red-500"
-                      }`}
+                        }`}
                       style={{ width: `${passwordStrength.score}%` }}
                     />
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <ul className="text-sm text-zinc-600 space-y-1">
                     {passwordStrength.requirements.map((req, index) => (
                       <li key={index} className="flex items-center space-x-2">
                         {/* You can add icons here based on whether the requirement is met or not for a more visual feedback */}
@@ -294,15 +228,15 @@ export default function SignUp() {
               )}
             </div>
             <div className="flex items-center space-x-2">
-              <input type="checkbox" name="terms" id="terms" className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500" required /> {/* Added classes for checkbox styling and required attribute */}
+              <Input type="checkbox" name="terms" id="terms" className="h-4 w-4 text-green-600 border-zinc-300 rounded focus:ring-green-500" required />
               {" "}
-              <label htmlFor="terms" className="text-sm text-gray-600"> {/* Changed p to label for accessibility */}
+              <label htmlFor="terms" className="text-sm text-zinc-600"> {/* Changed p to label for accessibility */}
                 You agree to our{" "}
-                <Link href="#" className="text-green-600 hover:text-green-500 font-medium hover:underline"> {/* Added font-medium and underline on hover */}
+                <Link href="/legal/terms" className="text-green-600 hover:text-green-500 font-medium hover:underline"> {/* Added font-medium and underline on hover */}
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link href="#" className="text-green-600 hover:text-green-500 font-medium hover:underline">
+                <Link href="/legal/privacy" className="text-green-600 hover:text-green-500 font-medium hover:underline">
                   Privacy Policy
                 </Link>
               </label>
@@ -314,23 +248,27 @@ export default function SignUp() {
                 passwordStrength.requirements.length > 0 ||
                 Object.values(formErrors).some((error) => error) ||
                 Object.values(formData).some((value) => value === "")
-               
+
               }
               className={`w-full py-3.5 px-4 rounded-xl text-lg font-semibold shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 ${ // Larger, bolder button with hover effect
                 !isPending &&
-                passwordStrength.requirements.length === 0 && // Ensure all password requirements are met to enable
-                !Object.values(formErrors).some((error) => error) &&
-                !Object.values(formData).some((value) => value === "") 
+                  passwordStrength.requirements.length === 0 && // Ensure all password requirements are met to enable
+                  !Object.values(formErrors).some((error) => error) &&
+                  !Object.values(formData).some((value) => value === "")
                   ? "bg-gradient-to-r from-green-600 to-green-500 text-white hover:shadow-xl hover:shadow-green-500/40"
-                  : "bg-gray-300 text-gray-600 cursor-not-allowed opacity-70" // Disabled state style
-              }`}
+                  : "bg-zinc-200 text-zinc-600 cursor-not-allowed opacity-70" // Disabled state style
+                }`}
             >
-              {isPending ? "Creating Account..." : "Create Account"} {/* Dynamic button text */}
+              {isPending ? <>
+                <div className="flex items-center justify-center text-green-400 space-x-2">
+                  <Loader2 className="animate-spin " /><p>Submiting...</p>
+                </div>
+              </> : "Create Account"} {/* Dynamic button text */}
             </button>
           </div>
         </form>
         {/* Sign Up Link */}
-        <p className="text-center text-sm text-gray-600 mt-6"> {/* Increased margin top */}
+        <p className="text-center text-sm text-zinc-600 pt-4"> {/* Increased margin top */}
           Already have an account?{" "}
           <Link
             href="/sign-in"
