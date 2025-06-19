@@ -75,13 +75,13 @@ export default function LoginForm() {
 
     try {
       setLoading(true);
-      const result = await signIn("credentials", {
+      const user = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
       });
 
-      if (result?.error) {
+      if (user?.error) {
         toast.error("Invalid email or password");
         return;
       }
@@ -90,6 +90,7 @@ export default function LoginForm() {
       router.push("/dashboard");
       router.refresh();
     } catch (error) {
+      console.error(error)
       toast.error("An error occurred. Please try again.");
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { handleGoogleSignIn, login } from "@/actions/user";
+import { handleGoogleSignIn} from "@/actions/user";
 import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import AuthLayout from "@/components/General/authLayout";
