@@ -5,7 +5,7 @@ import { handleGoogleSignIn, login } from "@/actions/user";
 import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import AuthLayout from "@/components/General/authLayout";
-import Link from "next/link";
+import LoginForm from "@/components/auth/LoginForm";
 
 export default async function Login() {
   const session = await getSession();
@@ -41,100 +41,7 @@ export default async function Login() {
           </span>
         </div>
       </div>
-
-      {/* Login Form */}
-      <form
-        className="space-y-4"
-        action={async (formData: FormData) => {
-          "use server";
-          await login(formData);
-        }}
-      >
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email address
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            className="mt-1 block w-full px-4 py-3 rounded-xl border border-gray-300 
-                         focus:ring-2 focus:ring-green-500 focus:border-transparent
-                         transition-colors bg-white"
-            placeholder="Enter your email"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            required
-            className="mt-1 block w-full px-4 py-3 rounded-xl border border-gray-300 
-                         focus:ring-2 focus:ring-green-500 focus:border-transparent
-                         transition-colors bg-white"
-            placeholder="Enter your password"
-          />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-green-600 rounded border-gray-300 
-                           focus:ring-green-500"
-            />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-700"
-            >
-              Remember me
-            </label>
-          </div>
-
-          <Link
-            href="/forgot-password"
-            className="hover:underline text-sm font-medium text-green-600 hover:text-green-500"
-          >
-            Forgot password?
-          </Link>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full flex justify-center py-3 px-4 rounded-xl 
-                       bg-gradient-to-r from-green-600 to-green-500 text-white 
-                       font-medium shadow-lg shadow-green-500/25 
-                       hover:shadow-xl hover:shadow-green-500/40 
-                       transition-all duration-300"
-        >
-          Sign in
-        </button>
-      </form>
-
-      {/* Sign Up Link */}
-      <p className="text-center text-sm text-gray-600 pt-4">
-        Don&apos;t have an account?{" "}
-        <Link
-          href="/sign-up"
-          className="hover:underline font-medium text-green-600 hover:text-green-500"
-        >
-          Sign up now
-        </Link>
-      </p>
+   <LoginForm/>
     </AuthLayout>
   )
 }

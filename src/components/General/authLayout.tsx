@@ -253,7 +253,7 @@ export default function AuthLayout({
           <Link href={'/'} >   <AppLogo /></Link>
           {title && (
             <div className="text-center space-y-2 pt-2">
-              <h2 className="text-3xl font-sans font-semibold text-zinc-900">{title}</h2>
+              <h2 className="text-3xl font-sans font-bold text-zinc-900">{title}</h2>
               <p className="text-zinc-600 text-base leading-relaxed">{desc}</p>
             </div>
           )}
