@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: 'https://arkinbio.netlify.app/sitemap.xml',
+    sitemap: 'https://arkin-phi.vercel.app/sitemap.xml',
   }
 }
