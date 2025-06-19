@@ -316,7 +316,7 @@ export default function Home() {
                               group-hover:from-black/30 transition-all duration-300"
                 ></div>
                 <Image
-                  src="https://media.istockphoto.com/id/684977254/photo/farmer-hand-giving-plant-organic-humus-fertilizer-to-plant.jpg?s=612x612&w=0&k=20&c=SjD1diUDXEBmXRF1My6lDdwV9BGpPTD1yWUCwz8235U="
+                  src="/arkinimage.jpg"
                   alt="Organic Fertilizer Product"   width={1400}
                       height={300}
                   className="object-cover w-full h-full rounded-2xl transform 
@@ -737,11 +737,11 @@ export default function Home() {
             >
               <div className="aspect-w-16 aspect-h-9">
                 <Image
-                  src="/plant.png"
+                  src="/benifits.jpg"
                   alt="Sustainable Farming"
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                   width={600}
-                  height={400}
+                  height={300}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/30 to-transparent"></div>
               </div>
@@ -1022,13 +1022,13 @@ export default function Home() {
                 title: "The Future of Organic Farming",
                 category: "Industry Trends",
                 date: "May 25, 2025",
-                image: "/plant.png"
+                image: "/benifits.jpg"
               },
               {
                 title: "Sustainable Practices in Modern Agriculture",
                 category: "Best Practices",
                 date: "May 23, 2025",
-                image: "/plant.png"
+                image: "/arkinimage.jpg"
               },
               {
                 title: "Innovation in Eco-Friendly Fertilizers",
