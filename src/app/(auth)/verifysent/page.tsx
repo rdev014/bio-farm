@@ -10,7 +10,7 @@ export default async function VerificationSent() {
   }
 
   return (
-    <AuthLayout leftDesc="yo yo lele mera" leftheading="kullu gandu">
+    <AuthLayout leftheading="Welcome to the Future of Farming" leftDesc="Join our ecosystem of sustainable agriculture and be part of the revolution in organic farming practices." >
       {/* Right Column - Verification Status */}
       <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
         <div className="w-full max-w-md">
