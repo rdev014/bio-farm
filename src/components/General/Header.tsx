@@ -76,7 +76,7 @@ export default function Header({ user }: { user: { name?: string; email?: string
   const navItems = [
     { name: "Products", icon: CubeIcon, links: [{href: "/products", label: "All Products", icon: ChevronRightIcon}, {href: "/seasonal-products", label: "Seasonal", icon: ChevronRightIcon}] },
     { name: "About Us", icon: UsersIcon, links: [{href: "/about-us", label: "Our Mission", icon: ChevronRightIcon}, {href: "/our-farms", label: "Our Farms", icon: ChevronRightIcon}] },
-    { name: "Resources", icon: BookOpenIcon, links: [{href: "/blog", label: "Blog", icon: ChevronRightIcon}, {href: "/faq", label: "FAQ", icon: ChevronRightIcon}] },
+    { name: "Resources", icon: BookOpenIcon, links: [{href: "/blogs", label: "Blog", icon: ChevronRightIcon}, {href: "/faq", label: "FAQ", icon: ChevronRightIcon}] },
     { name: "Support", icon: LifebuoyIcon, links: [{href: "/help", label: "Help Center", icon: ChevronRightIcon}, {href: "/contact", label: "Contact Us", icon: ChevronRightIcon}] },
   ];
 
