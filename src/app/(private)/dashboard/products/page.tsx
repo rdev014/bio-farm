@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useEffect, useMemo, useCallback, JSX } from 'react';
 import {
-  Search, SlidersHorizontal, ChevronLeft, ChevronRight, MoreHorizontal,
-  Package, Tag, DollarSign, Box, CheckCircle, XCircle, Info, ArrowUp, ArrowDown,
+  Search, SlidersHorizontal, ChevronLeft, ChevronRight,
+  Package, Tag, CheckCircle, XCircle, Info, ArrowUp, ArrowDown,
   Warehouse, PlusCircle, PencilLine, Eye, Trash2, X, CalendarDays,
   ChevronDown
 } from 'lucide-react';
@@ -57,7 +57,7 @@ const generateRandomProducts = (count: number): Product[] => {
     'Sports & Outdoors': ['Yoga Mat', 'Water Bottle', 'Resistance Bands', 'Hiking Backpack', 'Camping Tent'],
     'Beauty': ['Face Serum', 'Moisturizer', 'Shampoo', 'Lipstick', 'Perfume']
   };
-  const statuses: Product['status'][] = ['In Stock', 'Low Stock', 'Out of Stock', 'Discontinued'];
+
 
   return Array.from({ length: count }, (_, i) => {
     const category = categories[Math.floor(Math.random() * categories.length)] as keyof typeof productNames;
@@ -154,7 +154,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, mode, onClose, onSub
   };
 
   const categories = ['Electronics', 'Books', 'Home & Kitchen', 'Apparel', 'Sports & Outdoors', 'Beauty', 'Other'];
-  const statuses = ['In Stock', 'Low Stock', 'Out of Stock', 'Discontinued'];
+
 
 
   return (

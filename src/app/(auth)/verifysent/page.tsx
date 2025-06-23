@@ -2,6 +2,7 @@ import React from "react";
 import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import AuthLayout from "@/components/General/authLayout";
+import Link from "next/link";
 
 export default async function VerificationSent() {
   const session = await getSession();
@@ -70,12 +71,12 @@ export default async function VerificationSent() {
                   d="M11 17l-5-5m0 0l5-5m-5 5h12"
                 />
               </svg>
-              <a
+              <Link
                 href="/sign-in"
                 className="text-green-600 hover:text-green-500 font-medium transition-colors"
               >
                 Back to Sign in
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -86,12 +87,12 @@ export default async function VerificationSent() {
             </h3>
             <p className="text-gray-600 text-sm">
               Check your spam folder or contact our
-              <a
+              <Link
                 href="/support"
                 className="text-green-600 hover:text-green-500 ml-1"
               >
                 support team
-              </a>{" "}
+              </Link>{" "}
               for assistance.
             </p>
           </div>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { JSX } from 'react';
 import {
   Search, SlidersHorizontal, ChevronLeft, ChevronRight, MoreHorizontal,
-  UserCheck, UserPlus, UserX, Building, Mail, Phone, MapPin, ArrowUp, ArrowDown,
+  UserCheck, UserPlus, UserX, Mail, Phone, MapPin, ArrowUp, ArrowDown,
   ChevronDown,
   Info
 } from 'lucide-react';
