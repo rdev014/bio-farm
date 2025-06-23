@@ -1,9 +1,9 @@
 // Enhanced Dashboard with Recharts, CountUp, Framer Motion, and Responsive Layout
 'use client'
-import React, { useState, useEffect, useRef, createContext, useContext } from 'react';
+import React, { useState, useEffect, createContext, useContext } from 'react';
 import {
   Bell, Search, ChevronDown, ArrowUpRight, ArrowDownRight, DollarSign,
-  ShoppingCart, Users, Activity, MoreHorizontal, Package, Globe, BarChart2, Clock
+  ShoppingCart, Users, Activity, MoreHorizontal, Package, Clock
 } from 'lucide-react';
 import CountUp from 'react-countup';
 import { motion } from 'framer-motion';
@@ -45,16 +45,6 @@ interface Order {
   statusColor: string;
 }
 
-// Define Type for Top Product
-interface TopProduct {
-  id: string;
-  name: string;
-  sales: number;
-  revenue: string;
-  status: 'In Stock' | 'Low Stock' | 'Out of Stock';
-  statusColor: string;
-  img: string;
-}
 
 // Define Type for Channel Data
 interface ChannelData {
@@ -327,55 +317,6 @@ const RecentOrders = () => {
   );
 };
 
-const TopProducts = () => {
-  const products: TopProduct[] = [
-    { id: 'prod001', name: 'Wireless Headphones X', sales: 1500, revenue: '$75,000', status: 'In Stock', statusColor: 'bg-emerald-100 text-emerald-700', img: 'https://placehold.co/40x40/6d28d9/ffffff?text=H' },
-    { id: 'prod002', name: 'Smartwatch Pro', sales: 1200, revenue: '$120,000', status: 'In Stock', statusColor: 'bg-emerald-100 text-emerald-700', img: 'https://placehold.co/40x40/c2410c/ffffff?text=W' },
-    { id: 'prod003', name: 'Ergonomic Office Chair', sales: 800, revenue: '$80,000', status: 'Low Stock', statusColor: 'bg-amber-100 text-amber-700', img: 'https://placehold.co/40x40/059669/ffffff?text=C' },
-    { id: 'prod004', name: 'Portable Bluetooth Speaker', sales: 950, revenue: '$38,000', status: 'In Stock', statusColor: 'bg-emerald-100 text-emerald-700', img: 'https://placehold.co/40x40/db2777/ffffff?text=S' },
-    { id: 'prod005', name: '4K Ultra HD Monitor', sales: 400, revenue: '$100,000', status: 'Out of Stock', statusColor: 'bg-red-100 text-red-700', img: 'https://placehold.co/40x40/3f6212/ffffff?text=M' },
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.4 }}
-      className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
-    >
-      <h3 className="text-lg font-semibold text-slate-800 mb-4">Top Selling Products</h3>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
-          <thead className="text-xs text-slate-500 uppercase bg-slate-50">
-            <tr>
-              <th className="px-6 py-3 font-medium rounded-l-lg">Product</th>
-              <th className="px-6 py-3 font-medium">Sales</th>
-              <th className="px-6 py-3 font-medium">Revenue</th>
-              <th className="px-6 py-3 font-medium">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map(product => (
-              <tr key={product.id} className="bg-white border-b border-slate-100 hover:bg-slate-50">
-                <td className="px-6 py-4 flex items-center gap-3">
-                  <img src={product.img} alt={product.name} className="w-10 h-10 rounded-full object-cover" />
-                  <div className="font-semibold text-slate-800">{product.name}</div>
-                </td>
-                <td className="px-6 py-4 text-slate-600">{product.sales} units</td>
-                <td className="px-6 py-4 font-semibold text-slate-800">{product.revenue}</td>
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${product.statusColor}`}>
-                    {product.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </motion.div>
-  );
-};
 
 const CustomerDemographics = () => {
   const genderData = [
@@ -526,7 +467,7 @@ const ComingSoon = () => (
   >
     <Clock size={48} className="text-slate-400 mb-4" />
     <h3 className="text-lg font-semibold text-slate-800 mb-2">More Insights Coming Soon!</h3>
-    <p className="text-sm text-slate-500 max-w-sm">We're constantly working to bring you more valuable data and features to help you grow your business.</p>
+    <p className="text-sm text-slate-500 max-w-sm">We&apos; re constantly working to bring you more valuable data and features to help you grow your business.</p>
   </motion.div>
 );
 
@@ -578,7 +519,7 @@ const Dashboard = () => (
 export default function App() {
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
-      {/* Wrap the Dashboard with the UserProvider to make user data available */}
+    
       <UserProvider>
         <Dashboard />
       </UserProvider>
