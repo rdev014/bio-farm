@@ -63,6 +63,7 @@ export async function handleGoogleSignIn() {
 }
 export async function handleSignOut() {
   await signOut();
+ redirect("/sign-in");
 }
 export async function getUserSession() {
   const session = await getSession();

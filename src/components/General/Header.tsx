@@ -4,6 +4,7 @@ import { handleSignOut } from "@/actions/user";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { FaLeaf } from "react-icons/fa";
+import { SignOutButton } from "./SignOutButton";
 
 // --- REUSABLE SVG ICONS ---
 
@@ -165,9 +166,7 @@ export default function Header({ user }: { user: { name?: string; email?: string
                 </div>
                 <div className="h-px bg-slate-200/75"></div>
                 <div className="p-1">
-                  <form action={async () => { closeAllMenus(); await handleSignOut(); }}>
-                    <button type="submit" className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-green-600 transition-colors rounded-md">Sign Out</button>
-                  </form>
+                  <SignOutButton closeAllMenus={closeAllMenus} handleSignOut={handleSignOut} />
                 </div>
               </div>
             </div>

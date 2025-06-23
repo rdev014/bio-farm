@@ -9,13 +9,14 @@ import {
   Users,
   ShoppingCart,
   Boxes,
-  FileText,
   Settings,
   HelpCircle,
   Menu,
   ChevronLeft,
+  User,
 } from 'lucide-react'
 import Link from 'next/link'
+
 
 interface NavItem {
   title: string
@@ -27,9 +28,9 @@ const navItems: NavItem[] = [
   { title: 'Home', href: '/', icon: <Home className="w-5 h-5" /> },
   { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" /> },
-  { title: 'Orders', href: '/dashboard/orders', icon: <ShoppingCart className="w-5 h-5" /> },
+  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { title: 'Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" /> },
-  { title: 'Reports', href: '/dashboard/reports', icon: <FileText className="w-5 h-5" /> },
+  { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
 ]
 
 const Sidebar = () => {
@@ -134,9 +135,9 @@ const Sidebar = () => {
           </AnimatePresence>
         </Link>
         <Link
-          href="/dashboard/help"
+          href="/help"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200
-            ${pathname === '/dashboard/help' ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+            ${pathname === '/help' ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
         >
           <HelpCircle className="w-5 h-5" />
           <AnimatePresence>
@@ -153,6 +154,7 @@ const Sidebar = () => {
             )}
           </AnimatePresence>
         </Link>
+        
       </div>
     </motion.aside>
   )
