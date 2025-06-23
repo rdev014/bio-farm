@@ -6,9 +6,9 @@ import { redirect } from "next/navigation";
 const Admin = async () => {
   const session = await getSession();
   const user = session?.user;
-  if (!user) return redirect("/login");
+   if (!user) return redirect("/login");
 
-  if (user?.role !== "admin") return redirect("/dashboard");
+   if (user?.role !== "user") return redirect("/dashboard");
 
   const allUsers = await fetchAllUsers();
 
@@ -27,8 +27,8 @@ const Admin = async () => {
         <tbody>
           {allUsers?.map((user) => (
             <tr key={user._id}>
-              <td className="p-2">{user.firstName}</td>
-              <td className="p-2">{user.lastName}</td>
+              <td className="p-2">{user.email}</td>
+              <td className="p-2">{user.role}</td>
               <td className="p-2">
                 <form
                   action={async () => {
