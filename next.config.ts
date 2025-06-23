@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       "placehold.net",
       "cdn.pixabay.com",
       "media.istockphoto.com",
+      "hytek.org.in"
     ],
   }
 };
