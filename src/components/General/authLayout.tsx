@@ -10,7 +10,6 @@ export default function AuthLayout({
   title,
   desc,
   leftSection,
-
 }: {
   children: React.ReactNode;
   leftheading: string;
@@ -20,14 +19,11 @@ export default function AuthLayout({
   leftSection?: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen max-h-screen flex">
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* Left Column - Premium Professional Design */}
-      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden">
+      <div className="hidden lg:block lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-green-800 via-green-600 to-green-400 p-8">
         {/* Multi-layered background for depth */}
         <div className="absolute inset-0">
-          {/* Base gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-800 via-green-600 to-green-400" />
-
           {/* Organic patterns */}
           <div className="absolute inset-0 opacity-30 mix-blend-overlay bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.2)_0%,transparent_100%)]" />
           <div className="absolute inset-0 opacity-40 bg-[url('/plant.png')] bg-cover bg-center mix-blend-overlay" />
@@ -43,19 +39,19 @@ export default function AuthLayout({
         </div>
 
         {/* Content Container */}
-        <div className="relative h-full flex flex-col p-6 z-10">
+        <div className="relative h-full flex flex-col p-4 md:p-6 z-10">
           {/* Top Section */}
           <div>
-            {/* Logo Section */}
+            {/* Logo Section - Keeping it consistent with the original if AppLogo is internal */}
             <div className="flex items-center space-x-4 mb-6">
               <div
-                className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl 
-                            flex items-center justify-center border border-white/20
-                            shadow-lg shadow-black/5 relative overflow-hidden group"
+                className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl
+                           flex items-center justify-center border border-white/20
+                           shadow-lg shadow-black/5 relative overflow-hidden group"
               >
                 <div
-                  className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 
-                              group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0
+                             group-hover:opacity-100 transition-opacity duration-500"
                 />
                 <div className="bg-gradient-to-r from-green-500 to-green-400 p-2.5 rounded-xl">
                   <FaLeaf className="w-6 h-6 text-white" />
@@ -72,31 +68,33 @@ export default function AuthLayout({
             </div>
 
             {/* Welcome Text */}
-            <div className="space-y-6 max-w-2xl mb-2">
-              <h1 className="text-6xl font-bold text-white tracking-tight leading-tight">
+            <div className="space-y-4 max-w-2xl mb-6">
+              <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tight leading-tight">
                 {leftheading}
               </h1>
-              <p className="text-xl text-white/80 leading-relaxed">
+              <p className="text-lg md:text-xl text-white/80 leading-relaxed">
                 {leftDesc}
               </p>
             </div>
           </div>
 
           {/* Features Grid */}
-          {
-            leftSection ? <>{leftSection}</> : <div className="grid grid-cols-2 gap-4 mt-auto">
+          {leftSection ? (
+            <>{leftSection}</>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
               {/* Feature Cards with hover effects */}
-              <div
-                className="group flex space-x-4 md:space-x-6 bg-gradient-to-br from-white-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5 md:p-6
-               border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
-               hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
+                <div
+                className="group flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 bg-gradient-to-br from-slate-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5
+                           border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
+                           hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
               >
                 <div
-                  className="flex-shrink-0 size-16 md:size-20 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl md:rounded-2xl flex items-center justify-center
-                 transition-all duration-300 ease-in-out group-hover:scale-105"
+                  className="flex-shrink-0 size-16 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl flex items-center justify-center
+                             transition-all duration-300 ease-in-out group-hover:scale-105"
                 >
                   <svg
-                    className="size-7 md:size-9 text-sky-300 group-hover:text-sky-200 transition-colors duration-300"
+                    className="size-7 text-sky-300 group-hover:text-sky-200 transition-colors duration-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -112,28 +110,28 @@ export default function AuthLayout({
                 </div>
                 <div className="flex flex-col justify-center">
                   <h3
-                    className="text-sky-100 font-semibold text-lg md:text-xl
-                       group-hover:text-white transition-colors duration-300"
+                    className="text-white font-semibold text-lg
+                             group-hover:text-white/90 transition-colors"
                   >
-                    Certified Organic
+                   Certified Organic
                   </h3>
                   <p
-                    className="text-slate-400 text-sm md:text-base leading-relaxed
-                       group-hover:text-slate-300 transition-colors duration-300 mt-1"
+                    className="text-white/60 text-sm leading-relaxed
+                             group-hover:text-white/70 transition-colors"
                   >
-                    Quality assured products.
+                    Certifieed and quality assured products. 
                   </p>
                 </div>
               </div>
 
               <div
-                className="group flex space-x-4 md:space-x-6 bg-gradient-to-br from-white-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5 md:p-6
-               border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
-               hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
+                className="group flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 bg-gradient-to-br from-slate-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5
+                           border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
+                           hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
               >
                 <div
-                  className="flex-shrink-0 size-16 md:size-20 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl md:rounded-2xl flex items-center justify-center
-                 transition-all duration-300 ease-in-out group-hover:scale-105"
+                  className="flex-shrink-0 size-16 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl flex items-center justify-center
+                             transition-all duration-300 ease-in-out group-hover:scale-105"
                 >
                   <svg
                     className="w-7 h-7 text-white"
@@ -149,16 +147,16 @@ export default function AuthLayout({
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="flex flex-col justify-center">
                   <h3
-                    className="text-white font-semibold text-lg mb-3 
-                           group-hover:text-white/90 transition-colors"
+                    className="text-white font-semibold text-lg
+                             group-hover:text-white/90 transition-colors"
                   >
                     Global Network
                   </h3>
                   <p
-                    className="text-white/60 text-base leading-relaxed 
-                           group-hover:text-white/70 transition-colors"
+                    className="text-white/60 text-sm leading-relaxed
+                             group-hover:text-white/70 transition-colors"
                   >
                     Connected with sustainable farmers worldwide
                   </p>
@@ -166,13 +164,13 @@ export default function AuthLayout({
               </div>
 
               <div
-                className="group flex space-x-4 md:space-x-6 bg-gradient-to-br from-white-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5 md:p-6
-               border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
-               hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
+                className="group flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 bg-gradient-to-br from-slate-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5
+                           border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
+                           hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
               >
                 <div
-                  className="flex-shrink-0 size-16 md:size-20 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl md:rounded-2xl flex items-center justify-center
-                 transition-all duration-300 ease-in-out group-hover:scale-105"
+                  className="flex-shrink-0 size-16 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl flex items-center justify-center
+                             transition-all duration-300 ease-in-out group-hover:scale-105"
                 >
                   <svg
                     className="w-7 h-7 text-white"
@@ -188,16 +186,16 @@ export default function AuthLayout({
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="flex flex-col justify-center">
                   <h3
-                    className="text-white font-semibold text-lg mb-3 
-                           group-hover:text-white/90 transition-colors"
+                    className="text-white font-semibold text-lg
+                             group-hover:text-white/90 transition-colors"
                   >
                     Innovation
                   </h3>
                   <p
-                    className="text-white/60 text-base leading-relaxed 
-                           group-hover:text-white/70 transition-colors"
+                    className="text-white/60 text-sm leading-relaxed
+                             group-hover:text-white/70 transition-colors"
                   >
                     Pioneering sustainable farming technologies
                   </p>
@@ -205,13 +203,13 @@ export default function AuthLayout({
               </div>
 
               <div
-                className="group flex space-x-4 md:space-x-6 bg-gradient-to-br from-white-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5 md:p-6
-               border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
-               hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
+                className="group flex flex-col sm:flex-row items-start space-y-3 sm:space-y-0 sm:space-x-4 bg-gradient-to-br from-slate-800/70 to-slate-900/80 backdrop-blur-lg rounded-2xl p-5
+                           border border-slate-700/80 h-fit transition-all duration-300 ease-in-out
+                           hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-700/20 hover:scale-[1.02]"
               >
                 <div
-                  className="flex-shrink-0 size-16 md:size-20 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl md:rounded-2xl flex items-center justify-center
-                 transition-all duration-300 ease-in-out group-hover:scale-105"
+                  className="flex-shrink-0 size-16 bg-sky-500/10 group-hover:bg-sky-500/20 rounded-xl flex items-center justify-center
+                             transition-all duration-300 ease-in-out group-hover:scale-105"
                 >
                   <svg
                     className="w-7 h-7 text-white"
@@ -227,34 +225,44 @@ export default function AuthLayout({
                     />
                   </svg>
                 </div>
-                <div>
+                <div className="flex flex-col justify-center">
                   <h3
-                    className="text-white font-semibold text-lg mb-3 
-                           group-hover:text-white/90 transition-colors"
+                    className="text-white font-semibold text-lg
+                             group-hover:text-white/90 transition-colors"
                   >
                     Sustainability
                   </h3>
                   <p
-                    className="text-white/60 text-base leading-relaxed 
-                           group-hover:text-white/70 transition-colors"
+                    className="text-white/60 text-sm leading-relaxed
+                             group-hover:text-white/70 transition-colors"
                   >
                     Eco-friendly practices for a better tomorrow
                   </p>
                 </div>
               </div>
             </div>
-          }
+          )}
         </div>
       </div>
 
       {/* Right Column - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-zinc-50 min-h-screen">
-        <div className="w-full max-w-md space-y-8">
-          <Link href={'/'} >   <AppLogo /></Link>
+      <div className="flex-1 flex items-center justify-center p-6 md:p-8 bg-zinc-50 min-h-screen">
+        <div className="w-full max-w-md space-y-6 md:space-y-8">
+          {/* AppLogo for mobile, centered */}
+          <div className="lg:hidden flex justify-center mb-4">
+            <Link href={"/"}>
+              <AppLogo />
+            </Link>
+          </div>
+
           {title && (
             <div className="text-center space-y-2 pt-2">
-              <h2 className="text-3xl font-sans font-bold text-zinc-900">{title}</h2>
-              <p className="text-zinc-600 text-base leading-relaxed">{desc}</p>
+              <h2 className="text-2xl md:text-3xl font-sans font-bold text-zinc-900">
+                {title}
+              </h2>
+              <p className="text-zinc-600 text-sm md:text-base leading-relaxed">
+                {desc}
+              </p>
             </div>
           )}
           <div className="w-full">{children}</div>
