@@ -1,11 +1,7 @@
-import { BookOpen, HelpCircle, Home, Package, Users } from "lucide-react";
+import { BookOpen, HelpCircle,  Package, Users } from "lucide-react";
 
 export const nav =  [
-    {
-      name: "Home",
-      icon: Home,
-      singlelink: '/'
-    },
+
     {
       name: "Products",
       icon: Package,

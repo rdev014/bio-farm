@@ -13,7 +13,8 @@ import {
   ShoppingBag,
   Leaf,
   Loader2,
-  LogOut
+  LogOut,
+  Home
 } from "lucide-react";
 
 import { NavItem, SearchResult, User as UserType } from "@/types";
@@ -261,8 +262,8 @@ export default function Header({ user }: { user: UserType | null }) {
     <header
       ref={headerRef}
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200/50'
-          : 'bg-white/90 backdrop-blur-sm border-b border-gray-200/20'
+        ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200/50'
+        : 'bg-white/90 backdrop-blur-sm border-b border-gray-200/20'
         }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -283,17 +284,26 @@ export default function Header({ user }: { user: UserType | null }) {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center px-6 ">
-            {user?.role === 'user' && (
+            {user?.role && ['user', 'admin', 'moderator'].includes(user.role) ? (
               <Link
                 href="/dashboard"
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/dashboard'
-                    ? 'bg-green-50 text-green-700 shadow-sm'
-                    : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                  ? 'bg-green-50 text-green-700 shadow-sm'
+                  : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
                   }`}
               >
                 Dashboard
               </Link>
-            )}
+            ) : <Link
+              href={'/'}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/'
+                ? 'bg-green-50 text-green-700 shadow-sm'
+                : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                }`}
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </Link>}
 
             {navItems.map((item) => (
               <div key={item.name} className="relative">
@@ -301,8 +311,8 @@ export default function Header({ user }: { user: UserType | null }) {
                   <Link
                     href={item.singlelink}
                     className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === item.singlelink
-                        ? 'bg-green-50 text-green-700 shadow-sm'
-                        : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                      ? 'bg-green-50 text-green-700 shadow-sm'
+                      : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
                       }`}
                   >
                     <item.icon className="w-4 h-4" />
@@ -337,8 +347,8 @@ export default function Header({ user }: { user: UserType | null }) {
                             href={link.href}
                             onClick={closeAllMenus}
                             className={`block px-4 py-2.5 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === link.href
-                                ? 'bg-green-50 text-green-700 font-medium shadow-sm'
-                                : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
+                              ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
                               }`}
                           >
                             {link.label}
@@ -479,8 +489,8 @@ export default function Header({ user }: { user: UserType | null }) {
                     href={item.singlelink}
                     onClick={closeAllMenus}
                     className={`flex items-center gap-3 w-full px-4 py-3 text-left rounded-lg transition-all duration-200 ${pathname === item.singlelink
-                        ? 'bg-green-50 text-green-700 font-medium shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
+                      ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
                       }`}
                   >
                     <item.icon className="w-5 h-5" />
@@ -510,8 +520,8 @@ export default function Header({ user }: { user: UserType | null }) {
                             href={link.href}
                             onClick={closeAllMenus}
                             className={`block px-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${pathname === link.href
-                                ? 'bg-green-50 text-green-700 font-medium shadow-sm'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-green-600'
+                              ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-green-600'
                               }`}
                           >
                             {link.label}

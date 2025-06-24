@@ -9,7 +9,14 @@ export default async function HeaderProvider() {
 
   return (
     <Header
-      user={{ name: user?.name ?? undefined, email: user?.email ?? undefined, image: user?.image ?? undefined, role: user?.role ?? undefined }}
+      user={{
+        name: user?.name ?? undefined,
+        email: user?.email ?? undefined,
+        image: user?.image ?? undefined,
+        role: (user?.role === "user" || user?.role === "admin" || user?.role === "moderator")
+          ? user.role
+          : "guest"
+      }}
     />
   );
 }

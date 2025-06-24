@@ -5,7 +5,6 @@ import { User } from "./models/UserSchema";
 import { compare } from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
 
-
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
@@ -14,23 +13,19 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
   interface User {
+    id: string;
     role: string;
   }
 }
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Google,
     Credentials({
-      name: " Credentials",
+      name: "Credentials",
       credentials: {
-        email: {
-          type: "email",
-          label: "Email",
-        },
-        password: {
-          type: "password",
-          label: "Password",
-        },
+        email: { type: "email", label: "Email" },
+        password: { type: "password", label: "Password" },
       },
       authorize: async (credentials) => {
         const email = credentials.email as string | undefined;
@@ -51,57 +46,64 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!isMatch) {
           throw new Error("Invalid Password");
         }
-        const userData = {
+        return {
+          id: user._id.toString(),
           firstname: user.firstname,
           lastname: user.lastname,
           email: user.email,
-          role: user.role,
-          id: user._id,
+          role: user.role || "user",
         };
-        return userData;
       },
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: "/sign-in",
   },
   callbacks: {
-    async session({ session, token }) {
-      if (token?.sub && typeof token.role === "string") {
-        session.user.id = token.sub;
-        session.user.role = token.role;
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
       }
       return token;
     },
-
-    signIn: async ({ user, account }) => {
+    async session({ session, token }) {
+      if (token?.id && token?.role) {
+        session.user = {
+          ...session.user,
+          id: String(token.id),
+          role: String(token.role),
+        };
+      }
+      return session;
+    },
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const { name, email, image, id } = user;
+          const { name, email, image } = user;
           await connectDb();
-          const existingUser = await User.findOne({ email });
+          let existingUser = await User.findOne({ email });
           if (!existingUser) {
-            await User.create({ name, email, image, authProviderId: id });
-            console.log('Nothing happening');
-            return true;
-          } else {
-            return true;
+            existingUser = await User.create({
+              name,
+              email,
+              image,
+              authProviderId: user.id,
+              role: "user",
+            });
           }
+          // Set id and role on user object
+          user.id = existingUser._id.toString();
+          user.role = existingUser.role || "user";
+          return true;
         } catch (error) {
           throw new Error(`${error}`);
         }
       }
       if (account?.provider === "credentials") {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
   },
 });

@@ -3,7 +3,7 @@ export interface User {
   name?: string;
   email?: string;
   image?: string;
-  role?: 'user' | 'admin' | 'moderator';
+  role?: 'user' | 'admin' | 'moderator'|'guest';
 }
 
 export interface SearchResult {
