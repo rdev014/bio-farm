@@ -1,229 +1,556 @@
 "use client";
-
 import { handleSignOut } from "@/actions/user";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { FaLeaf } from "react-icons/fa";
+import { useRouter, usePathname } from "next/navigation";
+import {
+  Search,
+  X,
+  Menu,
+  ChevronDown,
+  User,
+  Settings,
+  ShoppingBag,
+  Leaf,
+  Loader2,
+  LogOut,
+  Home
+} from "lucide-react";
 
-// --- REUSABLE SVG ICONS ---
+import { NavItem, SearchResult, User as UserType } from "@/types";
+import { nav } from "@/data/nav";
 
-// Main Navigation Icons
-const CubeIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" /></svg>;
-const UsersIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.964A3 3 0 0012 12v-1.5a3 3 0 00-3-3H6a3 3 0 00-3 3v1.5a3 3 0 003 3m7.5-2.964a3 3 0 00-3-3H6a3 3 0 00-3 3v1.5a3 3 0 003 3m7.5-2.964c.618 0 1.275-.268 1.741-.732a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.964A3 3 0 0012 12v-1.5a3 3 0 00-3-3H6a3 3 0 00-3 3v1.5a3 3 0 003 3" /></svg>;
-const BookOpenIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>;
-const LifebuoyIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>;
+// Mock search data - replace with your actual search API
+const mockSearchData: SearchResult[] = [
+  { id: '1', title: 'Organic Tomatoes', description: 'Fresh organic tomatoes from our farm', url: '/products/organic-tomatoes', category: 'Products' },
+  { id: '2', title: 'About Our Mission', description: 'Learn about our sustainable farming practices', url: '/about-us', category: 'About' },
+  { id: '3', title: 'Seasonal Vegetables', description: 'Fresh seasonal produce available now', url: '/seasonal-products', category: 'Products' },
+  { id: '4', title: 'Contact Support', description: 'Get help with your orders and questions', url: '/contact', category: 'Support' },
+  { id: '5', title: 'Farm Visit FAQ', description: 'Frequently asked questions about farm visits', url: '/faq', category: 'Resources' },
+];
 
-// Dropdown Link Icon
-const ChevronRightIcon = () => <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-slate-400"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>;
+// Custom hook for search functionality
+const useSearch = () => {
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className={`h-4 w-4 ml-1.5 transition-transform duration-300 ease-in-out ${isOpen ? "rotate-180" : ""}`}
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={3}
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-  </svg>
-);
+  const searchResults = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      return;
+    }
 
-export default function Header({ user }: { user: { name?: string; email?: string; image?: string; role?: string } | null }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("");
-  const menuCloseTimer = useRef<NodeJS.Timeout | null>(null);
-  const headerRef = useRef<HTMLElement>(null);
+    setIsLoading(true);
 
-  const closeAllMenus = () => {
-    setActiveMenu("");
-    setIsMobileMenuOpen(false);
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    const filteredResults = mockSearchData.filter(item =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    setResults(filteredResults);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchResults(query);
+    }, 150);
+
+    return () => clearTimeout(timeoutId);
+  }, [query, searchResults]);
+
+  return {
+    query,
+    setQuery,
+    results,
+    isLoading,
+    isOpen,
+    setIsOpen,
   };
+};
 
-  const handleMenuEnter = (menuName: string) => {
-    if (menuCloseTimer.current) clearTimeout(menuCloseTimer.current);
-    setActiveMenu(menuName);
-  };
-  
-  const handleMenuLeave = () => {
-    menuCloseTimer.current = setTimeout(() => setActiveMenu(""), 200);
-  };
-
-  const toggleMenuOnClick = (menuName: string) => {
-    setActiveMenu(activeMenu === menuName ? "" : menuName);
-  };
+// Search Component
+const SearchBar = () => {
+  const { query, setQuery, results, isLoading, isOpen, setIsOpen } = useSearch();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (headerRef.current && !headerRef.current.contains(event.target as Node)) closeAllMenus();
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     };
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeAllMenus();
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        inputRef.current?.blur();
+      }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscapeKey);
-    window.addEventListener('popstate', closeAllMenus);
+    document.addEventListener('keydown', handleEscape);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscapeKey);
-      window.removeEventListener('popstate', closeAllMenus);
-      if (menuCloseTimer.current) clearTimeout(menuCloseTimer.current);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [setIsOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      setIsOpen(false);
+    }
+  };
+
+  const handleResultClick = (url: string) => {
+    router.push(url);
+    setIsOpen(false);
+    setQuery('');
+  };
+
+  return (
+    <div ref={searchRef} className="relative flex-1 max-w-md">
+      <form onSubmit={handleSubmit} className="relative">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search products, resources..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsOpen(true)}
+            className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* Search Results Dropdown */}
+      {isOpen && (query || results.length > 0) && (
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden">
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-5 h-5 animate-spin text-green-500" />
+              <span className="ml-2 text-sm text-gray-600">Searching...</span>
+            </div>
+          ) : results.length > 0 ? (
+            <div className="divide-y divide-gray-100">
+              {results.map((result) => (
+                <button
+                  key={result.id}
+                  onClick={() => handleResultClick(result.url)}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors group"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-gray-900 group-hover:text-green-600 transition-colors">
+                        {result.title}
+                      </h4>
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                        {result.description}
+                      </p>
+                    </div>
+                    <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full ml-3 flex-shrink-0">
+                      {result.category}
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : query && !isLoading ? (
+            <div className="py-8 text-center">
+              <p className="text-sm text-gray-600">No results found for {query}</p>
+              <button
+                onClick={handleSubmit}
+                className="mt-2 text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
+              >
+                Search all results →
+              </button>
+            </div>
+          ) : null}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Main Header Component
+export default function Header({ user }: { user: UserType | null }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const headerRef = useRef<HTMLElement>(null);
+  const pathname = usePathname();
+
+  // Navigation items configuration
+  const navItems: NavItem[] = useMemo(() => nav, []);
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close menus on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setActiveDropdown(null);
+  }, [pathname]);
+
+  // Handle outside clicks and escape key
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setActiveDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
     };
   }, []);
 
-  const navItems = [
-    { name: "Products", icon: CubeIcon, links: [{href: "/products", label: "All Products", icon: ChevronRightIcon}, {href: "/seasonal-products", label: "Seasonal", icon: ChevronRightIcon}] },
-    { name: "About Us", icon: UsersIcon, links: [{href: "/about-us", label: "Our Mission", icon: ChevronRightIcon}, {href: "/our-farms", label: "Our Farms", icon: ChevronRightIcon}] },
-    { name: "Resources", icon: BookOpenIcon, links: [{href: "/blogs", label: "Blog", icon: ChevronRightIcon}, {href: "/faq", label: "FAQ", icon: ChevronRightIcon}] },
-    { name: "Support", icon: LifebuoyIcon, links: [{href: "/help", label: "Help Center", icon: ChevronRightIcon}, {href: "/contact", label: "Contact Us", icon: ChevronRightIcon}] },
-  ];
+  const handleDropdownToggle = (name: string) => {
+    setActiveDropdown(activeDropdown === name ? null : name);
+  };
+
+  const closeAllMenus = () => {
+    setActiveDropdown(null);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
-    <header ref={headerRef} className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200/80 shadow-sm">
-      <nav className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0" onClick={closeAllMenus}>
-          <div className="bg-gradient-to-br from-green-500 to-emerald-500 p-2.5 rounded-xl shadow-md">
-            <FaLeaf className="w-4 h-4 text-white" />
-          </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Arkin</span>
-        </Link>
+    <header
+      ref={headerRef}
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled
+        ? 'bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-200/50'
+        : 'bg-white/90 backdrop-blur-sm border-b border-gray-200/20'
+        }`}
+    >
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center gap-3 flex-shrink-0 group"
+            onClick={closeAllMenus}
+          >
+            <div className="bg-gradient-to-br from-green-500 via-green-600 to-teal-600 p-2.5 rounded-xl shadow-md group-hover:shadow-lg transition-all duration-200 group-hover:scale-105">
+              <Leaf className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
+              Arkin
+            </span>
+          </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center justify-center flex-1 space-x-2">
-          {user?.role === 'user' && (
-            <Link href="/dashboard" className="text-slate-600 hover:text-green-600 font-medium text-sm px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">Dashboard</Link>
-          )}
-          {navItems.map((item) => (
-            <div 
-              key={item.name} 
-              className="relative" 
-              onMouseEnter={() => handleMenuEnter(item.name.toLowerCase())} 
-              onMouseLeave={handleMenuLeave}
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center px-6 ">
+            {user?.role && ['user', 'admin', 'moderator'].includes(user.role) ? (
+              <Link
+                href="/dashboard"
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/dashboard'
+                  ? 'bg-green-50 text-green-700 shadow-sm'
+                  : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                  }`}
+              >
+                Dashboard
+              </Link>
+            ) : <Link
+              href={'/'}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/'
+                ? 'bg-green-50 text-green-700 shadow-sm'
+                : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                }`}
             >
-              <button 
-                onClick={() => toggleMenuOnClick(item.name.toLowerCase())} 
-                className="flex items-center gap-2 text-slate-600 hover:text-green-600 font-medium transition-colors text-sm px-4 py-2 rounded-lg hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500"
-                aria-haspopup="true"
-                aria-expanded={activeMenu === item.name.toLowerCase()}
-                aria-controls={`menu-${item.name.toLowerCase()}`}
-              >
-                <item.icon /> {item.name} <ChevronIcon isOpen={activeMenu === item.name.toLowerCase()} />
-              </button>
-              <div 
-                id={`menu-${item.name.toLowerCase()}`}
-                role="menu"
-                className={`absolute left-1/2 -translate-x-1/2 mt-2 w-56 origin-top bg-white rounded-xl shadow-lg py-2 z-50 transition-all duration-200 ease-in-out border border-slate-100
-                  ${activeMenu === item.name.toLowerCase() ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`
-                }
-              >
-                {item.links.map(link => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-green-600 transition-colors rounded-md m-1" 
-                    onClick={closeAllMenus}
-                    role="menuitem"
-                  >
-                    {link.label}
-                    <link.icon />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+              <Home className="w-4 h-4" />
+              Home
+            </Link>}
 
-        {/* Right Side Actions */}
-        <div className="flex items-center justify-end space-x-3">
-          {user?.email ? (
-            <div className="relative" onMouseEnter={() => handleMenuEnter('user')} onMouseLeave={handleMenuLeave}>
-              <button 
-                onClick={() => toggleMenuOnClick("user")}
-                className="flex items-center justify-center h-9 w-9 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 text-white font-semibold ring-2 ring-offset-2 ring-transparent hover:ring-green-200 transition-all focus:outline-none focus-visible:ring-green-500" 
-                aria-label="User menu"
-                aria-haspopup="true"
-                aria-expanded={activeMenu === 'user'}
-              >
-                {user.email[0].toUpperCase()}
-              </button>
-              <div 
-                className={`absolute right-0 mt-2 w-64 origin-top-right bg-white rounded-xl shadow-lg z-50 transition-all duration-200 ease-in-out border border-slate-100
-                  ${activeMenu === 'user' ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible'}`
-                }
-              >
-                <div className="px-4 py-3">
-                  <p className="text-sm text-slate-500">Signed in as</p>
-                  <p className="text-sm font-semibold text-slate-800 truncate">{user.email}</p>
-                </div>
-                <div className="h-px bg-slate-200/75"></div>
-                <div className="p-1">
-                  <Link href="/profile" className="block w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-green-600 transition-colors rounded-md" onClick={closeAllMenus}>Your Profile</Link>
-                  <Link href="/orders" className="block w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-green-600 transition-colors rounded-md" onClick={closeAllMenus}>Your Orders</Link>
-                </div>
-                <div className="h-px bg-slate-200/75"></div>
-                <div className="p-1">
-                  <form action={async () => { closeAllMenus(); await handleSignOut(); }}>
-                    <button type="submit" className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 hover:text-green-600 transition-colors rounded-md">Sign Out</button>
-                  </form>
-                </div>
+            {navItems.map((item) => (
+              <div key={item.name} className="relative">
+                {item.singlelink ? (
+                  <Link
+                    href={item.singlelink}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === item.singlelink
+                      ? 'bg-green-50 text-green-700 shadow-sm'
+                      : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                      }`}
+                  >
+                    <item.icon className="w-4 h-4" />
+                    {item.name}
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleDropdownToggle(item.name)}
+                      onMouseEnter={() => setActiveDropdown(item.name)}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-green-600 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                      aria-haspopup="true"
+                      aria-expanded={activeDropdown === item.name}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      {item.name}
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''
+                          }`}
+                      />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {activeDropdown === item.name && item.links && (
+                      <div
+                        className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200/50 py-2 z-50"
+                        onMouseLeave={() => setActiveDropdown(null)}
+                      >
+                        {item.links.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={closeAllMenus}
+                            className={`block px-4 py-2.5 text-sm transition-all duration-200 rounded-lg mx-2 ${pathname === link.href
+                              ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                              : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
+                              }`}
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
-            </div>
-          ) : (
-            <div className="hidden sm:flex items-center space-x-2">
-              <Link href="/sign-in" className="text-sm font-medium text-slate-600 hover:text-green-600 px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">Sign In</Link>
-              <Link href="/sign-up" className="text-sm font-medium text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-all duration-300 shadow-sm hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-green-500">Create Account</Link>
-            </div>
-          )}
-          
-          <div className="lg:hidden">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-              className="p-2 rounded-lg hover:bg-slate-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500" 
+            ))}
+          </div>
+
+          {/* Search Bar (Desktop) */}
+          <div className="hidden md:block flex-1 max-w-xs ">
+            <SearchBar />
+          </div>
+
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-3">
+            {user?.email ? (
+              <div className="relative">
+                <button
+                  onClick={() => handleDropdownToggle('user')}
+                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                  aria-haspopup="true"
+                  aria-expanded={activeDropdown === 'user'}
+                >
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-md">
+                    {user.email[0].toUpperCase()}
+                  </div>
+                  <ChevronDown
+                    className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${activeDropdown === 'user' ? 'rotate-180' : ''
+                      }`}
+                  />
+                </button>
+
+                {/* User Dropdown */}
+                {activeDropdown === 'user' && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                        Signed in as
+                      </p>
+                      <p className="text-sm font-semibold text-gray-800 truncate mt-1">
+                        {user.email}
+                      </p>
+                    </div>
+
+                    <div className="py-2">
+                      <Link
+                        href="/profile"
+                        onClick={closeAllMenus}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-all duration-200"
+                      >
+                        <User className="w-4 h-4" />
+                        Your Profile
+                      </Link>
+                      <Link
+                        href="/orders"
+                        onClick={closeAllMenus}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-all duration-200"
+                      >
+                        <ShoppingBag className="w-4 h-4" />
+                        Your Orders
+                      </Link>
+                      <Link
+                        href="/settings"
+                        onClick={closeAllMenus}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-all duration-200"
+                      >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                      </Link>
+                    </div>
+
+                    <div className="border-t border-gray-100 py-2">
+                      <button
+                        onClick={() => {
+                          closeAllMenus();
+                          handleSignOut();
+                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-all duration-200 w-full text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden lg:flex items-center gap-2">
+                <Link
+                  href="/sign-in"
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-green-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/20"
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <div className="w-5 h-5 flex flex-col items-stretch justify-center gap-y-1">
-                <span className={`block w-full h-0.5 bg-slate-700 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "rotate-45 translate-y-[3px]" : ""}`}></span>
-                <span className={`block w-full h-0.5 bg-slate-700 transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "-rotate-45 -translate-y-[3px]" : ""}`}></span>
-              </div>
+              {isMobileMenuOpen ? <X className={`w-5 h-5 text-gray-600 transition-transform duration-200 `} /> : <Menu
+                className={`w-5 h-5 text-gray-600 transition-transform duration-200 `}
+              />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Search Bar */}
+        <div className="md:hidden pb-4">
+          <SearchBar />
+        </div>
       </nav>
 
-      {/* Mobile Menu Content */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="absolute top-16 left-0 right-0 border-t border-slate-200 bg-white shadow-lg p-4 animate-slide-down lg:hidden">
-          <div className="flex flex-col gap-2">
+        <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-xl">
+          <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
+            {/* Mobile Navigation Items */}
             {navItems.map((item) => (
-              <div key={`${item.name}-mobile`} className="py-2 border-b border-slate-100 last:border-b-0">
-                <button onClick={() => toggleMenuOnClick(item.name.toLowerCase())} className="flex justify-between items-center w-full text-lg text-slate-700 hover:bg-slate-100 rounded-lg p-3 transition-colors">
-                  <span>{item.name}</span>
-                  <ChevronIcon isOpen={activeMenu === item.name.toLowerCase()} />
-                </button>
-                <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeMenu === item.name.toLowerCase() ? 'max-h-60' : 'max-h-0'}`}>
-                  <div className="mt-2 flex flex-col pl-4 gap-1">
-                    {item.links.map((subItem) => (
-                      <Link
-                        key={subItem.href}
-                        href={subItem.href}
-                        className="block py-2 px-4 text-base text-slate-600 hover:bg-slate-100 hover:text-green-600 rounded-lg transition-colors"
-                        onClick={closeAllMenus}
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
+              <div key={`mobile-${item.name}`} className="space-y-1">
+                {item.singlelink ? (
+                  <Link
+                    href={item.singlelink}
+                    onClick={closeAllMenus}
+                    className={`flex items-center gap-3 w-full px-4 py-3 text-left rounded-lg transition-all duration-200 ${pathname === item.singlelink
+                      ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-green-600'
+                      }`}
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </Link>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleDropdownToggle(`mobile-${item.name}`)}
+                      className="flex items-center justify-between w-full px-4 py-3 text-left text-gray-700 hover:bg-gray-50 rounded-lg transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <item.icon className="w-5 h-5" />
+                        <span className="font-medium">{item.name}</span>
+                      </div>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === `mobile-${item.name}` ? 'rotate-180' : ''
+                          }`}
+                      />
+                    </button>
+
+                    {activeDropdown === `mobile-${item.name}` && item.links && (
+                      <div className="pl-8 space-y-1">
+                        {item.links.map((link) => (
+                          <Link
+                            key={link.href}
+                            href={link.href}
+                            onClick={closeAllMenus}
+                            className={`block px-4 py-2.5 text-sm rounded-lg transition-all duration-200 ${pathname === link.href
+                              ? 'bg-green-50 text-green-700 font-medium shadow-sm'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-green-600'
+                              }`}
+                          >
+                            {link.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ))}
+
+            {/* Mobile Auth Buttons */}
             {!user?.email && (
-              <div className="flex flex-col gap-3 pt-4 mt-2 border-t border-slate-200">
-                <Link href="/sign-in" className="w-full text-center text-base font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 px-4 py-3 rounded-lg transition-colors" onClick={closeAllMenus}>Sign In</Link>
-                <Link href="/sign-up" className="w-full text-center text-base font-medium text-white bg-green-600 hover:bg-green-700 px-4 py-3 rounded-lg transition-colors shadow-sm" onClick={closeAllMenus}>Create Account</Link>
+              <div className="pt-4 border-t border-gray-200/50 space-y-3">
+                <Link
+                  href="/sign-in"
+                  onClick={closeAllMenus}
+                  className="block w-full text-center px-4 py-3 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  onClick={closeAllMenus}
+                  className="block w-full text-center px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 rounded-lg transition-all duration-200 shadow-md"
+                >
+                  Get Started
+                </Link>
               </div>
             )}
           </div>

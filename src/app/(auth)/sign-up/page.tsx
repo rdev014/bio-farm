@@ -97,7 +97,7 @@ export default function SignUp() {
           <form className="w-full" action={handleGoogleSignIn}>
             <button
               type="submit"
-              className="flex min-w-full items-center justify-center gap-3 p-3.5 bg-white border border-zinc-300
+              className="flex  min-w-full items-center justify-center gap-3 p-3.5 bg-white border border-zinc-300
                          rounded-xl hover:bg-zinc-50 transition-colors shadow-sm text-base font-semibold text-zinc-700 cursor-pointer"
               disabled={isPending}
             >

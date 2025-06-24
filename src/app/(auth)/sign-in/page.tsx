@@ -20,7 +20,7 @@ export default async function Login() {
         <form className=" w-full  " action={handleGoogleSignIn}>
           <button
             type="submit"
-            className="flex min-w-full items-center justify-center gap-2 p-3 bg-white border border-gray-300 
+            className="flex cursor-pointer min-w-full items-center justify-center gap-2 p-3 bg-white border border-gray-300 
                                rounded-xl hover:bg-gray-50 transition-colors"
           >
             <Image src="/google.svg" alt="Google" width={20} height={20} />
