@@ -1,5 +1,5 @@
 import Footer from '@/components/General/Footer'
-import HeaderProvider from '@/components/General/HeaderProvider'
+import HeaderProvider from '@/components/General/Header/HeaderProvider'
 import { Toaster } from '@/components/ui/sonner'
 
 import React from 'react'
