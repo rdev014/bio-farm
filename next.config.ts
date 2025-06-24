@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "hytek.org.in",
       },
+      {
+        protocol: "https",
+        hostname: "ipost.hytek.org.in",
+      },
     ],
   },
 };

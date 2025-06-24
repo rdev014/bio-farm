@@ -114,7 +114,7 @@ export default function Blogs({ blogs }: BlogProps) {
                                 <div className="flex items-center justify-between mt-auto pt-5 border-t border-gray-100">
                                     <div className="flex items-center">
                                         <Image
-                                            src={post.author.image || '/default-avatar.png'} // Fallback for missing images
+                                            src={post.author.image || 'https://placehold.net/avatar-2.svg'} // Fallback for missing images
                                             alt={post.author.name || 'Author'}
                                             width={36}
                                             height={36}
