@@ -88,14 +88,6 @@ export default function SearchBar() {
     };
   }, [setIsOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-      setIsOpen(false);
-    }
-  };
-
   const handleResultClick = (url: string) => {
     router.push(url);
     setIsOpen(false);
@@ -104,7 +96,7 @@ export default function SearchBar() {
 
   return (
     <div ref={searchRef} className="relative flex-1 max-w-md">
-      <form onSubmit={handleSubmit} className="relative">
+      <form className="relative">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
@@ -167,7 +159,6 @@ export default function SearchBar() {
             <div className="py-8 text-center">
               <p className="text-sm text-gray-600">No results found for {query}</p>
               <button
-                onClick={handleSubmit}
                 className="mt-2 text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
               >
                 Search all results →
