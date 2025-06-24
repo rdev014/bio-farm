@@ -9,9 +9,9 @@ export interface User {
 export interface SearchResult {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   url: string;
-  category: string;
+  category?: string;
   image?: string;
 }
 

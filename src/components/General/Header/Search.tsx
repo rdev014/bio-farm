@@ -6,13 +6,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 
 // Mock search data - replace with your actual search API
-const mockSearchData: SearchResult[] = [
-  { id: '1', title: 'Organic Tomatoes', description: 'Fresh organic tomatoes from our farm', url: '/products/organic-tomatoes', category: 'Products' },
-  { id: '2', title: 'About Our Mission', description: 'Learn about our sustainable farming practices', url: '/about-us', category: 'About' },
-  { id: '3', title: 'Seasonal Vegetables', description: 'Fresh seasonal produce available now', url: '/seasonal-products', category: 'Products' },
-  { id: '4', title: 'Contact Support', description: 'Get help with your orders and questions', url: '/contact', category: 'Support' },
-  { id: '5', title: 'Farm Visit FAQ', description: 'Frequently asked questions about farm visits', url: '/faq', category: 'Resources' },
-];
+// const mockSearchData: SearchResult[] = [
+//   { id: '1', title: 'Organic Tomatoes', description: 'Fresh organic tomatoes from our farm', url: '/products/organic-tomatoes', category: 'Products' },
+//   { id: '2', title: 'About Our Mission', description: 'Learn about our sustainable farming practices', url: '/about-us', category: 'About' },
+//   { id: '3', title: 'Seasonal Vegetables', description: 'Fresh seasonal produce available now', url: '/seasonal-products', category: 'Products' },
+//   { id: '4', title: 'Contact Support', description: 'Get help with your orders and questions', url: '/contact', category: 'Support' },
+//   { id: '5', title: 'Farm Visit FAQ', description: 'Frequently asked questions about farm visits', url: '/faq', category: 'Resources' },
+// ];
 
 
 // Custom hook for search functionality
@@ -31,11 +31,11 @@ const useSearch = () => {
     setIsLoading(true);
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    const filteredResults = mockSearchData.filter(item =>
+    const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
+    const data = await response.json();
+    const filteredResults = data.filter((item: SearchResult) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+      item.url.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     setResults(filteredResults);
