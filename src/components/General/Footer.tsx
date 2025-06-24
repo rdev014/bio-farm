@@ -16,7 +16,7 @@ export default function Footer() {
     { name: "Sustainability", href: "/sustainability" },
   ];
   const knowMore = [
-    { name: "Blog", href: "/blogs" },
+    { name: "Blogs", href: "/blogs" },
     { name: "FAQ", href: "/faq" },
     { name: "Support", href: "/support" },
     { name: "Contact Us", href: "/contact-us" },

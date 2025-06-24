@@ -1,5 +1,5 @@
 import { handleSignOut } from '@/actions/user'
-import { SignOutButton } from '@/components/General/SignOutButton'
+import { SignOutButton } from '@/components/General/Header/SignOutButton'
 import React from 'react'
 
 export default function page() {
