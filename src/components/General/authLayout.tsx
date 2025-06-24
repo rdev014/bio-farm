@@ -43,7 +43,7 @@ export default function AuthLayout({
           {/* Top Section */}
           <div>
             {/* Logo Section - Keeping it consistent with the original if AppLogo is internal */}
-            <div className="flex items-center space-x-4 mb-6">
+            <Link href={'/'} className="flex items-center space-x-4 mb-6">
               <div
                 className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl
                            flex items-center justify-center border border-white/20
@@ -65,7 +65,7 @@ export default function AuthLayout({
                   Sustainable Agriculture
                 </span>
               </div>
-            </div>
+            </Link>
 
             {/* Welcome Text */}
             <div className="space-y-4 max-w-2xl mb-6">
@@ -158,7 +158,7 @@ export default function AuthLayout({
                     className="text-white/60 text-sm leading-relaxed
                              group-hover:text-white/70 transition-colors"
                   >
-                    Connected with sustainable farmers worldwide
+                    Connected with sustainable farmers 
                   </p>
                 </div>
               </div>
