@@ -10,12 +10,12 @@ export interface IBlog extends Document {
     image?: string;
   };
   featuredImage: string;
-  categories: string[];
+  categories:mongoose.Types.ObjectId[];
   tags: string[];
   readTime: number;
   publishedAt: Date;
   updatedAt: Date;
-  status: 'draft' | 'publish';
+  status: "draft" | "publish";
   seo: {
     metaTitle?: string;
     metaDescription?: string;
@@ -60,13 +60,18 @@ const BlogSchema = new Schema<IBlog>(
       type: String,
       required: [true, "Featured image is required"],
     },
-    categories: [{
-      type: String,
-      required: true,
-    }],
-    tags: [{
-      type: String,
-    }],
+    categories: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Category",
+        required: true,
+      },
+    ],
+    tags: [
+      {
+        type: String,
+      },
+    ],
     readTime: {
       type: Number,
       required: true,
@@ -82,8 +87,8 @@ const BlogSchema = new Schema<IBlog>(
     },
     status: {
       type: String,
-      enum: ['draft', 'publish'],
-      default: 'draft',
+      enum: ["draft", "publish"],
+      default: "draft",
     },
     seo: {
       metaTitle: {
@@ -94,9 +99,11 @@ const BlogSchema = new Schema<IBlog>(
         type: String,
         maxlength: [160, "Meta description cannot exceed 160 characters"],
       },
-      keywords: [{
-        type: String,
-      }],
+      keywords: [
+        {
+          type: String,
+        },
+      ],
     },
   },
   {
@@ -105,22 +112,21 @@ const BlogSchema = new Schema<IBlog>(
 );
 
 // Middleware to update updatedAt timestamp
-BlogSchema.pre('save', function(next) {
+BlogSchema.pre("save", function (next) {
   this.updatedAt = new Date();
   next();
 });
 
 // Create slug from title if not provided
-BlogSchema.pre('validate', function(next) {
+BlogSchema.pre("validate", function (next) {
   if (!this.slug && this.title) {
     this.slug = this.title
       .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]/g, '')
-      .replace(/\s+/g, '-');
+      .replace(/[^a-zA-Z0-9\s]/g, "")
+      .replace(/\s+/g, "-");
   }
   next();
 });
 
-
-
-export const Blog = mongoose.models?.Blog || mongoose.model<IBlog>('Blog', BlogSchema);
+export const Blog =
+  mongoose.models?.Blog || mongoose.model<IBlog>("Blog", BlogSchema);

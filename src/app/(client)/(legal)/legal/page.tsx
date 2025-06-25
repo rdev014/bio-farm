@@ -5,26 +5,26 @@ export default function LegalPage() {
   const legalDocs = [
     {
       title: 'Terms of Service',
-      description: 'Our terms and conditions for usingArkin services and products',
-      lastUpdated: 'May 15, 2024',
+      description: 'Our terms and conditions for using Arkin services and products',
+      lastUpdated: 'May 15, 2025',
       icon: '📋'
     },
     {
       title: 'Privacy Policy',
       description: 'How we collect, use, and protect your personal information',
-      lastUpdated: 'May 10, 2024',
+      lastUpdated: 'June 25, 2025',
       icon: '🔒'
     },
     {
       title: 'Cookie Policy',
       description: 'Information about how we use cookies and similar technologies',
-      lastUpdated: 'April 30, 2024',
+      lastUpdated: 'April 30, 2025',
       icon: '🍪'
     },
     {
       title: 'Shipping Policy',
       description: 'Details about our shipping methods, timeframes, and costs',
-      lastUpdated: 'May 1, 2024',
+      lastUpdated: 'May 1, 2025',
       icon: '🚚'
     }
   ];
@@ -54,14 +54,12 @@ export default function LegalPage() {
             <Link
               href={`/legal/${doc.title.toLowerCase().replace(/\s+/g, '-')}`}
               key={doc.title}
-              className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm 
-                       hover:shadow-xl transition-all duration-300"
+              className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300"
             >
               <div className="flex items-start gap-6">
                 <span className="text-4xl">{doc.icon}</span>
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 
-                               transition-colors">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
                     {doc.title}
                   </h2>
                   <p className="text-gray-600 mb-4">{doc.description}</p>
@@ -94,12 +92,15 @@ export default function LegalPage() {
               If you have any questions about our legal documents or policies, 
               our legal team is here to help.
             </p>
-            <button className="px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 
-                           text-white rounded-xl font-medium shadow-lg 
-                           shadow-green-500/25 hover:shadow-xl 
-                           hover:shadow-green-500/40 transition-all duration-300">
+            <a 
+              href="mailto:support@arkin.com"
+              className="px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 
+                         text-white rounded-xl font-medium shadow-lg 
+                         shadow-green-500/25 hover:shadow-xl 
+                         hover:shadow-green-500/40 transition-all duration-300"
+            >
               Contact Legal Team
-            </button>
+            </a>
           </div>
         </div>
       </div>
