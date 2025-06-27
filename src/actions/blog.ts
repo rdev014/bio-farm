@@ -6,12 +6,11 @@ import { Blog } from "@/models/blogSchema";
 import { revalidatePath } from "next/cache";
 
 // Create blog
-export async function createBlog(formData: FormData) {
+export async function createBlog(formData: FormData,user_id: string) {
   try {
     const title = formData.get("title")?.toString();
     const content = formData.get("content")?.toString();
     const excerpt = formData.get("excerpt")?.toString();
-    const author = formData.get("author")?.toString(); // Should be ObjectId string
     const featuredImage = formData.get("featuredImage")?.toString();
     const categories = JSON.parse(formData.get("categories")?.toString() || "[]");
     const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
@@ -21,7 +20,7 @@ export async function createBlog(formData: FormData) {
     const metaDescription = formData.get("metaDescription")?.toString();
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
-    if (!title || !content || !excerpt || !author || !featuredImage || !readTime || categories.length === 0) {
+    if (!title || !content || !excerpt || !featuredImage || !readTime || categories.length === 0) {
       return {
         success: false,
         error: "All required fields must be provided.",
@@ -38,7 +37,7 @@ export async function createBlog(formData: FormData) {
       slug,
       content,
       excerpt,
-      author,
+      author:user_id,
       featuredImage,
       categories,
       tags,
@@ -196,10 +195,6 @@ export async function showBlog({ slug }: { slug: string }) {
     slug: string,
     content: string,
     excerpt: string,
-    author: {
-      name: string;
-      image: string;
-    },
     featuredImage: string,
     categories: string[],
     tags: string[],
@@ -221,10 +216,6 @@ export async function showBlog({ slug }: { slug: string }) {
     slug: typedBlog.slug,
     content: typedBlog.content,
     excerpt: typedBlog.excerpt,
-    author: {
-      name: typedBlog.author.name,
-      image: typedBlog.author.image
-    },
     featuredImage: typedBlog.featuredImage,
     categories: typedBlog.categories.map((cat: { toString: () => string }) => cat.toString()),
     tags: typedBlog.tags,
