@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { toast } from "sonner";
 import { createBlog } from "@/actions/blog";
-import { getCategories } from "@/actions/category";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -27,7 +26,7 @@ import {
   User,
   Clock,
   Tags,
-  Search
+  Search,
 } from "lucide-react";
 import { Category } from "@/components/FetchCategory/FetchCategory";
 
@@ -67,7 +66,6 @@ export default function CreateBlog({categories = [],user_id}: BlogProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
-  setAvailableCategories(categories)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
@@ -99,6 +97,10 @@ export default function CreateBlog({categories = [],user_id}: BlogProps) {
   const watchedTitle = watch("title");
   const watchedContent = watch("content");
 
+  useEffect(()=>{
+    setAvailableCategories(categories)
+    setIsLoadingCategories(false)
+  },[categories])
   // Auto-generate meta title from title
   useEffect(() => {
     if (watchedTitle && !watch("metaTitle")) {
