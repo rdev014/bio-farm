@@ -14,7 +14,7 @@ export default async function Page({
     ...post,
     publishedAt: post.publishedAt ?? null,
     updatedAt: post.updatedAt ?? null,
-    author: {...post.author, image: post.author.image ?? null},
+    author: { name: post.author.name ?? null, image: post.author.image ?? null },
     seo: {
       metaTitle: post.seo?.metaTitle ?? null,
       metaDescription: post.seo?.metaDescription ?? null,

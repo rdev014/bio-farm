@@ -5,12 +5,9 @@ export interface IBlog extends Document {
   slug: string;
   content: string;
   excerpt: string;
-  author: {
-    name: string;
-    image?: string;
-  };
+  author: mongoose.Types.ObjectId; // Ref to User
   featuredImage: string;
-  categories:mongoose.Types.ObjectId[];
+  categories: mongoose.Types.ObjectId[];
   tags: string[];
   readTime: number;
   publishedAt: Date;
@@ -48,13 +45,9 @@ const BlogSchema = new Schema<IBlog>(
       maxlength: [300, "Excerpt cannot exceed 300 characters"],
     },
     author: {
-      name: {
-        type: String,
-        required: [true, "Author name is required"],
-      },
-      image: {
-        type: String,
-      },
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     featuredImage: {
       type: String,

@@ -121,26 +121,28 @@ export default function Blogs({ blogs }: BlogProps) {
                   {post.excerpt}
                 </p>
                 <div className="flex items-center justify-between mt-auto pt-5 border-t border-gray-100">
-                  <div className="flex items-center">
-                    <Image
-                      src={
-                        post.author.image ||
-                        "https://placehold.net/avatar-2.svg"
-                      } // Fallback for missing images
-                      alt={post.author.name || "Author"}
-                      width={36}
-                      height={36}
-                      className="rounded-full mr-3 border-2 border-gray-200 object-cover"
-                    />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {post.author.name}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {getTimeAgo(post.publishedAt)}
-                      </p>
+                  {post.author &&
+                    <div className="flex items-center">
+                      <Image
+                        src={
+                          post.author.image ||
+                          "https://placehold.net/avatar-2.svg"
+                        } // Fallback for missing images
+                        alt={post.author.name || "Author"}
+                        width={36}
+                        height={36}
+                        className="rounded-full mr-3 border-2 border-gray-200 object-cover"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {post.author.name}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                          {getTimeAgo(post.publishedAt)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  }
                   <div className="flex items-center text-green-600 group-hover:text-green-700 transition-colors duration-300">
                     <span className="text-sm font-semibold mr-1">
                       Read More

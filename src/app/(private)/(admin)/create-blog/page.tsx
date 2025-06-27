@@ -29,12 +29,9 @@ import {
   Tags,
   Search
 } from "lucide-react";
+import { Category } from "@/components/FetchCategory/FetchCategory";
 
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-}
+
 
 const blogSchema = z.object({
   title: z.string()
@@ -122,25 +119,26 @@ export default function CreateBlogPage() {
     }
   }, [watchedContent, setValue]);
 
-  useEffect(() => {
-    async function fetchCategories() {
-      try {
-        setIsLoadingCategories(true);
-        const categories = await getCategories();
-        if (Array.isArray(categories)) {
-          setAvailableCategories(categories);
-        } else {
-          throw new Error("Invalid categories data");
-        }
-      } catch (error) {
-        toast.error(`Failed to load categories: ${error instanceof Error ? error.message : "Unknown error"}`);
-        setAvailableCategories([]);
-      } finally {
-        setIsLoadingCategories(false);
+useEffect(() => {
+  async function fetchCategories() {
+    try {
+      setIsLoadingCategories(true);
+      const categories = await getCategories();
+      if (Array.isArray(categories)) {
+        // Filter out undefined or invalid entries
+        setAvailableCategories(categories.filter((category): category is Category => !!category));
+      } else {
+        throw new Error("Invalid categories data");
       }
+    } catch (error) {
+      toast.error(`Failed to load categories: ${error instanceof Error ? error.message : "Unknown error"}`);
+      setAvailableCategories([]);
+    } finally {
+      setIsLoadingCategories(false);
     }
-    fetchCategories();
-  }, []);
+  }
+  fetchCategories();
+}, []);
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategories((prev) =>

@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ICategory extends Document {
   name: string;
   slug: string;
+  author: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,49 +19,28 @@ const CategorySchema = new Schema<ICategory>(
     },
     slug: {
       type: String,
-      required: true,
+      required: [true, "Slug is required"],
       unique: true,
       lowercase: true,
       trim: true,
     },
-},
-{
-  timestamps: true,
-}
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
-// Create slug from name if not provided
-CategorySchema.pre('validate', function(next) {
-  // if (!this.slug && this.name) {
-  //   this.slug = this.name
-  //     .toLowerCase()
-  //     .replace(/[^a-zA-Z0-9\s]/g, '')
-  //     .replace(/\s+/g, '-');
-  // }
-  if (this.isModified('name') ) {
-     this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]/g, '')
-      .replace(/\s+/g, '-');
-  }
-  next();
-});
-CategorySchema.pre('save', function (next) {
-  if (this.isModified('name')) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9\s]/g, '')
-      .replace(/\s+/g, '-');
-  }
-  next();
-});
 
 
 
-// Index for efficient querying
+// Indexes for efficient querying
+CategorySchema.index({ author: 1, name: 1 });
 
-
-
-export const Category = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema);
+export const Category = mongoose.models.Category || mongoose.model<ICategory>("Category", CategorySchema);
 
 export default Category;
