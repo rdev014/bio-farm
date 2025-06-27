@@ -1,12 +1,15 @@
 import { getBlogs } from "@/actions/blog";
+import { Category } from "@/components/FetchCategory/FetchCategory";
 import Home from "@/components/home/Home";
 
-// Define or import the BlogPost type (ensure it matches your component's expectations)
+// Define or import the BlogPost and Category types correctly
 interface SEO {
   metaTitle: string;
   metaDescription: string;
   keywords: string[];
 }
+
+
 
 interface BlogPost {
   _id: string;
@@ -16,11 +19,11 @@ interface BlogPost {
   excerpt: string;
   author: { name: string; image: string };
   featuredImage: string;
-  categories: string[];
+  categories: Category[];
   tags: string[];
   readTime: number;
-  publishedAt: string; // Expects string, not string | null
-  updatedAt: string;  // Expects string, not string | null
+  publishedAt: string;
+  updatedAt: string;
   status: string;
   seo: SEO;
 }
@@ -28,11 +31,15 @@ interface BlogPost {
 export default async function Page() {
   const blogs = await getBlogs();
 
-  // Transform blogs to ensure publishedAt and updatedAt are strings
   const formattedBlogs: BlogPost[] = blogs.map((blog) => ({
     ...blog,
-    publishedAt: blog.publishedAt || "", // Fallback to empty string if null
-    updatedAt: blog.updatedAt || "",     // Fallback to empty string if null
+    publishedAt: blog.publishedAt || "",
+    updatedAt: blog.updatedAt || "",
+    categories: blog.categories.map((cat: Category) => ({
+      _id: cat._id || "",
+      name: cat.name || "",
+      slug: cat.slug || "",
+    })),
   }));
 
   return <Home blogs={formattedBlogs} />;

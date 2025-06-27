@@ -159,7 +159,7 @@ const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLL
 Label.displayName = "Label";
 
 // Types
-interface Category {
+export interface Category {
   _id: string;
   name: string;
   slug: string;

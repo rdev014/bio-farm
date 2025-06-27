@@ -154,7 +154,7 @@ export async function deleteBlog(formData: FormData) {
 export async function getBlogs() {
   await connectDb();
   const blogs = await Blog.find({}).sort({ publishedAt: -1 }).populate('author').populate('categories');
-console.log(blogs);
+  console.log(blogs);
 
   return blogs.map((blog) => ({
     _id: blog._id.toString(),
@@ -186,7 +186,7 @@ console.log(blogs);
 // Show single blog
 export async function showBlog({ slug }: { slug: string }) {
   await connectDb();
-  const blog = await Blog.findOne({ slug }).lean();
+  const blog = await Blog.findOne({ slug }).populate('author').lean();
 
   if (!blog || Array.isArray(blog)) return null;
 
@@ -196,7 +196,10 @@ export async function showBlog({ slug }: { slug: string }) {
     slug: string,
     content: string,
     excerpt: string,
-    author: { toString: () => string },
+    author: {
+      name: string;
+      image: string;
+    },
     featuredImage: string,
     categories: string[],
     tags: string[],
@@ -218,7 +221,10 @@ export async function showBlog({ slug }: { slug: string }) {
     slug: typedBlog.slug,
     content: typedBlog.content,
     excerpt: typedBlog.excerpt,
-    author: typedBlog.author.toString(),
+    author: {
+      name: typedBlog.author.name,
+      image: typedBlog.author.image
+    },
     featuredImage: typedBlog.featuredImage,
     categories: typedBlog.categories.map((cat: { toString: () => string }) => cat.toString()),
     tags: typedBlog.tags,

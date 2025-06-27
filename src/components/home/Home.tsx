@@ -11,6 +11,7 @@ import {
   Calculator, NewspaperIcon, ArrowRightIcon
 } from "lucide-react";
 import { ReactNode } from "react";
+import { Category } from "../FetchCategory/FetchCategory";
 
 interface Feature {
   title: string;
@@ -62,9 +63,7 @@ interface BlogPost {
   excerpt: string;
   author: Author;
   featuredImage: string;
-  categories: {
-    name: string;
-  }[];
+  categories: Category[];
   tags: string[];
   readTime: number;
   publishedAt: string;
@@ -120,7 +119,6 @@ const itemVariants = {
 
 export default function Home({ blogs }: BlogProps) {
 
-  console.log('this is ',blogs);
   
 
   const [landSize, setLandSize] = useState<number>(0);
