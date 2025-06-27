@@ -1,14 +1,9 @@
 import { fetchAllUsers } from "@/actions/user";
-import { getSession } from "@/lib/getSession";
 import { User } from "@/models/UserSchema";
-import { redirect } from "next/navigation";
+
 
 const Admin = async () => {
-  const session = await getSession();
-  const user = session?.user;
-   if (!user) return redirect("/login");
 
-   if (user?.role !== "user") return redirect("/dashboard");
 
   const allUsers = await fetchAllUsers();
 

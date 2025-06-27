@@ -19,18 +19,11 @@ import {
   getCategories,
   updateCategory,
 } from "@/actions/category";
+import Image from "next/image";
 
-// --- Mock Shadcn-like components (as provided by you) ---
-const Card = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <div
-    className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm ${className}`}
-  >
+// Mock Shadcn-like components
+const Card = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <div className={`bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm ${className}`}>
     {children}
   </div>
 );
@@ -40,9 +33,7 @@ const CardHeader = ({ children }: { children: React.ReactNode }) => (
 );
 
 const CardTitle = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="font-semibold text-xl text-gray-800 dark:text-white">
-    {children}
-  </h3>
+  <h3 className="font-semibold text-xl text-gray-800 dark:text-white">{children}</h3>
 );
 
 const CardContent = ({ children }: { children: React.ReactNode }) => (
@@ -53,18 +44,14 @@ const Dialog = ({
   children,
   open,
   onOpenChange,
-}: {
-  children: React.ReactNode;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) => (
+}: { children: React.ReactNode; open: boolean; onOpenChange: (open: boolean) => void }) => (
   <AnimatePresence>
     {open && (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-10 bg-black/50 backdrop-blur-sm flex items-center justify-center"
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center"
         onClick={() => onOpenChange(false)}
       >
         {children}
@@ -77,11 +64,7 @@ const DialogContent = ({
   children,
   className,
   ...props
-}: {
-  children: React.ReactNode;
-  className?: string;
-  onClick: (e: React.MouseEvent) => void;
-}) => (
+}: { children: React.ReactNode; className?: string; onClick: (e: React.MouseEvent) => void }) => (
   <motion.div
     initial={{ y: 20, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
@@ -99,9 +82,7 @@ const DialogHeader = ({ children }: { children: React.ReactNode }) => (
 );
 
 const DialogTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-    {children}
-  </h2>
+  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">{children}</h2>
 );
 
 const DialogDescription = ({ children }: { children: React.ReactNode }) => (
@@ -115,20 +96,13 @@ const DialogFooter = ({ children }: { children: React.ReactNode }) => (
 const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: "primary" | "secondary" | "destructive" | "ghost" | "success"; // Added 'success' variant
+    variant?: "primary" | "secondary" | "destructive" | "ghost" | "success";
     size?: "default" | "sm";
     isLoading?: boolean;
   }
 >(
   (
-    {
-      className,
-      variant = "primary",
-      size = "default",
-      isLoading = false,
-      children,
-      ...props
-    },
+    { className, variant = "primary", size = "default", isLoading = false, children, ...props },
     ref
   ) => {
     const baseClasses =
@@ -136,12 +110,10 @@ const Button = React.forwardRef<
 
     const variantClasses = {
       primary: "bg-indigo-600 hover:bg-indigo-700 text-white",
-      secondary:
-        "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200",
+      secondary: "bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200",
       destructive: "bg-red-600 hover:bg-red-700 text-white",
-      ghost:
-        "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300",
-      success: "bg-green-600 hover:bg-green-700 text-white", // Green button
+      ghost: "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300",
+      success: "bg-green-600 hover:bg-green-700 text-white",
     };
 
     const sizeClasses = {
@@ -151,16 +123,12 @@ const Button = React.forwardRef<
 
     return (
       <button
-        className={`${baseClasses} ${variantClasses[variant]} ${
-          sizeClasses[size]
-        } ${isLoading ? "cursor-wait" : ""} ${className}`}
+        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${isLoading ? "cursor-wait" : ""} ${className}`}
         ref={ref}
         disabled={isLoading}
         {...props}
       >
-        {isLoading ? (
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-        ) : null}
+        {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> : null}
         {children}
       </button>
     );
@@ -168,72 +136,62 @@ const Button = React.forwardRef<
 );
 Button.displayName = "Button";
 
-const Input = React.forwardRef<
-  HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement>
->(({ className, ...props }, ref) => (
-  <input
-    ref={ref}
-    className={`w-full h-11 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors ${className}`}
-    {...props}
-  />
-));
+const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, ...props }, ref) => (
+    <input
+      ref={ref}
+      className={`w-full h-11 px-4 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-colors ${className}`}
+      {...props}
+    />
+  )
+);
 Input.displayName = "Input";
 
-const Label = React.forwardRef<
-  HTMLLabelElement,
-  React.LabelHTMLAttributes<HTMLLabelElement>
->(({ className, ...props }, ref) => (
-  <label
-    ref={ref}
-    className={`block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ${className}`}
-    {...props}
-  />
-));
+const Label = React.forwardRef<HTMLLabelElement, React.LabelHTMLAttributes<HTMLLabelElement>>(
+  ({ className, ...props }, ref) => (
+    <label
+      ref={ref}
+      className={`block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ${className}`}
+      {...props}
+    />
+  )
+);
 Label.displayName = "Label";
 
-// --- Types and Mock API Actions ---
+// Types
 interface Category {
   _id: string;
   name: string;
   slug: string;
+  author: {
+    name: string;
+    image: string;
+  };
   createdAt: string;
   updatedAt: string;
 }
 
-
-
-
-// --- Main Component ---
 interface FetchCategoryProps {
   categories?: Category[];
+  user_id?: string;
 }
 
-export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
+// Main Component
+export default function FetchCategory({ categories = [], user_id }: FetchCategoryProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [categoryList, setCategoryList] = useState<Category[]>(categories);
-
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false); // New state for create dialog
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
-    null
-  );
-
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [notification, setNotification] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
+  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
-  const showNotification = useCallback(
-    (type: "success" | "error", message: string) => {
-      setNotification({ type, message });
-      setTimeout(() => setNotification(null), 3000);
-    },
-    []
-  );
+  const showNotification = useCallback((type: "success" | "error", message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 3000);
+  }, []);
 
   // Initialize categories
   useEffect(() => {
@@ -242,10 +200,9 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
         setIsLoading(true);
         try {
           const fetchedCategories = await getCategories();
-          setCategoryList(fetchedCategories);
+          setCategoryList(fetchedCategories.filter((cat): cat is Category => cat !== undefined));
         } catch (error) {
-          console.error("Error loading categories:", error);
-          showNotification("error", "Failed to load categories.");
+          showNotification("error", error instanceof Error ? error.message : "Failed to load categories.");
         } finally {
           setIsLoading(false);
           setIsInitializing(false);
@@ -262,34 +219,36 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      const name = formData.get("name") as string;
+      const name = formData.get("name")?.toString();
 
-      if (!name.trim()) {
+      if (!name?.trim()) {
         showNotification("error", "Category name is required.");
+        return;
+      }
+
+      if (!user_id) {
+        showNotification("error", "User authentication required.");
         return;
       }
 
       try {
         setIsLoading(true);
-        const result = await createCategory(formData);
-        setIsLoading(false);
-
+        const result = await createCategory(formData, user_id);
         if (result.success && result.category) {
           showNotification("success", "Category created successfully!");
-          (e.target as HTMLFormElement).reset();
           setCategoryList((prev) => [result.category!, ...prev]);
-          setIsCreateDialogOpen(false); // Close dialog on success
+          setIsCreateDialogOpen(false);
+          (e.target as HTMLFormElement).reset();
         } else {
-          showNotification(
-            "error",
-            result.error || "Failed to create category."
-          );
+          showNotification("error", result.error || "Failed to create category.");
         }
       } catch (error) {
-        console.error(error);
+        showNotification("error", error instanceof Error ? error.message : "Unexpected error.");
+      } finally {
+        setIsLoading(false);
       }
     },
-    [showNotification]
+    [showNotification, user_id]
   );
 
   const handleEditClick = useCallback((category: Category) => {
@@ -300,35 +259,35 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
   const handleUpdate = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (!editingCategory) return;
+      if (!editingCategory || !user_id) return;
 
       const formData = new FormData(e.currentTarget);
-      const name = formData.get("name") as string;
+      const name = formData.get("name")?.toString();
 
-      if (!name.trim()) {
+      if (!name?.trim()) {
         showNotification("error", "Category name is required.");
         return;
       }
 
-      setIsLoading(true);
-      const result = await updateCategory(formData);
-      setIsLoading(false);
-
-      if (result.success) {
-        showNotification("success", "Category updated successfully!");
-        setIsEditDialogOpen(false);
-        setCategoryList((prev) =>
-          prev.map((cat) =>
-            cat._id === editingCategory._id
-              ? { ...cat, name, slug: name.toLowerCase().replace(/\s+/g, "-") }
-              : cat
-          )
-        );
-      } else {
-        showNotification("error", result.error || "Failed to update category.");
+      try {
+        setIsLoading(true);
+        const result = await updateCategory(formData, user_id);
+        if (result.success && result.category) {
+          showNotification("success", "Category updated successfully!");
+          setCategoryList((prev) =>
+            prev.map((cat) => (cat._id === editingCategory._id ? result.category! : cat))
+          );
+          setIsEditDialogOpen(false);
+        } else {
+          showNotification("error", result.error || "Failed to update category.");
+        }
+      } catch (error) {
+        showNotification("error", error instanceof Error ? error.message : "Unexpected error.");
+      } finally {
+        setIsLoading(false);
       }
     },
-    [editingCategory, showNotification]
+    [editingCategory, showNotification, user_id]
   );
 
   const handleDeleteClick = useCallback((category: Category) => {
@@ -337,41 +296,35 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
   }, []);
 
   const confirmDelete = useCallback(async () => {
-    if (!categoryToDelete) return;
+    if (!categoryToDelete || !user_id) return;
 
     const formData = new FormData();
     formData.append("id", categoryToDelete._id);
 
-    setIsLoading(true);
-    const result = await deleteCategory(formData);
-    setIsLoading(false);
-
-    if (result.success) {
-      showNotification("success", "Category deleted successfully!");
-      setCategoryList((prev) =>
-        prev.filter((cat) => cat._id !== categoryToDelete._id)
-      );
-    } else {
-      showNotification("error", result.error || "Failed to delete category.");
+    try {
+      setIsLoading(true);
+      const result = await deleteCategory(formData, user_id);
+      if (result.success) {
+        showNotification("success", "Category deleted successfully!");
+        setCategoryList((prev) => prev.filter((cat) => cat._id !== categoryToDelete._id));
+      } else {
+        showNotification("error", result.error || "Failed to delete category.");
+      }
+    } catch (error) {
+      showNotification("error", error instanceof Error ? error.message : "Unexpected error.");
+    } finally {
+      setIsLoading(false);
+      setIsDeleteDialogOpen(false);
     }
-
-    setIsDeleteDialogOpen(false);
-  }, [categoryToDelete, showNotification]);
+  }, [categoryToDelete, showNotification, user_id]);
 
   // Sort functionality
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof Category;
-    direction: "asc" | "desc";
-  } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Category | "author.name"; direction: "asc" | "desc" } | null>(null);
 
-  const requestSort = useCallback((key: keyof Category) => {
+  const requestSort = useCallback((key: keyof Category | "author.name") => {
     setSortConfig((prevSortConfig) => {
       let direction: "asc" | "desc" = "asc";
-      if (
-        prevSortConfig &&
-        prevSortConfig.key === key &&
-        prevSortConfig.direction === "asc"
-      ) {
+      if (prevSortConfig && prevSortConfig.key === key && prevSortConfig.direction === "asc") {
         direction = "desc";
       }
       return { key, direction };
@@ -382,21 +335,19 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
     if (!sortConfig) return categoryList;
 
     return [...categoryList].sort((a, b) => {
-      const aValue =
-        typeof a[sortConfig.key] === "string"
-          ? (a[sortConfig.key] as string).toLowerCase()
-          : a[sortConfig.key];
-      const bValue =
-        typeof b[sortConfig.key] === "string"
-          ? (b[sortConfig.key] as string).toLowerCase()
-          : b[sortConfig.key];
+      const aValue = sortConfig.key === "author.name" 
+        ? a.author.name.toLowerCase() 
+        : typeof a[sortConfig.key as keyof Category] === "string"
+          ? (a[sortConfig.key as keyof Category] as string).toLowerCase()
+          : a[sortConfig.key as keyof Category];
+      const bValue = sortConfig.key === "author.name" 
+        ? b.author.name.toLowerCase() 
+        : typeof b[sortConfig.key as keyof Category] === "string"
+          ? (b[sortConfig.key as keyof Category] as string).toLowerCase()
+          : b[sortConfig.key as keyof Category];
 
-      if (aValue < bValue) {
-        return sortConfig.direction === "asc" ? -1 : 1;
-      }
-      if (aValue > bValue) {
-        return sortConfig.direction === "asc" ? 1 : -1;
-      }
+      if (aValue < bValue) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortConfig.direction === "asc" ? 1 : -1;
       return 0;
     });
   }, [categoryList, sortConfig]);
@@ -404,12 +355,7 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-      },
-    },
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
 
   const itemVariants = {
@@ -452,20 +398,17 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
 
       <Card className="overflow-hidden">
         <CardHeader>
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 ">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <CardTitle>Category Management</CardTitle>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">
-                Organize your product categories
-              </p>
+              <p className="text-gray-500 dark:text-gray-400 mt-1">Organize your product categories</p>
             </div>
-
-            {/* Changed from direct form to a button that opens a dialog */}
             <Button
               type="button"
-              variant="success" // Green button to open the create dialog
+              variant="success"
               onClick={() => setIsCreateDialogOpen(true)}
               className="flex-shrink-0 w-full sm:w-auto"
+              disabled={isLoading}
             >
               <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
               Add New Category
@@ -474,7 +417,6 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
         </CardHeader>
 
         <CardContent>
-          {/* Categories Table */}
           <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800">
               <thead className="bg-gray-50 dark:bg-gray-800">
@@ -482,13 +424,7 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                   <th
                     className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer"
                     onClick={() => requestSort("name")}
-                    aria-sort={
-                      sortConfig?.key === "name"
-                        ? sortConfig.direction === "asc"
-                          ? "ascending"
-                          : "descending"
-                        : "none"
-                    }
+                    aria-sort={sortConfig?.key === "name" ? (sortConfig.direction === "asc" ? "ascending" : "descending") : "none"}
                     scope="col"
                   >
                     <div className="flex items-center gap-1">
@@ -508,6 +444,22 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                     Slug
                   </th>
                   <th
+                    className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden sm:table-cell cursor-pointer"
+                    onClick={() => requestSort("author.name")}
+                    aria-sort={sortConfig?.key === "author.name" ? (sortConfig.direction === "asc" ? "ascending" : "descending") : "none"}
+                    scope="col"
+                  >
+                    <div className="flex items-center gap-1">
+                      Author
+                      {sortConfig?.key === "author.name" &&
+                        (sortConfig.direction === "asc" ? (
+                          <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                        ))}
+                    </div>
+                  </th>
+                  <th
                     className="py-3 px-6 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider hidden md:table-cell"
                     scope="col"
                   >
@@ -523,12 +475,14 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
               </thead>
 
               {isInitializing ? (
-                // Skeleton loading
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                   {[1, 2, 3].map((i) => (
                     <tr key={i} className="animate-pulse">
                       <td className="py-4 px-6">
                         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                      </td>
+                      <td className="py-4 px-6 hidden sm:table-cell">
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
                       </td>
                       <td className="py-4 px-6 hidden sm:table-cell">
                         <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
@@ -546,24 +500,27 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                   ))}
                 </tbody>
               ) : sortedCategories.length > 0 ? (
-                // Actual categories
-                <motion.tbody
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  className="divide-y divide-gray-200 dark:divide-gray-800"
-                >
+                <motion.tbody variants={containerVariants} initial="hidden" animate="show" className="divide-y divide-gray-200 dark:divide-gray-800">
                   {sortedCategories.map((category) => (
                     <motion.tr
                       key={category._id}
                       variants={itemVariants}
                       className="hover:bg-gray-50 dark:hover:bg-gray-900/50"
                     >
-                      <td className="py-4 px-6 font-medium text-gray-900 dark:text-white">
-                        {category.name}
-                      </td>
+                      <td className="py-4 px-6 font-medium text-gray-900 dark:text-white">{category.name}</td>
+                      <td className="py-4 px-6 text-gray-500 dark:text-gray-400 hidden sm:table-cell">{category.slug}</td>
                       <td className="py-4 px-6 text-gray-500 dark:text-gray-400 hidden sm:table-cell">
-                        {category.slug}
+                        <div className="flex items-center gap-2">
+                          {category.author.image && (
+                            <Image
+                              src={category.author.image}
+                              alt={category.author.name}
+                              className="h-6 w-6 rounded-full object-cover"
+                              width={10}height={10}
+                            />
+                          )}
+                          <span>{category.author.name}</span>
+                        </div>
                       </td>
                       <td className="py-4 px-6 text-gray-500 dark:text-gray-400 hidden md:table-cell">
                         {new Date(category.createdAt).toLocaleDateString()}
@@ -576,6 +533,7 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                             onClick={() => handleEditClick(category)}
                             className="text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30"
                             aria-label={`Edit category ${category.name}`}
+                            disabled={isLoading}
                           >
                             <Edit2 className="h-4 w-4" aria-hidden="true" />
                           </Button>
@@ -585,6 +543,7 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                             onClick={() => handleDeleteClick(category)}
                             className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
                             aria-label={`Delete category ${category.name}`}
+                            disabled={isLoading}
                           >
                             <Trash2 className="h-4 w-4" aria-hidden="true" />
                           </Button>
@@ -594,22 +553,14 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
                   ))}
                 </motion.tbody>
               ) : (
-                // Empty state
                 <tbody>
                   <tr>
-                    <td colSpan={4} className="py-12 text-center">
+                    <td colSpan={5} className="py-12 text-center">
                       <div className="flex flex-col items-center justify-center gap-3">
-                        <AlertTriangle
-                          className="h-12 w-12 text-gray-400"
-                          aria-hidden="true"
-                        />
+                        <AlertTriangle className="h-12 w-12 text-gray-400" aria-hidden="true" />
                         <div className="space-y-1">
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            No categories found
-                          </p>
-                          <p className="text-gray-500 dark:text-gray-400">
-                            Start by adding a new category above.
-                          </p>
+                          <p className="font-medium text-gray-900 dark:text-white">No categories found</p>
+                          <p className="text-gray-500 dark:text-gray-400">Start by adding a new category above.</p>
                         </div>
                       </div>
                     </td>
@@ -623,42 +574,25 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
 
       {/* Create Category Dialog */}
       <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent onClick={(e) => e.stopPropagation()} className="p-0 ">
+        <DialogContent onClick={(e) => e.stopPropagation()} className="p-0">
           <form onSubmit={handleCreate}>
             <DialogHeader>
               <DialogTitle>Create New Category</DialogTitle>
-              <DialogDescription>
-                Enter the details for your new category.
-              </DialogDescription>
+              <DialogDescription>Enter the details for your new category.</DialogDescription>
             </DialogHeader>
-
             <div className="px-6 pb-6">
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="create-name">Category Name</Label>
-                  <Input
-                    id="create-name"
-                    name="name"
-                    placeholder="e.g., Electronics, Books"
-                    required
-                  />
+                  <Input id="create-name" name="name" placeholder="e.g., Electronics, Books" required />
                 </div>
               </div>
             </div>
-
             <DialogFooter>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setIsCreateDialogOpen(false)}
-              >
+              <Button type="button" variant="secondary" onClick={() => setIsCreateDialogOpen(false)} disabled={isLoading}>
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                variant="success" // Green button for submission
-                isLoading={isLoading}
-              >
+              <Button type="submit" variant="success" isLoading={isLoading}>
                 <PlusCircle className="mr-2 h-4 w-4" aria-hidden="true" />
                 Create Category
               </Button>
@@ -673,32 +607,19 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
           <form onSubmit={handleUpdate}>
             <DialogHeader>
               <DialogTitle>Edit Category</DialogTitle>
-              <DialogDescription>
-                Update your category details.
-              </DialogDescription>
+              <DialogDescription>Update your category details.</DialogDescription>
             </DialogHeader>
-
             <div className="px-6 pb-6">
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="edit-name">Name</Label>
-                  <Input
-                    id="edit-name"
-                    name="name"
-                    defaultValue={editingCategory?.name}
-                    required
-                  />
+                  <Input id="edit-name" name="name" defaultValue={editingCategory?.name} required />
                   <input type="hidden" name="id" value={editingCategory?._id} />
                 </div>
               </div>
             </div>
-
             <DialogFooter>
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => setIsEditDialogOpen(false)}
-              >
+              <Button type="button" variant="secondary" onClick={() => setIsEditDialogOpen(false)} disabled={isLoading}>
                 Cancel
               </Button>
               <Button type="submit" variant="primary" isLoading={isLoading}>
@@ -714,12 +635,8 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
         <DialogContent onClick={(e) => e.stopPropagation()} className="p-0">
           <DialogHeader>
             <DialogTitle>Delete Category</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this category? This action cannot
-              be undone.
-            </DialogDescription>
+            <DialogDescription>Are you sure you want to delete this category? This action cannot be undone.</DialogDescription>
           </DialogHeader>
-
           <div className="px-6 pb-6">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
               <p className="font-medium text-red-800 dark:text-red-200">
@@ -727,19 +644,11 @@ export default function FetchCategory({ categories = [] }: FetchCategoryProps) {
               </p>
             </div>
           </div>
-
           <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
+            <Button variant="secondary" onClick={() => setIsDeleteDialogOpen(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={confirmDelete}
-              isLoading={isLoading}
-            >
+            <Button variant="destructive" onClick={confirmDelete} isLoading={isLoading}>
               Delete Category
             </Button>
           </DialogFooter>

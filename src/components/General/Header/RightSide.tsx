@@ -71,7 +71,7 @@ export default function RightSide({ user, }: { user: UserType | null }) {
                                     Your Orders
                                 </Link>
                                 <Link
-                                    href="/settings"
+                                    href="dashboard/settings"
                                     onClick={closeAllMenus}
                                     className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-green-600 transition-all duration-200"
                                 >

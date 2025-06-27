@@ -6,8 +6,10 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
-import { Leaf, CircuitBoard, Award, Globe, FlaskConical, HeadsetIcon, 
- Calculator, NewspaperIcon, ArrowRightIcon } from "lucide-react";
+import {
+  Leaf, CircuitBoard, Award, Globe, FlaskConical, HeadsetIcon,
+  Calculator, NewspaperIcon, ArrowRightIcon
+} from "lucide-react";
 import { ReactNode } from "react";
 
 interface Feature {
@@ -60,7 +62,9 @@ interface BlogPost {
   excerpt: string;
   author: Author;
   featuredImage: string;
-  categories: string[];
+  categories: {
+    name: string;
+  }[];
   tags: string[];
   readTime: number;
   publishedAt: string;
@@ -115,6 +119,10 @@ const itemVariants = {
 };
 
 export default function Home({ blogs }: BlogProps) {
+
+  console.log('this is ',blogs);
+  
+
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
   const [recommendations, setRecommendations] = useState<{
@@ -123,7 +131,7 @@ export default function Home({ blogs }: BlogProps) {
     price: string;
   }[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
-  
+
 
 
 
@@ -186,7 +194,7 @@ export default function Home({ blogs }: BlogProps) {
   // Farm calculator logic
   const calculateRequirements = () => {
     setIsCalculating(true);
-    
+
     // Base ratios per acre
     const baseRatios = {
       Vegetables: {
@@ -289,7 +297,7 @@ export default function Home({ blogs }: BlogProps) {
 
               <div className="flex flex-wrap gap-6">
                 <Link
-                href='/products'
+                  href='/products'
                   className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 
                                  text-white rounded-xl font-medium shadow-lg shadow-green-500/25
                                  hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 
@@ -315,7 +323,7 @@ export default function Home({ blogs }: BlogProps) {
                 </Link>
 
                 <Link
-                href='/blogs'
+                  href='/blogs'
                   className="px-8 py-4 border-2 border-gray-800 text-gray-800 rounded-xl 
                                  font-medium hover:bg-gray-800 hover:text-white transition-all
                                  duration-300 hover:shadow-xl"
@@ -362,8 +370,8 @@ export default function Home({ blogs }: BlogProps) {
                 ></div>
                 <Image
                   src="/arkinimage.jpg"
-                  alt="Organic Fertilizer Product"   width={1400}
-                      height={300}
+                  alt="Organic Fertilizer Product" width={1400}
+                  height={300}
                   className="object-cover w-full h-full rounded-2xl transform 
                            group-hover:scale-105 transition-transform duration-700"
                 />
@@ -1029,101 +1037,101 @@ export default function Home({ blogs }: BlogProps) {
         </div>
       </section>
 
-     <div>
-      {/* Latest News & Insights */}
-      <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
-        </div>
+      <div>
+        {/* Latest News & Insights */}
+        <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
+          </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16"
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
-              <NewspaperIcon className="w-4 h-4" />
-              Latest Updates
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
-              News & Insights
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              Stay updated with the latest developments in sustainable farming
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {blogs.map((article, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="group"
-                whileHover={{ scale: 1.02 }}
-              >
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                  <div className="relative h-48">
-                    <Image
-                      src={article.featuredImage}
-                      alt={article.title}
-                      className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
-                      width={400}
-                      height={300}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4">
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium rounded-full">
-                        {article.categories.join(", ")}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="text-sm text-gray-500 mb-2">
-                      {getTimeAgo(article.publishedAt)}
-                    </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors">
-                      {article.title}
-                    </h3>
-                    <Link
-                      href="/blogs"
-                      className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
-                    >
-                      Read More
-                      <ArrowRightIcon className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <Link
-              href="/blogs"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <motion.div
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="text-center max-w-3xl mx-auto mb-16"
             >
-              View All Articles
-              <ArrowRightIcon className="w-5 h-5" />
-            </Link>
-          </motion.div>
-        </div>
-      </section>
-    </div>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
+                <NewspaperIcon className="w-4 h-4" />
+                Latest Updates
+              </span>
+              <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
+                News & Insights
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                Stay updated with the latest developments in sustainable farming
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {blogs.map((article, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  className="group"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div className="relative h-48">
+                      <Image
+                        src={article.featuredImage}
+                        alt={article.title}
+                        className="object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
+                        width={400}
+                        height={300}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                      <div className="absolute bottom-4 left-4">
+                        <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium rounded-full">
+                          {article.categories.map((cat) => cat.name)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-6">
+                      <div className="text-sm text-gray-500 mb-2">
+                        {getTimeAgo(article.publishedAt)}
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors">
+                        {article.title}
+                      </h3>
+                      <Link
+                        href="/blogs"
+                        className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+                      >
+                        Read More
+                        <ArrowRightIcon className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              variants={itemVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="text-center mt-12"
+            >
+              <Link
+                href="/blogs"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                View All Articles
+                <ArrowRightIcon className="w-5 h-5" />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+      </div>
 
       {/* Newsletter Section */}
       <section className="py-16 lg:py-32 bg-gradient-to-br from-emerald-900 to-green-900 relative overflow-hidden">

@@ -5,15 +5,13 @@ import { generateSlug } from "@/lib/utils";
 import { Blog } from "@/models/blogSchema";
 import { revalidatePath } from "next/cache";
 
-
 // Create blog
 export async function createBlog(formData: FormData) {
   try {
     const title = formData.get("title")?.toString();
     const content = formData.get("content")?.toString();
     const excerpt = formData.get("excerpt")?.toString();
-    const authorName = formData.get("authorName")?.toString();
-    const authorImage = formData.get("authorImage")?.toString();
+    const author = formData.get("author")?.toString(); // Should be ObjectId string
     const featuredImage = formData.get("featuredImage")?.toString();
     const categories = JSON.parse(formData.get("categories")?.toString() || "[]");
     const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
@@ -23,92 +21,52 @@ export async function createBlog(formData: FormData) {
     const metaDescription = formData.get("metaDescription")?.toString();
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
-    // Validation
-    if (!title || !content || !excerpt || !authorName || !featuredImage || !readTime) {
+    if (!title || !content || !excerpt || !author || !featuredImage || !readTime || categories.length === 0) {
       return {
         success: false,
-        error: "Missing required fields. Please fill in all required information.",
+        error: "All required fields must be provided.",
       };
     }
 
-    if (categories.length === 0) {
-      return {
-        success: false,
-        error: "Please select at least one category for your blog post.",
-      };
-    }
-
-    // Generate unique slug
-    let slug = generateSlug(title);
     await connectDb();
+    let slug = generateSlug(title);
+    const existing = await Blog.findOne({ slug });
+    if (existing) slug += `-${Date.now()}`;
 
-    // Check if slug already exists
-    const existingBlog = await Blog.findOne({ slug });
-    if (existingBlog) {
-      slug = `${slug}-${Date.now()}`;
-    }
-
-    // Create blog post
-    const blogData = {
-      title: title.trim(),
+    const blog = await Blog.create({
+      title,
       slug,
-      content: content.trim(),
-      excerpt: excerpt.trim(),
-      author: {
-        name: authorName.trim(),
-        image: authorImage?.trim() || undefined
-      },
-      featuredImage: featuredImage.trim(),
+      content,
+      excerpt,
+      author,
+      featuredImage,
       categories,
       tags,
       readTime,
       status,
       seo: {
-        metaTitle: metaTitle?.trim() || undefined,
-        metaDescription: metaDescription?.trim() || undefined,
-        keywords: keywords.length > 0 ? keywords : undefined
+        metaTitle,
+        metaDescription,
+        keywords: Array.isArray(keywords) ? keywords : [],
       },
-    };
+    });
 
-    const newBlog = await Blog.create(blogData);
-
-    // Revalidate the blogs page
     revalidatePath("/blogs");
     revalidatePath("/");
 
     return {
       success: true,
-      message: status === "publish" ? "Blog published successfully!" : "Blog saved as draft successfully!",
       blog: {
-        _id: newBlog._id.toString(),
-        title: newBlog.title,
-        slug: newBlog.slug,
-        status: newBlog.status,
+        _id: blog._id.toString(),
+        title: blog.title,
+        slug: blog.slug,
+        status: blog.status,
       },
     };
   } catch (error) {
-    console.error("Create blog error:", error);
-
-    if (error instanceof Error) {
-      // Handle specific MongoDB errors
-      if (error.message.includes("duplicate key")) {
-        return {
-          success: false,
-          error: "A blog with this title already exists. Please choose a different title.",
-        };
-      }
-
-      if (error.message.includes("validation")) {
-        return {
-          success: false,
-          error: "Validation error: Please check your input data and try again.",
-        };
-      }
-    }
-
     return {
       success: false,
-      error: "Failed to create blog post. Please try again later.",
+      error: error instanceof Error ? error.message : "Failed to create blog",
     };
   }
 }
@@ -120,24 +78,22 @@ export async function updateBlog(formData: FormData) {
     const title = formData.get("title")?.toString();
     const content = formData.get("content")?.toString();
     const excerpt = formData.get("excerpt")?.toString();
-    const authorName = formData.get("authorName")?.toString();
-    const authorImage = formData.get("authorImage")?.toString();
+    const author = formData.get("author")?.toString();
     const featuredImage = formData.get("featuredImage")?.toString();
     const categories = JSON.parse(formData.get("categories")?.toString() || "[]");
     const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
     const readTime = Number(formData.get("readTime"));
-    const status = formData.get("status")?.toString() as "draft" | "published";
+    const status = formData.get("status")?.toString() as "draft" | "publish";
     const metaTitle = formData.get("metaTitle")?.toString();
     const metaDescription = formData.get("metaDescription")?.toString();
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
-    if (!id || !title || !content || !excerpt || !authorName || !featuredImage || !readTime) {
+    if (!id || !title || !content || !excerpt || !author || !featuredImage || !readTime || categories.length === 0) {
       throw new Error("Missing required fields");
     }
 
-    const slug = generateSlug(title);
-
     await connectDb();
+    const slug = generateSlug(title);
 
     const blog = await Blog.findByIdAndUpdate(
       id,
@@ -146,13 +102,17 @@ export async function updateBlog(formData: FormData) {
         slug,
         content,
         excerpt,
-        author: { name: authorName, image: authorImage },
+        author,
         featuredImage,
         categories,
         tags,
         readTime,
         status,
-        seo: { metaTitle, metaDescription, keywords },
+        seo: {
+          metaTitle,
+          metaDescription,
+          keywords,
+        },
         updatedAt: new Date(),
       },
       { new: true }
@@ -162,10 +122,7 @@ export async function updateBlog(formData: FormData) {
 
     revalidatePath("/blogs");
 
-    return {
-      success: true,
-      blog,
-    };
+    return { success: true, blog };
   } catch (error) {
     return {
       success: false,
@@ -178,13 +135,12 @@ export async function updateBlog(formData: FormData) {
 export async function deleteBlog(formData: FormData) {
   try {
     const id = formData.get("id")?.toString();
-    if (!id) throw new Error("Blog ID is required");
+    if (!id) throw new Error("Blog ID required");
 
     await connectDb();
     await Blog.findByIdAndDelete(id);
 
     revalidatePath("/blogs");
-
     return { success: true };
   } catch (error) {
     return {
@@ -194,9 +150,11 @@ export async function deleteBlog(formData: FormData) {
   }
 }
 
+// Get all blogs
 export async function getBlogs() {
   await connectDb();
-  const blogs = await Blog.find({}).sort({ publishedAt: -1 });
+  const blogs = await Blog.find({}).sort({ publishedAt: -1 }).populate('author').populate('categories');
+console.log(blogs);
 
   return blogs.map((blog) => ({
     _id: blog._id.toString(),
@@ -204,82 +162,75 @@ export async function getBlogs() {
     slug: blog.slug,
     content: blog.content,
     excerpt: blog.excerpt,
-    author: {
-      name: blog.author.name,
-      image: blog.author.image || null,
-    },
+    author: typeof blog.author === "object" && blog.author !== null && "name" in blog.author
+      ? { _id: blog.author._id.toString(), name: blog.author.name }
+      : blog.author,
     featuredImage: blog.featuredImage,
-    categories: Array.isArray(blog.categories) ? blog.categories.map(String) : [],
-    tags: Array.isArray(blog.tags) ? blog.tags.map(String) : [],
+    categories: blog.categories.map((cat: { _id: { toString: () => string }, name?: string }) => ({
+      _id: cat._id.toString(),
+      name: cat.name ?? "",
+    })),
+    tags: blog.tags,
     readTime: blog.readTime,
-    publishedAt: blog.publishedAt ? new Date(blog.publishedAt).toISOString() : null,
-    updatedAt: blog.updatedAt ? new Date(blog.updatedAt).toISOString() : null,
-    status: blog.status,
-     seo: {
-      metaTitle: blog.seo?.metaTitle || null,
-      metaDescription: blog.seo?.metaDescription || null,
-      keywords: Array.isArray(blog.seo?.keywords) ? blog.seo.keywords.map(String) : [],
-    },
-  }));
-}
-
-
-interface Blog {
-  _id: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  author: {
-    name: string;
-    image?: string | null;
-  };
-  featuredImage: string;
-  categories: string[];
-  tags: string[];
-  readTime: number;
-  publishedAt?: string | null;
-  updatedAt?: string | null;
-  status: string;
-  seo?: {
-    metaTitle?: string | null;
-    metaDescription?: string | null;
-    keywords?: string[];
-  };
-  __v: number;
-}
-
-export async function showBlog({ slug }: { slug: string }): Promise<Blog | null> {
-  await connectDb();
-  const blog = await Blog.findOne({ slug }).lean<Blog>();
-
-  if (!blog) {
-    return null;
-  }
-
-  return {
-    _id: blog._id.toString(),
-    title: blog.title,
-    slug: blog.slug,
-    content: blog.content,
-    excerpt: blog.excerpt,
-    author: {
-      name: blog.author.name,
-      image: blog.author.image || null,
-    },
-    featuredImage: blog.featuredImage,
-    categories: Array.isArray(blog.categories) ? blog.categories.map(String) : [],
-    tags: Array.isArray(blog.tags) ? blog.tags.map(String) : [],
-    readTime: blog.readTime,
-    publishedAt: blog.publishedAt ? new Date(blog.publishedAt).toISOString() : null,
-    updatedAt: blog.updatedAt ? new Date(blog.updatedAt).toISOString() : null,
+    publishedAt: blog.publishedAt?.toISOString() || null,
+    updatedAt: blog.updatedAt?.toISOString() || null,
     status: blog.status,
     seo: {
       metaTitle: blog.seo?.metaTitle || null,
       metaDescription: blog.seo?.metaDescription || null,
-      keywords: Array.isArray(blog.seo?.keywords) ? blog.seo.keywords.map(String) : [],
+      keywords: blog.seo?.keywords || [],
     },
-    __v: blog.__v,
-  };
+  }));
 }
 
+// Show single blog
+export async function showBlog({ slug }: { slug: string }) {
+  await connectDb();
+  const blog = await Blog.findOne({ slug }).lean();
+
+  if (!blog || Array.isArray(blog)) return null;
+
+  const typedBlog = blog as {
+    _id: { toString: () => string },
+    title: string,
+    slug: string,
+    content: string,
+    excerpt: string,
+    author: { toString: () => string },
+    featuredImage: string,
+    categories: string[],
+    tags: string[],
+    readTime: number,
+    publishedAt?: Date,
+    updatedAt?: Date,
+    status: string,
+    seo?: {
+      metaTitle?: string | null,
+      metaDescription?: string | null,
+      keywords?: string[],
+    },
+    __v?: number,
+  };
+
+  return {
+    _id: typedBlog._id.toString(),
+    title: typedBlog.title,
+    slug: typedBlog.slug,
+    content: typedBlog.content,
+    excerpt: typedBlog.excerpt,
+    author: typedBlog.author.toString(),
+    featuredImage: typedBlog.featuredImage,
+    categories: typedBlog.categories.map((cat: { toString: () => string }) => cat.toString()),
+    tags: typedBlog.tags,
+    readTime: typedBlog.readTime,
+    publishedAt: typedBlog.publishedAt?.toISOString() || null,
+    updatedAt: typedBlog.updatedAt?.toISOString() || null,
+    status: typedBlog.status,
+    seo: {
+      metaTitle: typedBlog.seo?.metaTitle || null,
+      metaDescription: typedBlog.seo?.metaDescription || null,
+      keywords: typedBlog.seo?.keywords || [],
+    },
+    __v: typedBlog.__v,
+  };
+}
