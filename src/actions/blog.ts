@@ -6,13 +6,15 @@ import { Blog } from "@/models/blogSchema";
 import { revalidatePath } from "next/cache";
 
 // Create blog
-export async function createBlog(formData: FormData,user_id: string) {
+export async function createBlog(formData: FormData, user_id: string) {
   try {
     const title = formData.get("title")?.toString();
     const content = formData.get("content")?.toString();
     const excerpt = formData.get("excerpt")?.toString();
     const featuredImage = formData.get("featuredImage")?.toString();
-    const categories = JSON.parse(formData.get("categories")?.toString() || "[]");
+    const categories = JSON.parse(
+      formData.get("categories")?.toString() || "[]"
+    );
     const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
     const readTime = Number(formData.get("readTime"));
     const status = formData.get("status")?.toString() as "draft" | "publish";
@@ -20,7 +22,14 @@ export async function createBlog(formData: FormData,user_id: string) {
     const metaDescription = formData.get("metaDescription")?.toString();
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
-    if (!title || !content || !excerpt || !featuredImage || !readTime || categories.length === 0) {
+    if (
+      !title ||
+      !content ||
+      !excerpt ||
+      !featuredImage ||
+      !readTime ||
+      categories.length === 0
+    ) {
       return {
         success: false,
         error: "All required fields must be provided.",
@@ -37,7 +46,7 @@ export async function createBlog(formData: FormData,user_id: string) {
       slug,
       content,
       excerpt,
-      author:user_id,
+      author: user_id,
       featuredImage,
       categories,
       tags,
@@ -56,7 +65,7 @@ export async function createBlog(formData: FormData,user_id: string) {
     return {
       success: true,
       blog: {
-        _id: blog._id.toString(),
+        _id: (blog._id as { toString: () => string }).toString(),
         title: blog.title,
         slug: blog.slug,
         status: blog.status,
@@ -79,7 +88,9 @@ export async function updateBlog(formData: FormData) {
     const excerpt = formData.get("excerpt")?.toString();
     const author = formData.get("author")?.toString();
     const featuredImage = formData.get("featuredImage")?.toString();
-    const categories = JSON.parse(formData.get("categories")?.toString() || "[]");
+    const categories = JSON.parse(
+      formData.get("categories")?.toString() || "[]"
+    );
     const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
     const readTime = Number(formData.get("readTime"));
     const status = formData.get("status")?.toString() as "draft" | "publish";
@@ -87,7 +98,16 @@ export async function updateBlog(formData: FormData) {
     const metaDescription = formData.get("metaDescription")?.toString();
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
-    if (!id || !title || !content || !excerpt || !author || !featuredImage || !readTime || categories.length === 0) {
+    if (
+      !id ||
+      !title ||
+      !content ||
+      !excerpt ||
+      !author ||
+      !featuredImage ||
+      !readTime ||
+      categories.length === 0
+    ) {
       throw new Error("Missing required fields");
     }
 
@@ -152,23 +172,31 @@ export async function deleteBlog(formData: FormData) {
 // Get all blogs
 export async function getBlogs() {
   await connectDb();
-  const blogs = await Blog.find({}).sort({ publishedAt: -1 }).populate('author').populate('categories');
-  console.log(blogs);
+  const blogs = await Blog.find({})
+    .sort({ publishedAt: -1 })
+    .populate("author")
+    .populate("categories")
+    .lean();
 
   return blogs.map((blog) => ({
-    _id: blog._id.toString(),
+    _id: (blog._id as { toString: () => string }).toString(),
     title: blog.title,
     slug: blog.slug,
     content: blog.content,
     excerpt: blog.excerpt,
-    author: typeof blog.author === "object" && blog.author !== null && "name" in blog.author
-      ? { _id: blog.author._id.toString(), name: blog.author.name }
-      : blog.author,
+    author:
+      typeof blog.author === "object" &&
+      blog.author !== null &&
+      "name" in blog.author
+        ? { _id: blog.author._id.toString(), name: blog.author.name }
+        : blog.author,
     featuredImage: blog.featuredImage,
-    categories: blog.categories.map((cat: { _id: { toString: () => string }, name?: string }) => ({
-      _id: cat._id.toString(),
-      name: cat.name ?? "",
-    })),
+    categories: blog.categories.map(
+      (cat: { _id: { toString: () => string }; name?: string }) => ({
+        _id: cat._id.toString(),
+        name: cat.name ?? "",
+      })
+    ),
     tags: blog.tags,
     readTime: blog.readTime,
     publishedAt: blog.publishedAt?.toISOString() || null,
@@ -185,49 +213,44 @@ export async function getBlogs() {
 // Show single blog
 export async function showBlog({ slug }: { slug: string }) {
   await connectDb();
-  const blog = await Blog.findOne({ slug }).populate('author').lean();
+  const blog = await Blog.findOne({ slug })
+    .populate("author")
+    .populate("categories")
+    .lean();
+
+  console.log("this is blog", blog);
 
   if (!blog || Array.isArray(blog)) return null;
 
-  const typedBlog = blog as {
-    _id: { toString: () => string },
-    title: string,
-    slug: string,
-    content: string,
-    excerpt: string,
-    featuredImage: string,
-    categories: string[],
-    tags: string[],
-    readTime: number,
-    publishedAt?: Date,
-    updatedAt?: Date,
-    status: string,
-    seo?: {
-      metaTitle?: string | null,
-      metaDescription?: string | null,
-      keywords?: string[],
-    },
-    __v?: number,
-  };
-
   return {
-    _id: typedBlog._id.toString(),
-    title: typedBlog.title,
-    slug: typedBlog.slug,
-    content: typedBlog.content,
-    excerpt: typedBlog.excerpt,
-    featuredImage: typedBlog.featuredImage,
-    categories: typedBlog.categories.map((cat: { toString: () => string }) => cat.toString()),
-    tags: typedBlog.tags,
-    readTime: typedBlog.readTime,
-    publishedAt: typedBlog.publishedAt?.toISOString() || null,
-    updatedAt: typedBlog.updatedAt?.toISOString() || null,
-    status: typedBlog.status,
+    _id: (blog._id as { toString: () => string }).toString(),
+    title: blog.title,
+    slug: blog.slug,
+    content: blog.content,
+    excerpt: blog.excerpt,
+    author:
+      typeof blog.author === "object" &&
+      blog.author !== null &&
+      "name" in blog.author
+        ? { _id: blog.author._id.toString(), name: blog.author.name }
+        : blog.author,
+    featuredImage: blog.featuredImage,
+    categories: blog.categories.map(
+      (cat: { _id: { toString: () => string }; name?: string }) => ({
+        _id: cat._id.toString(),
+        name: cat.name ?? "",
+      })
+    ),
+    tags: blog.tags,
+    readTime: blog.readTime,
+    publishedAt: blog.publishedAt?.toISOString() || null,
+    updatedAt: blog.updatedAt?.toISOString() || null,
+    status: blog.status,
     seo: {
-      metaTitle: typedBlog.seo?.metaTitle || null,
-      metaDescription: typedBlog.seo?.metaDescription || null,
-      keywords: typedBlog.seo?.keywords || [],
+      metaTitle: blog.seo?.metaTitle || null,
+      metaDescription: blog.seo?.metaDescription || null,
+      keywords: blog.seo?.keywords || [],
     },
-    __v: typedBlog.__v,
+    __v: blog.__v,
   };
 }

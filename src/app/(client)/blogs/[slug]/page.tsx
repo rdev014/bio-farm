@@ -15,6 +15,7 @@ export default async function Page({
     publishedAt: post.publishedAt ?? null,
     updatedAt: post.updatedAt ?? null,
     author: { name: post.author.name ?? null, image: post.author.image ?? null },
+    categories: Array.isArray(post.categories) ? post.categories.map((cat) => cat.name) : [],
     seo: {
       metaTitle: post.seo?.metaTitle ?? null,
       metaDescription: post.seo?.metaDescription ?? null,

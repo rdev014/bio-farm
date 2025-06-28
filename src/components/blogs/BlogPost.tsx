@@ -31,11 +31,12 @@ interface BlogPostProps {
   };
 }
 
+
 export default function BlogPost({ post }: BlogPostProps) {
   // Find the current blog post
 
   if (!post) notFound();
-
+console.log(post);
   // Find related posts based on tags (up to 3)
   //   const relatedPosts = post
 
@@ -87,6 +88,16 @@ export default function BlogPost({ post }: BlogPostProps) {
                   className="px-3 py-1 text-sm font-medium text-white bg-green-600/80 backdrop-blur-sm rounded-full"
                 >
                   {tag}
+                </span>
+              ))}
+            </div>
+            <div className="flex justify-center gap-2 mb-6">
+              {post.categories.map((cat,index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 text-sm font-medium text-white bg-green-600/80 backdrop-blur-sm rounded-full"
+                >
+                  {cat}
                 </span>
               ))}
             </div>
