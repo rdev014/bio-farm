@@ -3,6 +3,7 @@
 import connectDb from "@/lib/db";
 import Category from "@/models/categorySchema";
 import { revalidatePath } from "next/cache";
+import  "@/models/UserSchema";
 
 interface CategoryResponse {
   success: boolean;

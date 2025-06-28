@@ -4,6 +4,8 @@ import connectDb from "@/lib/db";
 import { generateSlug } from "@/lib/utils";
 import { Blog } from "@/models/blogSchema";
 import { revalidatePath } from "next/cache";
+import "@/models/categorySchema";
+import "@/models/UserSchema";
 
 // Create blog
 export async function createBlog(formData: FormData, user_id: string) {
