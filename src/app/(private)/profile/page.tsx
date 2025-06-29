@@ -11,9 +11,12 @@ import ProfileDetails from "@/components/dashboard/profile/ProfileDetails";
 import Link from "next/link";
 import { getSession } from "@/lib/getSession";
 
+
 export default async function ProfilePage() {
   const session = await getSession();
   const user = session?.user;
+
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -36,17 +39,17 @@ export default async function ProfilePage() {
 
                 <div>
                   <h1 className="text-2xl font-semibold text-gray-900 mb-1">
-                   {user?.name}
+                    {user?.name}
                   </h1>
                   <p className="text-gray-600 mb-2">Farm Owner & Manager</p>
                   <div className="flex items-center space-x-4 text-sm text-gray-500">
                     <div className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />
-                    {user?.email}
+                      {user?.email}
                     </div>
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
-                    {user?.role}
+                      {user?.role}
                     </div>
                   </div>
                 </div>

@@ -13,10 +13,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    trim: true,
   },
   password: {
     type: String,
-   select:false,
+    select: false,
   },
   image: {
     type: String,
@@ -27,29 +29,44 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  bio: {
+    type: String,
+    maxlength: 500,
+  },
+  location: {
+    type: String,
+    trim: true,
+  },
+  contact_no: {
+    type: String,
+  },
   authProviderId: {
     type: String,
   },
+  isSubscribedToNewsletter: {
+    type: Boolean,
+    default: false,
+  },
   isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    verificationToken: {
-      type: String,
-      select: false,
-    },
-    verificationTokenExpiry: {
-      type: Date,
-      select: false,
-    },
-    resetPasswordToken: {
-      type: String,
-      select: false,
-    },
-    resetPasswordTokenExpiry: {
-      type: Date,
-      select: false,
-    },
+    type: Boolean,
+    default: false,
+  },
+  verificationToken: {
+    type: String,
+    select: false,
+  },
+  verificationTokenExpiry: {
+    type: Date,
+    select: false,
+  },
+  resetPasswordToken: {
+    type: String,
+    select: false,
+  },
+  resetPasswordTokenExpiry: {
+    type: Date,
+    select: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

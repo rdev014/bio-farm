@@ -9,6 +9,8 @@ import { User } from "@/models/UserSchema";
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
+import type { User as UserType } from "@/types";
+import { revalidatePath } from "next/cache";
 
 const register = async (formData: FormData) => {
   const email = formData.get("email") as string;
@@ -63,7 +65,7 @@ export async function handleGoogleSignIn() {
 }
 export async function handleSignOut() {
   await signOut();
- redirect("/sign-in");
+  redirect("/sign-in");
 }
 export async function getUserSession() {
   const session = await getSession();
@@ -76,3 +78,96 @@ export async function fetchAllUsers() {
   const users = await User.find({});
   return users;
 };
+
+
+
+// user edit
+
+
+
+
+interface UserUpdate {
+  name?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  bio?: string;
+  location?: string;
+  contact_no?: string;
+  image?: string;
+  isSubscribedToNewsletter?: boolean;
+}
+
+interface EditProfileResponse {
+  success: boolean;
+  user?: UserType;
+  error?: string;
+}
+
+export async function editProfile(userId: string, formData: FormData): Promise<EditProfileResponse> {
+  try {
+    const updates: UserUpdate = {
+      name: formData.get("name") as string,
+      firstname: formData.get("firstname") as string,
+      lastname: formData.get("lastname") as string,
+      email: formData.get("email") as string,
+      bio: formData.get("bio") as string,
+      location: formData.get("location") as string,
+      contact_no: formData.get("contact_no") as string,
+      image: formData.get("image") as string,
+      isSubscribedToNewsletter: formData.get("isSubscribedToNewsletter") === "true",
+    };
+
+    Object.keys(updates).forEach((key) =>
+      updates[key as keyof UserUpdate] === null || updates[key as keyof UserUpdate] === undefined
+        ? delete updates[key as keyof UserUpdate]
+        : {}
+    );
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordTokenExpiry");
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    revalidatePath("/profile");
+    return { success: true, user };
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error occurred";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, error: errorMessage };
+  }
+}
+
+interface GetUserResponse {
+  success: boolean;
+  user?: UserType;
+  error?: string;
+}
+
+
+export async function getUserDetails(userId: string): Promise<GetUserResponse> {
+  try {
+    const user = await User.findById(userId).select(
+      "-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordTokenExpiry"
+    );
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    return { success: true, user };
+  } catch (error: unknown) {
+    let errorMessage = "An unknown error occurred";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return { success: false, error: errorMessage };
+  }
+}
