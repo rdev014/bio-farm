@@ -36,7 +36,6 @@ export default function BlogPost({ post }: BlogPostProps) {
   // Find the current blog post
 
   if (!post) notFound();
-console.log(post);
   // Find related posts based on tags (up to 3)
   //   const relatedPosts = post
 
@@ -81,16 +80,6 @@ console.log(post);
         />
         <div className="absolute inset-0 z-20 flex items-center">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="flex justify-center gap-2 mb-6">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 text-sm font-medium text-white bg-green-600/80 backdrop-blur-sm rounded-full"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
             <div className="flex justify-center gap-2 mb-6">
               {post.categories.map((cat,index) => (
                 <span

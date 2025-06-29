@@ -194,8 +194,7 @@ export async function getBlogs() {
         : blog.author,
     featuredImage: blog.featuredImage,
     categories: blog.categories.map(
-      (cat: { _id: { toString: () => string }; name?: string }) => ({
-        _id: cat._id.toString(),
+      (cat: {  name?: string }) => ({
         name: cat.name ?? "",
       })
     ),
