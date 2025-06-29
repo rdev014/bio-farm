@@ -37,12 +37,12 @@ interface ImpactStat {
   label: string;
 }
 
-interface Testimonial {
-  name: string;
-  role: string;
-  content: string;
-  image: string;
-}
+// interface Testimonial {
+//   name: string;
+//   role: string;
+//   content: string;
+//   image: string;
+// }
 
 interface Author {
   name: string;
@@ -118,9 +118,6 @@ const itemVariants = {
 };
 
 export default function Home({ blogs }: BlogProps) {
-
-  
-
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
   const [recommendations, setRecommendations] = useState<{
@@ -830,7 +827,7 @@ export default function Home({ blogs }: BlogProps) {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
+      {/* <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 -translate-y-1/2 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 -translate-y-1/2 right-0 w-72 h-72 bg-green-100/30 rounded-full blur-3xl"></div>
@@ -921,7 +918,7 @@ export default function Home({ blogs }: BlogProps) {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
 
       {/* Farm Calculator Section */}
@@ -1100,7 +1097,7 @@ export default function Home({ blogs }: BlogProps) {
                         {article.title}
                       </h3>
                       <Link
-                        href="/blogs"
+                        href={`/blogs/${article.slug}`}
                         className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
                       >
                         Read More

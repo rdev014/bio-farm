@@ -8,8 +8,8 @@ export const nav =  [
       links: [
         { href: "/products", label: "All Products" },
         { href: "/seasonal-products", label: "Seasonal Products" },
-        { href: "/organic-certified", label: "Organic Certified" },
-        { href: "/bulk-orders", label: "Bulk Orders" }
+        // { href: "/organic-certified", label: "Organic Certified" },
+        // { href: "/bulk-orders", label: "Bulk Orders" }
       ]
     },
     {
@@ -19,7 +19,6 @@ export const nav =  [
         { href: "/about-us", label: "Our Story" },
         { href: "/our-farms", label: "Our Farms" },
         { href: "/sustainability", label: "Sustainability" },
-        { href: "/certifications", label: "Certifications" }
       ]
     },
     {
@@ -27,8 +26,6 @@ export const nav =  [
       icon: BookOpen,
       links: [
         { href: "/blogs", label: "Blogs" },
-        { href: "/growing-guides", label: "Growing Guides" },
-        { href: "/nutrition", label: "Nutrition Info" }
       ]
     },
     {
@@ -37,8 +34,8 @@ export const nav =  [
       links: [
         { href: "/help", label: "Help Center" },
         { href: "/contact", label: "Contact Us" },
-        { href: "/shipping", label: "Shipping Info" },
-        { href: "/returns", label: "Returns" }
+        { href: "/support/shipping-info", label: "Shipping Info" },
+        { href: "/support/returns", label: "Returns" }
       ]
     }
   ]

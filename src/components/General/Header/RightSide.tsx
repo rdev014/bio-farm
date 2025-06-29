@@ -18,7 +18,7 @@ export default function RightSide({ user, }: { user: UserType | null }) {
     useEffect(() => {
         setMobileMenuOpen(false);
         setActiveDropdown(null);
-    }, [pathname]);
+    }, [pathname,setActiveDropdown, setMobileMenuOpen]);
     const handleDropdownToggle = (name: string) => {
         setActiveDropdown(activeDropdown === name ? null : name);
     };

@@ -21,7 +21,7 @@ export default function Nav({ user }: { user: User | null }) {
     // Close menus on route change
     useEffect(() => {
         setActiveDropdown(null);
-    }, [pathname]);
+    }, [pathname,setActiveDropdown]);
     return (
         <>
             {user?.role && ['user', 'admin', 'moderator'].includes(user.role) ? (

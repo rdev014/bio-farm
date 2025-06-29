@@ -1,4 +1,4 @@
-import { getBlogs } from "@/actions/blog";
+import { getHomeBlogs } from "@/actions/blog";
 import { Category } from "@/components/FetchCategory/FetchCategory";
 import Home from "@/components/home/Home";
 
@@ -29,7 +29,7 @@ interface BlogPost {
 }
 
 export default async function Page() {
-  const blogs = await getBlogs();
+  const blogs = await getHomeBlogs();
 
   const formattedBlogs: BlogPost[] = blogs.map((blog) => ({
     ...blog,
