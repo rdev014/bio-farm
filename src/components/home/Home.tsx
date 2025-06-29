@@ -37,12 +37,12 @@ interface ImpactStat {
   label: string;
 }
 
-interface Testimonial {
-  name: string;
-  role: string;
-  content: string;
-  image: string;
-}
+// interface Testimonial {
+//   name: string;
+//   role: string;
+//   content: string;
+//   image: string;
+// }
 
 interface Author {
   name: string;
@@ -118,9 +118,6 @@ const itemVariants = {
 };
 
 export default function Home({ blogs }: BlogProps) {
-
-  
-
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
   const [recommendations, setRecommendations] = useState<{
@@ -830,7 +827,7 @@ export default function Home({ blogs }: BlogProps) {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
+      {/* <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/2 -translate-y-1/2 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 -translate-y-1/2 right-0 w-72 h-72 bg-green-100/30 rounded-full blur-3xl"></div>
@@ -921,7 +918,7 @@ export default function Home({ blogs }: BlogProps) {
             ))}
           </motion.div>
         </div>
-      </section>
+      </section> */}
 
 
       {/* Farm Calculator Section */}
@@ -1076,8 +1073,8 @@ export default function Home({ blogs }: BlogProps) {
                   className="group"
                   whileHover={{ scale: 1.02 }}
                 >
-                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                    <div className="relative h-48">
+                  <div className="flex flex-col h-full bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div className="relative h-48 min-h-48 w-full">
                       <Image
                         src={article.featuredImage}
                         alt={article.title}
@@ -1088,29 +1085,35 @@ export default function Home({ blogs }: BlogProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
                       <div className="absolute bottom-4 left-4">
                         <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium rounded-full">
-                          {article.categories.map((cat) => cat.name)}
+                          {article.categories.map((cat) => cat.name).join(', ')}
                         </span>
                       </div>
                     </div>
-                    <div className="p-6">
+                    <div className="flex flex-col flex-grow p-6">
                       <div className="text-sm text-gray-500 mb-2">
                         {getTimeAgo(article.publishedAt)}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors">
-                        {article.title}
-                      </h3>
                       <Link
-                        href="/blogs"
-                        className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
-                      >
-                        Read More
-                        <ArrowRightIcon className="w-4 h-4" />
+                        href={`/blogs/${article.slug}`}>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors line-clamp-2">
+                          {article.title}
+                        </h3>
                       </Link>
+                      <div className="mt-auto">
+                        <Link
+                          href={`/blogs/${article.slug}`}
+                          className="inline-flex items-center gap-2 text-emerald-600 font-medium hover:text-emerald-700 transition-colors"
+                        >
+                          Read More
+                          <ArrowRightIcon className="w-4 h-4" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
               ))}
             </motion.div>
+
 
             <motion.div
               variants={itemVariants}
@@ -1123,7 +1126,7 @@ export default function Home({ blogs }: BlogProps) {
                 href="/blogs"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
-                View All Articles
+                View All Blogs
                 <ArrowRightIcon className="w-5 h-5" />
               </Link>
             </motion.div>

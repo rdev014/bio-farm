@@ -14,8 +14,10 @@ import {
   Menu,
   ChevronLeft,
   User,
+  LayoutGrid,
 } from 'lucide-react'
 import Link from 'next/link'
+import { User as UserType } from '@/types'
 
 
 interface NavItem {
@@ -33,7 +35,7 @@ const navItems: NavItem[] = [
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
 ]
 
-const Sidebar = () => {
+const Sidebar = ({ user }: { user: UserType }) => {
   const pathname = usePathname()
   const { isCollapsed, setIsCollapsed } = useSidebar()
 
@@ -87,8 +89,8 @@ const Sidebar = () => {
               key={item.title}
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                ${isActive 
-                  ? 'bg-green-50 text-green-700 shadow-sm' 
+                ${isActive
+                  ? 'bg-green-50 text-green-700 shadow-sm'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               aria-current={isActive ? 'page' : undefined}
@@ -110,6 +112,30 @@ const Sidebar = () => {
             </Link>
           )
         })}
+        {user.role === 'admin' && <Link
+          href={'/admin'}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                ${pathname === '/admin'
+              ? 'bg-green-50 text-green-700 shadow-sm'
+              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            }`}
+          aria-current={pathname === '/admin' ? 'page' : undefined}
+        >
+          <div className={`min-w-[24px] ${pathname === '/admin' ? 'text-green-600' : ''}`}><LayoutGrid/></div>
+          <AnimatePresence>
+            {!isCollapsed && (
+              <motion.span
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: 'auto' }}
+                exit={{ opacity: 0, width: 0 }}
+                transition={{ duration: 0.2 }}
+                className="truncate"
+              >
+                Admin
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Link>}
       </nav>
 
       {/* Footer */}
@@ -154,7 +180,7 @@ const Sidebar = () => {
             )}
           </AnimatePresence>
         </Link>
-        
+
       </div>
     </motion.aside>
   )

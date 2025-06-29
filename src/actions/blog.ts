@@ -188,8 +188,47 @@ export async function getBlogs() {
     excerpt: blog.excerpt,
     author:
       typeof blog.author === "object" &&
-      blog.author !== null &&
-      "name" in blog.author
+        blog.author !== null &&
+        "name" in blog.author
+        ? { _id: blog.author._id.toString(), name: blog.author.name }
+        : blog.author,
+    featuredImage: blog.featuredImage,
+    categories: blog.categories.map(
+      (cat: {  name?: string }) => ({
+        name: cat.name ?? "",
+      })
+    ),
+    tags: blog.tags,
+    readTime: blog.readTime,
+    publishedAt: blog.publishedAt?.toISOString() || null,
+    updatedAt: blog.updatedAt?.toISOString() || null,
+    status: blog.status,
+    seo: {
+      metaTitle: blog.seo?.metaTitle || null,
+      metaDescription: blog.seo?.metaDescription || null,
+      keywords: blog.seo?.keywords || [],
+    },
+  }));
+}
+export async function getHomeBlogs() {
+  await connectDb();
+  const blogs = await Blog.find({})
+    .sort({ publishedAt: -1 })
+    .limit(3)
+    .populate("author")
+    .populate("categories")
+    .lean();
+
+  return blogs.map((blog) => ({
+    _id: (blog._id as { toString: () => string }).toString(),
+    title: blog.title,
+    slug: blog.slug,
+    content: blog.content,
+    excerpt: blog.excerpt,
+    author:
+      typeof blog.author === "object" &&
+        blog.author !== null &&
+        "name" in blog.author
         ? { _id: blog.author._id.toString(), name: blog.author.name }
         : blog.author,
     featuredImage: blog.featuredImage,
@@ -232,8 +271,8 @@ export async function showBlog({ slug }: { slug: string }) {
     excerpt: blog.excerpt,
     author:
       typeof blog.author === "object" &&
-      blog.author !== null &&
-      "name" in blog.author
+        blog.author !== null &&
+        "name" in blog.author
         ? { _id: blog.author._id.toString(), name: blog.author.name }
         : blog.author,
     featuredImage: blog.featuredImage,

@@ -23,7 +23,9 @@ interface BlogPost {
   excerpt: string;
   author: Author;
   featuredImage: string;
-  categories: string[];
+  categories: {
+    name?:string;
+  }[];
   tags: string[];
   readTime: number;
   publishedAt: string;
@@ -59,8 +61,10 @@ const getTimeAgo = (dateString: string) => {
   return formatDate(dateString);
 };
 
-// --- Blogs Component ---
+
 export default function Blogs({ blogs }: BlogProps) {
+
+  
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       {blogs.length > 0 ? (
@@ -68,7 +72,7 @@ export default function Blogs({ blogs }: BlogProps) {
           {blogs.map((post) => (
             <article
               key={post._id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden
+              className="bg-white rounded-2xl shadow-lg border border-zinc-100 overflow-hidden
                                        transform transition-all duration-500 ease-in-out
                                        hover:scale-[1.02] hover:shadow-xl hover:border-green-400 group
                                        relative isolate flex flex-col h-full" // Ensure consistent height for grid alignment
@@ -103,24 +107,26 @@ export default function Blogs({ blogs }: BlogProps) {
                 {" "}
                 {/* `flex-grow` ensures consistent footer alignment */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {post.tags.slice(0, 2).map((tag) => (
+                  {post.categories.slice(0, 2).map((cat,index) => (
                     <span
-                      key={tag}
+                      key={index}
                       className="inline-block px-3 py-1 text-xs font-medium rounded-full
                                                        bg-green-50 text-green-700
                                                        hover:bg-green-100 hover:text-green-800 transition-colors duration-200 cursor-pointer"
                     >
-                      {tag}
+                      {cat.name}
                     </span>
                   ))}
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-3 group-hover:text-green-600 transition-colors leading-snug">
-                  {post.title}
-                </h2>
-                <p className="text-gray-600 mb-5 line-clamp-3 leading-relaxed text-sm flex-grow">
+                <Link href={`/blogs/${post.slug}`} aria-label={`Read more about ${post.title}`} >
+                  <h2 className="text-xl sm:text-2xl font-semibold text-zinc-900 mb-3 group-hover:text-green-600 transition-colors leading-snug">
+                    {post.title}
+                  </h2>
+                </Link>
+                <p className="text-zinc-600 mb-5 line-clamp-3 leading-relaxed text-sm flex-grow">
                   {post.excerpt}
                 </p>
-                <div className="flex items-center justify-between mt-auto pt-5 border-t border-gray-100">
+                <div className="flex items-center justify-between mt-auto pt-5 border-t border-zinc-100">
                   {post.author &&
                     <div className="flex items-center">
                       <Image
@@ -131,20 +137,20 @@ export default function Blogs({ blogs }: BlogProps) {
                         alt={post.author.name || "Author"}
                         width={36}
                         height={36}
-                        className="rounded-full mr-3 border-2 border-gray-200 object-cover"
+                        className="rounded-full mr-3 border-2 border-zinc-200 object-cover"
                       />
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-zinc-900">
                           {post.author.name}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-zinc-500 mt-0.5">
                           {getTimeAgo(post.publishedAt)}
                         </p>
                       </div>
                     </div>
                   }
-                  <div className="flex items-center text-green-600 group-hover:text-green-700 transition-colors duration-300">
-                    <span className="text-sm font-semibold mr-1">
+                  <Link href={`/blogs/${post.slug}`} aria-label={`Read more about ${post.title}`} className="group flex items-center text-green-600 group-hover:text-green-700 transition-colors duration-300">
+                    <span className="text-sm font-semibold mr-1 group-hover:underline ">
                       Read More
                     </span>
                     <svg
@@ -160,7 +166,7 @@ export default function Blogs({ blogs }: BlogProps) {
                         d="M9 5l7 7-7 7"
                       />
                     </svg>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </article>
@@ -168,8 +174,8 @@ export default function Blogs({ blogs }: BlogProps) {
         </div>
       ) : (
         /* No Results Found - Modernized State */
-        <div className="text-center py-20 bg-gray-50 rounded-xl shadow-lg border border-gray-200">
-          <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-8 text-gray-500 animate-pulse-slow">
+        <div className="text-center py-20 bg-zinc-50 rounded-xl shadow-lg border border-zinc-200">
+          <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-8 text-zinc-500 animate-pulse-slow">
             <svg
               className="w-10 h-10"
               fill="none"
@@ -184,10 +190,10 @@ export default function Blogs({ blogs }: BlogProps) {
               />
             </svg>
           </div>
-          <h3 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          <h3 className="text-2xl md:text-3xl font-extrabold text-zinc-900 mb-4 tracking-tight">
             No Articles Yet!
           </h3>
-          <p className="text-gray-600 mb-8 max-w-lg mx-auto leading-relaxed text-base md:text-lg">
+          <p className="text-zinc-600 mb-8 max-w-lg mx-auto leading-relaxed text-base md:text-lg">
             It looks like our blog is still blooming. Check back soon for fresh
             insights and engaging stories!
           </p>

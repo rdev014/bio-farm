@@ -11,6 +11,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
+import Image from 'next/image';
 
 // Define Prop Types for StatCard
 interface StatCardProps {
@@ -147,10 +148,10 @@ const DashboardHeader = () => {
           {loading ? (
             <div className="h-10 w-10 rounded-full bg-slate-200 animate-pulse"></div>
           ) : (
-            <img
+            <Image
               src={user?.image || "https://placehold.co/40x40/3b82f6/ffffff?text=U"}
               alt={user?.name || "User"}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 rounded-full object-cover" width={20} height={20}
             />
           )}
           <div className="hidden sm:block">
@@ -290,7 +291,7 @@ const RecentOrders = () => {
             {orders.map(order => (
               <tr key={order.id} className="bg-white border-b border-slate-100 hover:bg-slate-50">
                 <td className="px-6 py-4 flex items-center gap-3">
-                  <img src={order.img} alt={order.customer} className="w-10 h-10 rounded-full" />
+                  <Image src={order.img} alt={order.customer} className="w-10 h-10 rounded-full" width={20}height={20}/>
                   <div>
                     <div className="font-semibold text-slate-800">{order.customer}</div>
                     <div className="text-xs text-slate-500">{order.id}</div>

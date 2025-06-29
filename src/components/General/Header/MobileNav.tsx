@@ -8,27 +8,29 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react'
 
 export default function MobileNav({ user }: { user: User | null }) {
-     const { activeDropdown, setActiveDropdown, isMobileMenuOpen, setMobileMenuOpen } = useHeaderStore();
+    const { activeDropdown, setActiveDropdown, isMobileMenuOpen, setMobileMenuOpen } = useHeaderStore();
     const navItems: NavItem[] = useMemo(() => nav, []);
     const pathname = usePathname();
+
     const closeAllMenus = () => {
         setActiveDropdown(null);
         setMobileMenuOpen(false);
     };
-    // Close menus on route change
+
     useEffect(() => {
         setMobileMenuOpen(false);
         setActiveDropdown(null);
-    }, [pathname]);
+    }, [pathname, setActiveDropdown, setMobileMenuOpen]);
+
     const handleDropdownToggle = (name: string) => {
         setActiveDropdown(activeDropdown === name ? null : name);
     };
+
     return (
         <>
             {isMobileMenuOpen && (
                 <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-xl">
                     <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
-                        {/* Mobile Navigation Items */}
                         {navItems.map((item) => (
                             <div key={`mobile-${item.name}`} className="space-y-1">
                                 {item.singlelink ? (
@@ -81,7 +83,6 @@ export default function MobileNav({ user }: { user: User | null }) {
                             </div>
                         ))}
 
-                        {/* Mobile Auth Buttons */}
                         {!user?.email && (
                             <div className="pt-4 border-t border-gray-200/50 space-y-3">
                                 <Link

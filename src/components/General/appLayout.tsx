@@ -3,6 +3,7 @@
 import Sidebar from '@/components/dashboard/Sidebar'
 import { motion } from 'framer-motion'
 import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext'
+import { User } from '@/types'
 
 function MainContent({ children }: { children: React.ReactNode }) {
   const { isCollapsed } = useSidebar()
@@ -24,14 +25,15 @@ function MainContent({ children }: { children: React.ReactNode }) {
 }
 
 export default function AppLayout({
-  children,
+  children, user
 }: {
-  children: React.ReactNode
+  children: React.ReactNode,
+  user: User
 }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-gray-50/50">
-        <Sidebar />
+        <Sidebar user={user} />
         <MainContent>{children}</MainContent>
       </div>
     </SidebarProvider>
