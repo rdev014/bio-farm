@@ -23,10 +23,10 @@ import {
   Save,
   Eye,
   FileText,
-  User,
   Clock,
   Tags,
   Search,
+  ImageIcon,
 } from "lucide-react";
 import { Category } from "@/components/FetchCategory/FetchCategory";
 
@@ -117,27 +117,6 @@ export default function CreateBlog({categories = [],user_id}: BlogProps) {
       setValue("readTime", estimatedReadTime);
     }
   }, [watchedContent, setValue]);
-
-// useEffect(() => {
-//   async function fetchCategories() {
-//     try {
-//       setIsLoadingCategories(true);
-//       const categories = await getCategories();
-//       if (Array.isArray(categories)) {
-//         // Filter out undefined or invalid entries
-//         setAvailableCategories(categories.filter((category): category is Category => !!category));
-//       } else {
-//         throw new Error("Invalid categories data");
-//       }
-//     } catch (error) {
-//       toast.error(`Failed to load categories: ${error instanceof Error ? error.message : "Unknown error"}`);
-//       setAvailableCategories([]);
-//     } finally {
-//       setIsLoadingCategories(false);
-//     }
-//   }
-//   fetchCategories();
-// }, []);
 
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategories((prev) =>
@@ -315,15 +294,15 @@ export default function CreateBlog({categories = [],user_id}: BlogProps) {
                 </CardContent>
               </Card>
 
-              {/* Media & Author */}
+              {/* Media */}
               <Card className="shadow-sm border-0 bg-white/70 backdrop-blur-sm">
-                <CardHeader className="pb-4">
+                <CardHeader >
                   <div className="flex items-center space-x-2">
-                    <User className="w-5 h-5 text-green-600" />
-                    <CardTitle className="text-lg">Media & Author</CardTitle>
+                    <ImageIcon className="w-5 h-5 text-green-600" />
+                    <CardTitle className="text-lg">Media</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                   <div>
                     <Label htmlFor="featuredImage" className="text-sm font-medium">
                       Featured Image <span className="text-red-500">*</span>

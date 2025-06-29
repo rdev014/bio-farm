@@ -140,13 +140,13 @@ export default function BlogPost({ post }: BlogPostProps) {
                   onClick={() => sharePost("facebook")}
                   className="p-3 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
-                <FacebookIcon/>
+                  <FacebookIcon />
                 </button>
                 <button
                   onClick={() => sharePost("linkedin")}
                   className="p-3 rounded-full bg-white shadow-sm hover:shadow-md transition-shadow"
                 >
-                 <LinkedinIcon/>
+                  <LinkedinIcon />
                 </button>
               </div>
             </div>
@@ -159,9 +159,16 @@ export default function BlogPost({ post }: BlogPostProps) {
                 <p className="text-xl text-gray-600 mb-8 leading-relaxed">
                   {post.excerpt}
                 </p>
-                <div className="mt-6 text-gray-700 leading-relaxed prose ">
-                  {post.content}
-                </div>
+                <div
+                  className="mt-6 text-gray-700 leading-relaxed prose"
+                  dangerouslySetInnerHTML={{
+                    __html: post.content
+                      .replace(/\n/g, "")
+                      .replace(/(?:__|[*#])|\[(.*?)\]\(.*?\)/g, ""),
+                  }}
+                />
+
+
               </div>
 
               {/* Tags */}
