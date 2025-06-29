@@ -18,8 +18,18 @@ export default async function AppRootLayout({
     const session = await getSession();
     const user = session?.user;
     if (!user) return redirect("/sign-in");
+    // Ensure user.name is never null and email is never null
+    const allowedRoles = ["user", "admin", "moderator", "guest"] as const;
+    type AllowedRole = typeof allowedRoles[number];
+    const safeUser = { 
+        ...user, 
+        name: user?.name ?? undefined, 
+        email: user?.email ?? undefined,
+        image: user?.image ?? undefined,
+        role: allowedRoles.includes(user?.role as AllowedRole) ? user?.role as AllowedRole : undefined
+    };
     return (
-        <AppLayout>
+        <AppLayout user={safeUser}>
             {children}
         </AppLayout>
     )
