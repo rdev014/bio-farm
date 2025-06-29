@@ -37,13 +37,6 @@ interface ImpactStat {
   label: string;
 }
 
-// interface Testimonial {
-//   name: string;
-//   role: string;
-//   content: string;
-//   image: string;
-// }
-
 interface Author {
   name: string;
   image: string | null;

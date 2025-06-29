@@ -1,6 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Press & Media | Arkin Organics",
+  description: "Explore Arkin Organics’ latest press releases, media coverage, brand assets, and official announcements. For media inquiries, contact our press team.",
+};
 
 export default function PressMedia() {
   return (

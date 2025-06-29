@@ -3,6 +3,13 @@ import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import AuthLayout from "@/components/General/authLayout";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Verification Sent | Arkin Organics",
+  description: "We've sent a verification link to your email. Please check your inbox and complete the process to access your Arkin Organics account.",
+};
 
 export default async function VerificationSent() {
   const session = await getSession();

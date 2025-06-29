@@ -1,4 +1,12 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Help & Support | Arkin Organics",
+  description: "Need assistance? Visit Arkin Organics Help Center for answers to frequently asked questions, support resources, and customer service contact information.",
+};
 
 // SVG for a subtle background pattern in the hero section
 const SubtleWavesSVG = () => (

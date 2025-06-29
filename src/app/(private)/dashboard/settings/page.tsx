@@ -2,7 +2,14 @@ import { handleSignOut } from '@/actions/user'
 import { SignOutButton } from '@/components/General/Header/SignOutButton'
 import { FooterUnsubscribe } from '@/components/General/Newsletters'
 import { Activity } from 'lucide-react'
+import { Metadata } from 'next'
 import React from 'react'
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Admin Settings | Arkin Organics",
+  description: "Manage platform-wide settings including site configuration, SEO controls, user permissions, and operational preferences within the Arkin Organics admin panel.",
+};
 
 export default function page() {
   return (

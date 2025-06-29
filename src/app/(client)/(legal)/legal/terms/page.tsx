@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Terms & Conditions | Arkin Organics",
+  description: "Read the terms and conditions governing the use of Arkin Organics. By using our services, you agree to abide by our usage policies and legal terms.",
+};
 
 const TermsConditionsPage = () => {
   return (

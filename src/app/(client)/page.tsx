@@ -1,6 +1,7 @@
 import { getHomeBlogs } from "@/actions/blog";
 import { Category } from "@/components/FetchCategory/FetchCategory";
 import Home from "@/components/home/Home";
+import { Metadata } from "next";
 
 // Define or import the BlogPost and Category types correctly
 interface SEO {
@@ -27,6 +28,12 @@ interface BlogPost {
   status: string;
   seo: SEO;
 }
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Arkin Organics | Natural Fertilizers for Sustainable Farming",
+  description: "Arkin Organics delivers high-quality, eco-friendly fertilizers that enrich soil and support sustainable agriculture. Join us in cultivating a greener future with nature-powered solutions.",
+};
 
 export default async function Page() {
   const blogs = await getHomeBlogs();

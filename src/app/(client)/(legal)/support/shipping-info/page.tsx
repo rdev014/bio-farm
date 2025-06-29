@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Shipping Information | Arkin Organics",
+  description: "Get detailed information about our shipping policies, delivery timelines, coverage areas, and handling procedures at Arkin Organics.",
+};
 
 export default function ShippingInfoPage() {
   return (

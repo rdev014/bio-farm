@@ -1,7 +1,13 @@
 import { Suspense } from 'react';
 import VerifyEmailClient from '@/components/General/VerifyEmailClient';
 import { FaLeaf } from 'react-icons/fa';
+import { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Verify Your Account | Arkin Organics",
+  description: "Complete your verification to access Arkin Organics. Confirm your identity and continue your journey toward sustainable agriculture.",
+};
 
 export default function VerifyEmail() {
   return (

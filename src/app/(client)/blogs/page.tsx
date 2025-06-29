@@ -1,5 +1,12 @@
 import { getBlogs } from "@/actions/blog";
 import Blogs from "@/components/blogs/Blogs";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Insights & Articles | Arkin Organics Blog",
+  description: "Read the latest articles, farming tips, and organic agriculture insights from Arkin Organics. Stay informed about sustainable practices and innovations in natural fertilizers.",
+};
 
 export default async function Page() {
   const blogs = await getBlogs();

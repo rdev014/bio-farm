@@ -1,6 +1,12 @@
 import { fetchAllUsers } from "@/actions/user";
 import { User } from "@/models/UserSchema";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Admin Dashboard | Arkin Organics",
+  description: "Access the Arkin Organics admin dashboard to manage content, products, orders, users, and platform settings with full control and oversight.",
+};
 
 const Admin = async () => {
 

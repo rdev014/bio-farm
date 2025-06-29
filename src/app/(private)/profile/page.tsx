@@ -10,7 +10,13 @@ import Image from "next/image";
 import ProfileDetails from "@/components/dashboard/profile/ProfileDetails";
 import Link from "next/link";
 import { getSession } from "@/lib/getSession";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "My Profile | Arkin Organics",
+  description: "View and manage your account details, order history, and preferences on your Arkin Organics profile page. Keep your information up to date for a seamless experience.",
+};
 
 export default async function ProfilePage() {
   const session = await getSession();

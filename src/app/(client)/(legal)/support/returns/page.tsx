@@ -1,4 +1,10 @@
+import { Metadata } from 'next';
 import React from 'react';
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Return & Refund Policy | Arkin Organics",
+  description: "Read Arkin Organics' return and refund policy. Understand the conditions for returning products, requesting refunds, and resolving order issues.",
+};
 
 export default function ReturnsPage() {
   return (

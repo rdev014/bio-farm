@@ -1,4 +1,11 @@
+import { Metadata } from 'next';
 import React from 'react';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Seasonal Organic Products | Arkin Organics",
+  description: "Discover Arkin Organics’ seasonal fertilizer selections tailored to specific crops and climate cycles. Boost your yield with nature-aligned nutrition.",
+};
 
 export default function SeasonalProducts() {
   // SVG for a subtle, professional background texture

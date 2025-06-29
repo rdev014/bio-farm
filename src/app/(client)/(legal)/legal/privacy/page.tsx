@@ -1,4 +1,11 @@
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Privacy Policy | Arkin Organics",
+  description: "Learn how Arkin Organics collects, uses, and protects your data. Review our privacy practices to understand your rights and our responsibilities.",
+};
 
 const PrivacyPolicyPage = () => {
   return (

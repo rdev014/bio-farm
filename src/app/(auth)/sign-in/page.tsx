@@ -6,6 +6,13 @@ import { getSession } from "@/lib/getSession";
 import { redirect } from "next/navigation";
 import AuthLayout from "@/components/General/authLayout";
 import LoginForm from "@/components/auth/LoginForm";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Sign In | Arkin Organics",
+  description: "Access your Arkin Organics account securely. Sign in to manage your profile, explore organic solutions, and stay connected with sustainable farming.",
+};
 
 export default async function Login() {
   const session = await getSession();

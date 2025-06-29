@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import {FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import AuthLayout from "@/components/General/authLayout";
 
+
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
 

@@ -1,5 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Legal Information | Arkin Organics",
+  description: "Review all legal disclosures, compliance policies, and regulatory information related to Arkin Organics' operations and services.",
+};
 
 export default function LegalPage() {
   const legalDocs = [

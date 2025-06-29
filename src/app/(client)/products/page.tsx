@@ -5,11 +5,14 @@ import ProductCard from '@/components/products/ProductCard';
 import ProductsFilter from '@/components/products/ProductsFilter';
 import { Pagination } from '@/components/ui/pagination';
 import { ProductsSort } from '@/components/products/ProductsSort';
+import { Metadata } from 'next';
 
-export const metadata = {
-  title: 'Organic Fertilizers | Arkin',
-  description: 'Explore our range of natural organic fertilizers for healthy soil and vibrant growth.',
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.APP_URL!),
+  title: "Our Products | Arkin Organics",
+  description: "Browse a wide range of organic fertilizers and soil enrichment solutions by Arkin Organics. Designed for healthy crops and sustainable farming practices.",
 };
+
 
 // SVG for background texture (minimalist, organic feel)
 const BackgroundTextureSVG = () => (
