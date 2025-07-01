@@ -245,13 +245,18 @@ export default function Home({ blogs }: BlogProps) {
     setRecommendations(newRecommendations);
     setIsCalculating(false);
   };
-// Newsletter submission handler
+  // Newsletter submission handler
   const handleNewsletterSubmit = async (formData: FormData) => {
     setStatus("submitting");
     try {
       const res = await subscribeToNewsletter(formData);
       setStatus(res?.success ? "success" : "error");
-      setMessage(res?.message || (res?.success ? "Successfully subscribed!" : "Failed to subscribe. Please try again."));
+      setMessage(
+        res?.message ||
+          (res?.success
+            ? "Successfully subscribed!"
+            : "Failed to subscribe. Please try again.")
+      );
     } catch (error) {
       setStatus("error");
       setMessage("An error occurred. Please try again later.");
@@ -1227,112 +1232,122 @@ export default function Home({ blogs }: BlogProps) {
 
       {/* Newsletter Section */}
       <section className="py-20 lg:py-40 bg-gradient-to-br from-emerald-900 to-green-900 relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none opacity-20">
-            <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          </div>
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-            <motion.div
-              variants={containerVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="max-w-3xl mx-auto text-center"
-            >
-              <motion.div variants={itemVariants} className="mb-8">
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-800 text-emerald-100 font-semibold text-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Stay Connected
-                </span>
-              </motion.div>
-
-              <motion.h2
-                variants={itemVariants}
-                className="text-4xl lg:text-5xl font-extrabold text-white mb-6 relative"
-              >
-                Join Our Organic Farming Community
-                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full"></span>
-              </motion.h2>
-
-              <motion.p
-                variants={itemVariants}
-                className="text-lg text-emerald-100 mb-8 max-w-2xl mx-auto leading-relaxed"
-              >
-                Subscribe to our newsletter for the latest tips on organic fertilizers, sustainable farming practices, and exclusive eco-friendly offers.
-              </motion.p>
-
-              <motion.form
-                variants={itemVariants}
-                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-                action={handleNewsletterSubmit}
-                aria-live="polite"
-              >
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="Enter your email"
-                  className="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-500/40 text-white placeholder-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-sm"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "submitting"}
-                  className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-full hover:from-emerald-600 hover:to-green-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
-                >
-                  {status === "submitting" ? (
-                    <>
-                      <svg
-                        className="animate-spin h-5 w-5 mr-2 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        ></path>
-                      </svg>
-                      Subscribing...
-                    </>
-                  ) : (
-                    "Subscribe"
-                  )}
-                </button>
-              </motion.form>
-
-              {message && (
-                <motion.p
-                  variants={itemVariants}
-                  className={`mt-4 text-sm text-center font-semibold ${
-                    status === "success" ? "text-emerald-300" : "text-red-300"
-                  } bg-${status === "success" ? "emerald" : "red"}-900/20 p-3 rounded-lg`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {message}
-                </motion.p>
-              )}
-
-              <motion.p
-                variants={itemVariants}
-                className="mt-4 text-sm text-emerald-200"
-              >
-                We respect your privacy. <Link href="/unsubscribe" className="underline hover:text-emerald-100">Unsubscribe at any time.</Link>
-              </motion.p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="max-w-3xl mx-auto text-center"
+          >
+            <motion.div variants={itemVariants} className="mb-8">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-800 text-emerald-100 font-semibold text-sm">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                Stay Connected
+              </span>
             </motion.div>
-          </div>
-        </section>
+
+            <motion.h2
+              variants={itemVariants}
+              className="text-4xl lg:text-5xl font-extrabold text-white mb-6 relative"
+            >
+              Join Our Organic Farming Community
+              <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full"></span>
+            </motion.h2>
+
+            <motion.p
+              variants={itemVariants}
+              className="text-lg text-emerald-100 mb-8 max-w-2xl mx-auto leading-relaxed"
+            >
+              Subscribe to our newsletter for the latest tips on organic
+              fertilizers, sustainable farming practices, and exclusive
+              eco-friendly offers.
+            </motion.p>
+
+            <motion.form
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+              action={handleNewsletterSubmit}
+              aria-live="polite"
+            >
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="Enter your email"
+                className="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-500/40 text-white placeholder-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-sm"
+              />
+              <button
+                type="submit"
+                disabled={status === "submitting"}
+                className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-full hover:from-emerald-600 hover:to-green-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
+              >
+                {status === "submitting" ? (
+                  <>
+                    <svg
+                      className="animate-spin h-5 w-5 mr-2 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
+                    Subscribing...
+                  </>
+                ) : (
+                  "Subscribe"
+                )}
+              </button>
+            </motion.form>
+
+            {message && (
+              <motion.p
+                variants={itemVariants}
+                className={`mt-4 text-sm text-center font-semibold ${
+                  status === "success" ? "text-emerald-300" : "text-red-300"
+                } bg-${
+                  status === "success" ? "emerald" : "red"
+                }-900/20 p-3 rounded-lg`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                {message}
+              </motion.p>
+            )}
+
+            <motion.p
+              variants={itemVariants}
+              className="mt-4 text-sm text-emerald-200"
+            >
+              We respect your privacy.{" "}
+              <Link
+                href="/unsubscribe"
+                className="underline hover:text-emerald-100"
+              >
+                Unsubscribe at any time.
+              </Link>
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
     </main>
   );
 }
