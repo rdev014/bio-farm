@@ -1,17 +1,22 @@
 "use client";
-
-import {
-  motion
-} from "framer-motion";
-import Image from "next/image";
+import { subscribeToNewsletter } from "@/actions/newsletter";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import {
-  Leaf, CircuitBoard, Award, Globe, FlaskConical, HeadsetIcon,
-  Calculator, NewspaperIcon, ArrowRightIcon
+  Leaf,
+  CircuitBoard,
+  Award,
+  Globe,
+  FlaskConical,
+  HeadsetIcon,
+  Calculator,
+  NewspaperIcon,
+  ArrowRightIcon,
 } from "lucide-react";
-import { ReactNode } from "react";
 import { Category } from "../FetchCategory/FetchCategory";
+import { ReactNode } from "react";
 
 interface Feature {
   title: string;
@@ -20,8 +25,6 @@ interface Feature {
   color: string;
   lightColor: string;
 }
-
-
 
 interface Product {
   title: string;
@@ -73,9 +76,9 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1
-    }
-  }
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const formatDate = (dateString: string) => {
@@ -105,26 +108,24 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.5
-    }
-  }
+      duration: 0.5,
+    },
+  },
 };
 
 export default function Home({ blogs }: BlogProps) {
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
-  const [recommendations, setRecommendations] = useState<{
-    name: string;
-    amount: string;
-    price: string;
-  }[]>([]);
+  const [recommendations, setRecommendations] = useState<
+    {
+      name: string;
+      amount: string;
+      price: string;
+    }[]
+  >([]);
   const [isCalculating, setIsCalculating] = useState(false);
-
-
-
-
-
-
+  const [message, setMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const features: Feature[] = [
     {
       title: "Eco-Friendly Farming",
@@ -175,10 +176,6 @@ export default function Home({ blogs }: BlogProps) {
     },
   ];
 
-
-
-
-
   // Farm calculator logic
   const calculateRequirements = () => {
     setIsCalculating(true);
@@ -188,18 +185,18 @@ export default function Home({ blogs }: BlogProps) {
       Vegetables: {
         fertilizer: 2000, // 2000 kg per acre
         soilEnhancer: 800, // 800 kg per acre
-        pestControl: 5 // 5 units per acre
+        pestControl: 5, // 5 units per acre
       },
       Fruits: {
         fertilizer: 1500,
         soilEnhancer: 600,
-        pestControl: 4
+        pestControl: 4,
       },
       Grains: {
         fertilizer: 1200,
         soilEnhancer: 500,
-        pestControl: 3
-      }
+        pestControl: 3,
+      },
     };
 
     if (!landSize || !cropType || landSize <= 0) {
@@ -222,31 +219,44 @@ export default function Home({ blogs }: BlogProps) {
     const prices = {
       fertilizer: 3, // $3 per kg
       soilEnhancer: 2.5, // $2.5 per kg
-      pestControl: 30 // $30 per unit
+      pestControl: 30, // $30 per unit
     };
 
     const newRecommendations = [
       {
         name: "Organic Fertilizer",
         amount: `${fertilizerAmount.toFixed(0)} kg`,
-        price: `$${(fertilizerAmount * prices.fertilizer).toLocaleString()}`
+        price: `$${(fertilizerAmount * prices.fertilizer).toLocaleString()}`,
       },
       {
         name: "Soil Enhancer",
         amount: `${soilEnhancerAmount.toFixed(0)} kg`,
-        price: `$${(soilEnhancerAmount * prices.soilEnhancer).toLocaleString()}`
+        price: `$${(
+          soilEnhancerAmount * prices.soilEnhancer
+        ).toLocaleString()}`,
       },
       {
         name: "Neem-Based Pest Control",
         amount: `${pestControlAmount.toFixed(0)} units`,
-        price: `$${(pestControlAmount * prices.pestControl).toLocaleString()}`
-      }
+        price: `$${(pestControlAmount * prices.pestControl).toLocaleString()}`,
+      },
     ];
 
     setRecommendations(newRecommendations);
     setIsCalculating(false);
   };
-
+// Newsletter submission handler
+  const handleNewsletterSubmit = async (formData: FormData) => {
+    setStatus("submitting");
+    try {
+      const res = await subscribeToNewsletter(formData);
+      setStatus(res?.success ? "success" : "error");
+      setMessage(res?.message || (res?.success ? "Successfully subscribed!" : "Failed to subscribe. Please try again."));
+    } catch (error) {
+      setStatus("error");
+      setMessage("An error occurred. Please try again later.");
+    }
+  };
   return (
     <main className="overflow-hidden">
       {/* Hero Section */}
@@ -285,7 +295,7 @@ export default function Home({ blogs }: BlogProps) {
 
               <div className="flex flex-wrap gap-6">
                 <Link
-                  href='/products'
+                  href="/products"
                   className="group relative px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 
                                  text-white rounded-xl font-medium shadow-lg shadow-green-500/25
                                  hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300 
@@ -311,7 +321,7 @@ export default function Home({ blogs }: BlogProps) {
                 </Link>
 
                 <Link
-                  href='/blogs'
+                  href="/blogs"
                   className="px-8 py-4 border-2 border-gray-800 text-gray-800 rounded-xl 
                                  font-medium hover:bg-gray-800 hover:text-white transition-all
                                  duration-300 hover:shadow-xl"
@@ -358,7 +368,8 @@ export default function Home({ blogs }: BlogProps) {
                 ></div>
                 <Image
                   src="/arkinimage.jpg"
-                  alt="Organic Fertilizer Product" width={1400}
+                  alt="Organic Fertilizer Product"
+                  width={1400}
                   height={300}
                   className="object-cover w-full h-full rounded-2xl transform 
                            group-hover:scale-105 transition-transform duration-700"
@@ -424,7 +435,8 @@ export default function Home({ blogs }: BlogProps) {
               Sustainable Growth, Naturally
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              Experience the perfect blend of eco-conscious practices and innovative solutions for your thriving garden.
+              Experience the perfect blend of eco-conscious practices and
+              innovative solutions for your thriving garden.
             </p>
           </motion.div>
 
@@ -445,10 +457,14 @@ export default function Home({ blogs }: BlogProps) {
                 }}
                 className="group relative"
               >
-                <div className={`absolute inset-0 ${feature.lightColor} rounded-2xl transform transition-transform group-hover:scale-105 duration-300`}></div>
+                <div
+                  className={`absolute inset-0 ${feature.lightColor} rounded-2xl transform transition-transform group-hover:scale-105 duration-300`}
+                ></div>
                 <div className="relative p-6 lg:p-8">
                   <div className="mb-6">
-                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-2xl shadow-lg transform transition-transform group-hover:-translate-y-1 duration-300`}>
+                    <div
+                      className={`w-14 h-14 rounded-xl bg-gradient-to-r ${feature.color} flex items-center justify-center text-2xl shadow-lg transform transition-transform group-hover:-translate-y-1 duration-300`}
+                    >
                       {feature.icon}
                     </div>
                   </div>
@@ -490,7 +506,8 @@ export default function Home({ blogs }: BlogProps) {
               From Seed to Success
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              We&apos;ve refined our approach to ensure optimal results at every stage of your farming journey.
+              We&apos;ve refined our approach to ensure optimal results at every
+              stage of your farming journey.
             </p>
           </motion.div>
 
@@ -505,31 +522,35 @@ export default function Home({ blogs }: BlogProps) {
               {
                 step: "01",
                 title: "Planning",
-                description: "Expert consultation to understand your goals and create a tailored strategy.",
+                description:
+                  "Expert consultation to understand your goals and create a tailored strategy.",
                 icon: "📋",
-                gradient: "from-blue-500 to-cyan-500"
+                gradient: "from-blue-500 to-cyan-500",
               },
               {
                 step: "02",
                 title: "Preparation",
-                description: "Setting up sustainable systems and optimal growing conditions.",
+                description:
+                  "Setting up sustainable systems and optimal growing conditions.",
                 icon: "🌱",
-                gradient: "from-emerald-500 to-green-500"
+                gradient: "from-emerald-500 to-green-500",
               },
               {
                 step: "03",
                 title: "Growth",
-                description: "Monitoring and nurturing your crops with precision technology.",
+                description:
+                  "Monitoring and nurturing your crops with precision technology.",
                 icon: "📈",
-                gradient: "from-amber-500 to-orange-500"
+                gradient: "from-amber-500 to-orange-500",
               },
               {
                 step: "04",
                 title: "Success",
-                description: "Harvesting results and ensuring sustainable long-term outcomes.",
+                description:
+                  "Harvesting results and ensuring sustainable long-term outcomes.",
                 icon: "🎯",
-                gradient: "from-rose-500 to-pink-500"
-              }
+                gradient: "from-rose-500 to-pink-500",
+              },
             ].map((process, i) => (
               <motion.div
                 key={i}
@@ -537,23 +558,25 @@ export default function Home({ blogs }: BlogProps) {
                 className="relative group"
                 whileHover={{
                   scale: 1.02,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
               >
                 <div className="relative p-6 lg:p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
                   <div className="absolute -top-4 -right-4 w-16 h-16 rounded-2xl bg-gradient-to-r shadow-lg flex items-center justify-center text-2xl transform -rotate-6 group-hover:rotate-0 transition-transform duration-300">
                     {process.icon}
                   </div>
-                  <div className={`text-4xl font-black bg-gradient-to-r ${process.gradient} text-transparent bg-clip-text mb-4`}>
+                  <div
+                    className={`text-4xl font-black bg-gradient-to-r ${process.gradient} text-transparent bg-clip-text mb-4`}
+                  >
                     {process.step}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
                     {process.title}
                   </h3>
-                  <p className="text-gray-600">
-                    {process.description}
-                  </p>
-                  <div className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${process.gradient} w-0 group-hover:w-full transition-all duration-300 rounded-b-2xl`}></div>
+                  <p className="text-gray-600">{process.description}</p>
+                  <div
+                    className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${process.gradient} w-0 group-hover:w-full transition-all duration-300 rounded-b-2xl`}
+                  ></div>
                 </div>
               </motion.div>
             ))}
@@ -566,10 +589,23 @@ export default function Home({ blogs }: BlogProps) {
             viewport={{ once: true }}
             className="text-center mt-12 lg:mt-16"
           >
-            <Link href='/press-media' className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <Link
+              href="/press-media"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
               Start Your Journey
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </Link>
           </motion.div>
@@ -600,7 +636,8 @@ export default function Home({ blogs }: BlogProps) {
               Sustainable Solutions
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              Discover our range of eco-friendly products designed to enhance your farming experience.
+              Discover our range of eco-friendly products designed to enhance
+              your farming experience.
             </p>
           </motion.div>
 
@@ -611,43 +648,48 @@ export default function Home({ blogs }: BlogProps) {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
           >
-            {([
-              {
-                title: "Organic Fertilizers",
-                description: "Nutrient-rich formulas for optimal plant growth",
-                image: "/organic.png",
-                // price: "$29.99",
-                badge: "Best Seller",
-                badgeColor: "bg-amber-500"
-              },
-              {
-                title: "Soil Enrichment",
-                description: "Premium soil blends for maximum yield",
-                image: "/organic2.png",
-                // price: "$24.99",
-                badge: "Organic",
-                badgeColor: "bg-emerald-500"
-              },
-              {
-                title: "Growth Boosters",
-                description: "Natural supplements for accelerated growth",
-                image: "/organic3.jpeg",
-                // price: "$34.99",
-                badge: "New",
-                badgeColor: "bg-blue-500"
-              }
-            ] as Product[]).map((product, index) => (
+            {(
+              [
+                {
+                  title: "Organic Fertilizers",
+                  description:
+                    "Nutrient-rich formulas for optimal plant growth",
+                  image: "/organic.png",
+                  // price: "$29.99",
+                  badge: "Best Seller",
+                  badgeColor: "bg-amber-500",
+                },
+                {
+                  title: "Soil Enrichment",
+                  description: "Premium soil blends for maximum yield",
+                  image: "/organic2.png",
+                  // price: "$24.99",
+                  badge: "Organic",
+                  badgeColor: "bg-emerald-500",
+                },
+                {
+                  title: "Growth Boosters",
+                  description: "Natural supplements for accelerated growth",
+                  image: "/organic3.jpeg",
+                  // price: "$34.99",
+                  badge: "New",
+                  badgeColor: "bg-blue-500",
+                },
+              ] as Product[]
+            ).map((product, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
                 className="group relative"
                 whileHover={{
                   scale: 1.02,
-                  transition: { duration: 0.2 }
+                  transition: { duration: 0.2 },
                 }}
               >
                 <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
-                  <div className={`absolute top-4 left-4 ${product.badgeColor} text-white text-sm font-medium px-3 py-1 rounded-full z-10`}>
+                  <div
+                    className={`absolute top-4 left-4 ${product.badgeColor} text-white text-sm font-medium px-3 py-1 rounded-full z-10`}
+                  >
                     {product.badge}
                   </div>
 
@@ -666,17 +708,25 @@ export default function Home({ blogs }: BlogProps) {
                     <h3 className="text-xl font-bold text-gray-900 mb-2">
                       {product.title}
                     </h3>
-                    <p className="text-gray-600 mb-4">
-                      {product.description}
-                    </p>
+                    <p className="text-gray-600 mb-4">{product.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-emerald-600">
                         {product.price}
                       </span>
                       <button className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors duration-300">
                         Notify Me
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 5l7 7-7 7"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -698,8 +748,18 @@ export default function Home({ blogs }: BlogProps) {
               className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-full hover:from-emerald-700 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               View All Products
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </Link>
           </motion.div>
@@ -728,7 +788,8 @@ export default function Home({ blogs }: BlogProps) {
               Growing a Sustainable Future
             </h2>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              Our commitment to sustainable farming practices has created lasting positive impact across communities and environments.
+              Our commitment to sustainable farming practices has created
+              lasting positive impact across communities and environments.
             </p>
           </motion.div>
 
@@ -739,12 +800,14 @@ export default function Home({ blogs }: BlogProps) {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            {([
-              { number: "100K+", label: "Farmers Supported" },
-              { number: "500K", label: "Trees Planted" },
-              { number: "80%", label: "Carbon Reduction" },
-              { number: "150+", label: "Communities Impacted" }
-            ] as ImpactStat[]).map((stat, index) => (
+            {(
+              [
+                { number: "100K+", label: "Farmers Supported" },
+                { number: "500K", label: "Trees Planted" },
+                { number: "80%", label: "Carbon Reduction" },
+                { number: "150+", label: "Communities Impacted" },
+              ] as ImpactStat[]
+            ).map((stat, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
@@ -797,10 +860,15 @@ export default function Home({ blogs }: BlogProps) {
               </h3>
               <div className="space-y-4">
                 <p className="text-gray-600">
-                  Our sustainable farming practices go beyond organic certification. We&apos;re committed to regenerative agriculture that enriches soil health, promotes biodiversity, and ensures long-term environmental sustainability.
+                  Our sustainable farming practices go beyond organic
+                  certification. We&apos;re committed to regenerative
+                  agriculture that enriches soil health, promotes biodiversity,
+                  and ensures long-term environmental sustainability.
                 </p>
                 <p className="text-gray-600">
-                  Through innovative technologies and traditional wisdom, we&apos;re building a future where farming works in harmony with nature.
+                  Through innovative technologies and traditional wisdom,
+                  we&apos;re building a future where farming works in harmony
+                  with nature.
                 </p>
               </div>
               <div className="mt-8">
@@ -809,8 +877,18 @@ export default function Home({ blogs }: BlogProps) {
                   className="inline-flex items-center gap-2 text-emerald-600 font-semibold hover:text-emerald-700 transition-colors"
                 >
                   Learn about our sustainability initiatives
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </Link>
               </div>
@@ -913,7 +991,6 @@ export default function Home({ blogs }: BlogProps) {
         </div>
       </section> */}
 
-
       {/* Farm Calculator Section */}
       <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -938,11 +1015,14 @@ export default function Home({ blogs }: BlogProps) {
                 Calculate Your Farm&apos;s Needs
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Use our intelligent calculator to estimate the perfect amount of organic fertilizer and other products for your farming needs.
+                Use our intelligent calculator to estimate the perfect amount of
+                organic fertilizer and other products for your farming needs.
               </p>
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">Land Size (acres)</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Land Size (acres)
+                  </label>
                   <input
                     type="number"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
@@ -952,7 +1032,9 @@ export default function Home({ blogs }: BlogProps) {
                   />
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-gray-700">Crop Type</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Crop Type
+                  </label>
                   <select
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                     value={cropType}
@@ -983,7 +1065,9 @@ export default function Home({ blogs }: BlogProps) {
               <div className="relative bg-white rounded-2xl shadow-xl p-8">
                 <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl transform rotate-6"></div>
                 <div className="relative space-y-6">
-                  <h3 className="text-2xl font-bold text-gray-900">Recommended Products</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">
+                    Recommended Products
+                  </h3>
                   <div className="space-y-4">
                     {recommendations.length > 0 ? (
                       recommendations.map((product, index) => (
@@ -992,25 +1076,41 @@ export default function Home({ blogs }: BlogProps) {
                           className="flex items-center justify-between p-4 rounded-xl bg-gray-50 hover:bg-emerald-50 transition-colors duration-300"
                         >
                           <div>
-                            <h4 className="font-medium text-gray-900">{product.name}</h4>
-                            <p className="text-sm text-gray-600">{product.amount}</p>
+                            <h4 className="font-medium text-gray-900">
+                              {product.name}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              {product.amount}
+                            </p>
                           </div>
-                          <span className="font-bold text-emerald-600">{product.price}</span>
+                          <span className="font-bold text-emerald-600">
+                            {product.price}
+                          </span>
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-500 text-center py-4">Enter your land size and crop type to see recommendations.</p>
+                      <p className="text-gray-500 text-center py-4">
+                        Enter your land size and crop type to see
+                        recommendations.
+                      </p>
                     )}
                   </div>
                   {recommendations.length > 0 && (
                     <div className="pt-6 border-t border-gray-100">
                       <div className="flex items-center justify-between">
-                        <span className="text-lg font-medium text-gray-900">Total Estimate</span>
+                        <span className="text-lg font-medium text-gray-900">
+                          Total Estimate
+                        </span>
                         <span className="text-2xl font-bold text-emerald-600">
-                          ${recommendations.reduce((total, product) => {
-                            const price = parseFloat(product.price.replace(/[^0-9.-]+/g, ""));
-                            return total + price;
-                          }, 0).toLocaleString()}
+                          $
+                          {recommendations
+                            .reduce((total, product) => {
+                              const price = parseFloat(
+                                product.price.replace(/[^0-9.-]+/g, "")
+                              );
+                              return total + price;
+                            }, 0)
+                            .toLocaleString()}
                         </span>
                       </div>
                       <button className="w-full mt-4 px-6 py-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-xl hover:from-emerald-700 hover:to-green-700 transition-all duration-300 transform hover:-translate-y-0.5">
@@ -1078,7 +1178,7 @@ export default function Home({ blogs }: BlogProps) {
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
                       <div className="absolute bottom-4 left-4">
                         <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-emerald-600 text-sm font-medium rounded-full">
-                          {article.categories.map((cat) => cat.name).join(', ')}
+                          {article.categories.map((cat) => cat.name).join(", ")}
                         </span>
                       </div>
                     </div>
@@ -1086,8 +1186,7 @@ export default function Home({ blogs }: BlogProps) {
                       <div className="text-sm text-gray-500 mb-2">
                         {getTimeAgo(article.publishedAt)}
                       </div>
-                      <Link
-                        href={`/blogs/${article.slug}`}>
+                      <Link href={`/blogs/${article.slug}`}>
                         <h3 className="text-xl font-semibold text-gray-900 mb-4 group-hover:text-emerald-600 transition-colors line-clamp-2">
                           {article.title}
                         </h3>
@@ -1106,7 +1205,6 @@ export default function Home({ blogs }: BlogProps) {
                 </motion.div>
               ))}
             </motion.div>
-
 
             <motion.div
               variants={itemVariants}
@@ -1128,71 +1226,113 @@ export default function Home({ blogs }: BlogProps) {
       </div>
 
       {/* Newsletter Section */}
-      <section className="py-16 lg:py-32 bg-gradient-to-br from-emerald-900 to-green-900 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none opacity-10">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        </div>
+      <section className="py-20 lg:py-40 bg-gradient-to-br from-emerald-900 to-green-900 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none opacity-20">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+          </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center"
-          >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <motion.div
-              variants={itemVariants}
-              className="mb-8"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto text-center"
             >
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-700 text-emerald-100 font-medium text-sm">
-                <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-                Stay Connected
-              </span>
-            </motion.div>
+              <motion.div variants={itemVariants} className="mb-8">
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-800 text-emerald-100 font-semibold text-sm">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Stay Connected
+                </span>
+              </motion.div>
 
-            <motion.h2
-              variants={itemVariants}
-              className="text-4xl lg:text-5xl font-bold text-white mb-6"
-            >
-              Join Our Growing Community
-            </motion.h2>
-
-            <motion.p
-              variants={itemVariants}
-              className="text-lg text-emerald-100 mb-8 max-w-2xl mx-auto"
-            >
-              Subscribe to our newsletter for the latest sustainable farming tips, exclusive offers, and updates on our environmental initiatives.
-            </motion.p>
-
-            <motion.form
-              variants={itemVariants}
-              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-400/30 text-white placeholder-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all"
-              />
-              <button
-                type="submit"
-                className="px-8 py-3 bg-gradient-to-r from-emerald-400 to-green-400 text-white font-semibold rounded-full hover:from-emerald-500 hover:to-green-500 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              <motion.h2
+                variants={itemVariants}
+                className="text-4xl lg:text-5xl font-extrabold text-white mb-6 relative"
               >
-                Subscribe
-              </button>
-            </motion.form>
+                Join Our Organic Farming Community
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-emerald-400 to-green-400 rounded-full"></span>
+              </motion.h2>
 
-            <motion.p
-              variants={itemVariants}
-              className="mt-4 text-sm text-emerald-300"
-            >
-              We respect your privacy. Unsubscribe at any time.
-            </motion.p>
-          </motion.div>
-        </div>
-      </section>
+              <motion.p
+                variants={itemVariants}
+                className="text-lg text-emerald-100 mb-8 max-w-2xl mx-auto leading-relaxed"
+              >
+                Subscribe to our newsletter for the latest tips on organic fertilizers, sustainable farming practices, and exclusive eco-friendly offers.
+              </motion.p>
+
+              <motion.form
+                variants={itemVariants}
+                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+                action={handleNewsletterSubmit}
+                aria-live="polite"
+              >
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="Enter your email"
+                  className="flex-1 px-6 py-3 rounded-full bg-white/10 border border-emerald-500/40 text-white placeholder-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all shadow-sm"
+                />
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="px-8 py-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white font-semibold rounded-full hover:from-emerald-600 hover:to-green-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
+                >
+                  {status === "submitting" ? (
+                    <>
+                      <svg
+                        className="animate-spin h-5 w-5 mr-2 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8z"
+                        ></path>
+                      </svg>
+                      Subscribing...
+                    </>
+                  ) : (
+                    "Subscribe"
+                  )}
+                </button>
+              </motion.form>
+
+              {message && (
+                <motion.p
+                  variants={itemVariants}
+                  className={`mt-4 text-sm text-center font-semibold ${
+                    status === "success" ? "text-emerald-300" : "text-red-300"
+                  } bg-${status === "success" ? "emerald" : "red"}-900/20 p-3 rounded-lg`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {message}
+                </motion.p>
+              )}
+
+              <motion.p
+                variants={itemVariants}
+                className="mt-4 text-sm text-emerald-200"
+              >
+                We respect your privacy. <Link href="/unsubscribe" className="underline hover:text-emerald-100">Unsubscribe at any time.</Link>
+              </motion.p>
+            </motion.div>
+          </div>
+        </section>
     </main>
   );
 }
