@@ -84,6 +84,8 @@ export default function BlogPost({ post }: BlogPostProps) {
             : "Failed to subscribe. Please try again.")
       );
     } catch (error) {
+      console.log(error);
+      
       setStatus("error");
       setMessage("An error occurred. Please try again later.");
     }

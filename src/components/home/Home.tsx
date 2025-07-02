@@ -125,7 +125,9 @@ export default function Home({ blogs }: BlogProps) {
   >([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const features: Feature[] = [
     {
       title: "Eco-Friendly Farming",
@@ -258,6 +260,7 @@ export default function Home({ blogs }: BlogProps) {
             : "Failed to subscribe. Please try again.")
       );
     } catch (error) {
+      console.log(error);
       setStatus("error");
       setMessage("An error occurred. Please try again later.");
     }
