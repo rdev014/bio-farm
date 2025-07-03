@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Mail,
   Bell,
@@ -14,17 +14,27 @@ import {
   Eye,
   EyeOff,
   Users,
-  Package
+  Package,
+  Newspaper
 } from 'lucide-react';
+import { NewsletterToggleSubscribe } from '@/components/General/Newsletters';
+import { getUserSession } from '@/actions/user';
 
 interface User {
-  email: string;
+  _id: string;
   name: string;
-  company: string;
-  phone: string;
-  address: string;
-  accountType: string;
-  memberSince: string;
+  // firstname?: string;
+  // lastname?: string;
+  email: string;
+  image: string;
+  role: string;
+  // authProviderId: string;
+  // isVerified: boolean;
+  // isSubscribedToNewsletter: boolean;
+  // createdAt: string;
+  // bio?: string;
+  // location?: string;
+  // contact_no?: string;
 }
 
 interface EmailPreferences {
@@ -59,6 +69,7 @@ interface TabButtonProps {
 }
 
 const SettingsPage: React.FC = () => {
+  const [user, setUser] = useState<User>()
   const [activeTab, setActiveTab] = useState<string>('email');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [emailPreferences, setEmailPreferences] = useState<EmailPreferences>({
@@ -79,15 +90,34 @@ const SettingsPage: React.FC = () => {
     securityAlerts: true,
   });
 
-  const user: User = {
-    email: 'john.doe@example.com',
-    name: 'John Doe',
-    company: 'Green Valley Farms',
-    phone: '+1 (555) 123-4567',
-    address: '123 Farm Road, Green Valley, CA 94550',
-    accountType: 'B2B Premium',
-    memberSince: '2023',
-  };
+  useEffect(() => {
+    const loadUser = async () => {
+
+      const sessionUser = await getUserSession();
+      if (sessionUser) {
+        // Map or cast sessionUser to match the User interface
+        setUser({
+          _id: sessionUser.id ?? '',
+          name: sessionUser.name ?? '',
+          // firstname: sessionUser.firstname,
+          // lastname: sessionUser.lastname,
+          email: sessionUser.email ?? '',
+          image: sessionUser.image ?? '',
+          role: sessionUser.role ?? '',
+          // authProviderId: sessionUser.authProviderId ?? '',
+          // isVerified: sessionUser.isVerified ?? false,
+          // isSubscribedToNewsletter: sessionUser.isSubscribedToNewsletter ?? false,
+          // createdAt: sessionUser.createdAt ?? '',
+          // bio: sessionUser.bio,
+          // location: sessionUser.location,
+          // contact_no: sessionUser.contact_no,
+        });
+      } else {
+        setUser(undefined);
+      }
+    };
+    loadUser();
+  }, []);
 
   const handleEmailPreferenceChange = (key: keyof EmailPreferences): void => {
     setEmailPreferences((prev) => ({
@@ -109,6 +139,7 @@ const SettingsPage: React.FC = () => {
     { id: 'subscription', label: 'Subscription', icon: Activity },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'billing', label: 'Billing', icon: CreditCard },
+    { id: 'news', label: 'News', icon: Newspaper },
   ];
 
   const TabButton: React.FC<TabButtonProps> = ({ tab, isActive, onClick }) => {
@@ -117,8 +148,8 @@ const SettingsPage: React.FC = () => {
       <button
         onClick={() => onClick(tab.id)}
         className={`flex items-center w-full px-4 py-3 text-left rounded-lg transition-colors ${isActive
-            ? 'bg-green-50 text-green-700 border-l-4 border-green-600'
-            : 'text-gray-600 hover:bg-gray-50'
+          ? 'bg-green-50 text-green-700 border-l-4 border-green-600'
+          : 'text-gray-600 hover:bg-gray-50'
           }`}
       >
         <Icon className="w-5 h-5 mr-3" />
@@ -264,7 +295,7 @@ const SettingsPage: React.FC = () => {
               <Activity className="w-8 h-8 text-green-600 mr-3" />
               <div>
                 <h3 className="text-lg font-semibold text-green-900">B2B Premium Account</h3>
-                <p className="text-sm text-green-700">Active since {user.memberSince}</p>
+                {/* <p className="text-sm text-green-700">Active since {user.createdAt}</p> */}
               </div>
             </div>
             <span className="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-medium">
@@ -387,9 +418,8 @@ const SettingsPage: React.FC = () => {
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Billing Address</h3>
           <div className="text-sm text-gray-600">
-            <p>{user.name}</p>
-            <p>{user.company}</p>
-            <p>{user.address}</p>
+            {/* <p>{user.name}</p>
+            <p>{user.location}</p> */}
           </div>
           <button className="mt-4 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Update Address
@@ -420,6 +450,9 @@ const SettingsPage: React.FC = () => {
       </div>
     </div>
   );
+  const renderNewsTab = ({ email }: { email?: string }) => (
+    <NewsletterToggleSubscribe useremail={email ?? undefined} />
+  );
 
   const renderContent = () => {
     switch (activeTab) {
@@ -433,6 +466,8 @@ const SettingsPage: React.FC = () => {
         return renderSecurityTab();
       case 'billing':
         return renderBillingTab();
+      case 'news':
+        return renderNewsTab({ email: user?.email });
       default:
         return renderEmailTab();
     }

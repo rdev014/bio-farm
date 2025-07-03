@@ -15,6 +15,8 @@ import {
   ChevronLeft,
   User,
   LayoutGrid,
+  Leaf,
+  Zap,
 } from 'lucide-react'
 import Link from 'next/link'
 import { User as UserType } from '@/types'
@@ -29,10 +31,12 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Home', href: '/home', icon: <Home className="w-5 h-5" /> },
+  { title: 'Products', href: '/homde', icon: <Zap className="w-5 h-5" /> },
   { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, adminOnly: true },
   { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" />, adminOnly: true },
-  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, adminOnly: true },
-  { title: 'Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" />, adminOnly: true },
+  { title: 'Maage Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, adminOnly: true },
+  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, },
+  { title: 'user Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" />, adminOnly: true },
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
 ]
 
@@ -61,7 +65,7 @@ const Sidebar = ({ user }: { user: UserType }) => {
             >
               <Link href="/" className="flex items-center gap-2.5">
                 <div className="bg-green-600 rounded-xl w-9 h-9 flex items-center justify-center text-white font-bold shadow-sm">
-                  A
+                  <Leaf/>
                 </div>
                 <span className="text-lg font-semibold text-gray-800">Arkin</span>
               </Link>

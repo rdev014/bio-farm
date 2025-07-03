@@ -1,4 +1,3 @@
-// app/actions/newsletter.ts
 "use server";
 
 import connectDB from "@/lib/db";
