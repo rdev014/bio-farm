@@ -62,7 +62,7 @@ export default async function ProfilePage() {
               </div>
 
               <div className="flex items-center space-x-3">
-                <Link href={'/dashboard/settings'} className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                <Link href={'/profile/settings'} className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
                   <Settings2 className="w-4 h-4" />
                 </Link>
                 <button className="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
