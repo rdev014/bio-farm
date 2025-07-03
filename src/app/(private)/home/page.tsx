@@ -18,6 +18,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default async function Home() {
   const session = await getSession();
@@ -167,12 +168,9 @@ export default async function Home() {
 
             {/* User Actions */}
             <div className="flex items-center space-x-4">
-              <button className="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
+              <Link href={'/notifications'} className="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
                 <Bell className="w-6 h-6" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                  <span className="text-xs text-white font-medium">2</span>
-                </span>
-              </button>
+              </Link>
 
               <button className="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg">
                 <ShoppingCart className="w-6 h-6" />
@@ -207,7 +205,7 @@ export default async function Home() {
             <div className="relative z-10">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <h2 className="text-3xl font-bold mb-2">Welcome back, {user.name.split(' ')[0]}!</h2>
+                  <h2 className="text-3xl font-semibold mb-2">Welcome back, {user.name.split(' ')[0]}!</h2>
                   <p className="text-green-100 text-lg mb-6">Your organic farming journey continues. Let&apos;s grow something amazing together.</p>
                   <div className="flex items-center space-x-6">
                     <div className="flex items-center space-x-2">
@@ -217,13 +215,7 @@ export default async function Home() {
 
                   </div>
                 </div>
-                <div className="hidden lg:block">
-                  <Image width={400} height={400}
-                    src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=300&h=200&fit=crop"
-                    alt="Organic farming"
-                    className="w-48 h-32 object-cover rounded-lg opacity-90"
-                  />
-                </div>
+           
               </div>
             </div>
           </div>
