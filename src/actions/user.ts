@@ -9,7 +9,6 @@ import { User } from "@/models/UserSchema";
 import { hash } from "bcryptjs";
 import { CredentialsSignin } from "next-auth";
 import { redirect } from "next/navigation";
-import type { User as UserType } from "@/types";
 import { revalidatePath } from "next/cache";
 
 const register = async (formData: FormData) => {
@@ -73,14 +72,61 @@ export async function getUserSession() {
 }
 
 
-export async function fetchAllUsers() {
-  await connectDb();
-  const users = await User.find({});
-  return users;
-};
+// export async function fetchAllUsers() {
+//   await connectDb();
+//   const users = await User.find({});
+//   return users;
+// };
+
+// Interface for plain user output
+interface UserOutput {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  role: string;
+  authProviderId: string;
+  isVerified: boolean;
+  isSubscribedToNewsletter: boolean;
+  createdAt: string;
+}
+
+export async function fetchAllUsers(): Promise<{ success: boolean; data?: UserOutput[]; error?: string }> {
+  try {
+    await connectDb();
+    const users = await User.find().lean();
+    const mappedUsers: UserOutput[] = users.map((user: Record<string, unknown>) => ({
+      _id: (user._id as unknown as { toString: () => string }).toString(),
+      name: user.name as string,
+      email: user.email as string,
+      image: user.image as string,
+      role: user.role as string,
+      authProviderId: user.authProviderId as string,
+      isVerified: (user.isVerified as boolean) ?? false,
+      isSubscribedToNewsletter: (user.isSubscribedToNewsletter as boolean) ?? false,
+      createdAt: user.createdAt instanceof Date ? (user.createdAt as Date).toISOString() : (user.createdAt as string),
+    }));
+    return { success: true, data: mappedUsers };
+  } catch (error) {
+    console.error("User fetch error:", error);
+    return { success: false, error: 'Failed to fetch users' };
+  }
 
 
-
+}
+export async function deleteUser(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await connectDb();
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      return { success: false, error: 'User not found' };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("User deletion error:", error);
+    return { success: false, error: 'Failed to delete user' };
+  }
+}
 // user edit
 
 
@@ -95,12 +141,13 @@ interface UserUpdate {
   location?: string;
   contact_no?: string;
   image?: string;
+  isVerified?: boolean;
   isSubscribedToNewsletter?: boolean;
 }
 
 interface EditProfileResponse {
   success: boolean;
-  user?: UserType;
+  user?: UserGet;
   error?: string;
 }
 
@@ -116,6 +163,7 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
       contact_no: formData.get("contact_no") as string,
       image: formData.get("image") as string,
       isSubscribedToNewsletter: formData.get("isSubscribedToNewsletter") === "true",
+      isVerified: formData.get("isVerified") === "true",
     };
 
     Object.keys(updates).forEach((key) =>
@@ -135,7 +183,7 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
     }
 
     revalidatePath("/profile");
-    return { success: true, user };
+    return { success: true };
   } catch (error: unknown) {
     let errorMessage = "An unknown error occurred";
     if (error instanceof Error) {
@@ -144,10 +192,25 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
     return { success: false, error: errorMessage };
   }
 }
-
+interface UserGet {
+  _id: string;
+  name: string;
+  firstname?: string;
+  lastname?: string;
+  email: string;
+  image: string;
+  role: string;
+  authProviderId: string;
+  isVerified: boolean;
+  isSubscribedToNewsletter: boolean;
+  createdAt: string;
+  bio?: string;
+  location?: string;
+  contact_no?: string;
+}
 interface GetUserResponse {
   success: boolean;
-  user?: UserType;
+  user?: UserGet;
   error?: string;
 }
 
@@ -156,13 +219,28 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
   try {
     const user = await User.findById(userId).select(
       "-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordTokenExpiry"
-    );
+    ).lean() as UserGet | null;
 
     if (!user) {
       throw new Error("User not found");
     }
-
-    return { success: true, user };
+    const serializedUser: UserGet = {
+      _id: user._id?.toString() ?? "",
+      name: user.name ?? "",
+      firstname: user.firstname ?? "",
+      lastname: user.lastname ?? "",
+      email: user.email ?? "",
+      image: user.image ?? "",
+      role: user.role ?? "",
+      authProviderId: user.authProviderId ?? "",
+      isVerified: user.isVerified ?? false,
+      isSubscribedToNewsletter: user.isSubscribedToNewsletter ?? false,
+      createdAt: ((user.createdAt as unknown) instanceof Date) ? ((user.createdAt as unknown as Date).toISOString()) : (user.createdAt ?? ""),
+      bio: user.bio ?? "",
+      location: user.location ?? "",
+      contact_no: user.contact_no ?? "",
+    };
+    return { success: true, user: serializedUser };
   } catch (error: unknown) {
     let errorMessage = "An unknown error occurred";
     if (error instanceof Error) {
