@@ -27,11 +27,6 @@ type SortDirection = 'asc' | 'desc';
 
 // --- Helper Functions ---
 
-/**
- * Provides Tailwind CSS classes for customer type badges.
- * @param type - The customer type.
- * @returns A string of Tailwind CSS classes.
- */
 const getCustomerTypeBadge = (type: Customer['customerType']): string => {
   switch (type) {
     case 'Active':
@@ -47,11 +42,7 @@ const getCustomerTypeBadge = (type: Customer['customerType']): string => {
   }
 };
 
-/**
- * Returns the appropriate Lucide icon for a customer type.
- * @param type - The customer type.
- * @returns A React element (Lucide icon) or null.
- */
+
 const getCustomerTypeIcon = (type: Customer['customerType']): JSX.Element | null => {
   const iconProps = { size: 16, className: "mr-1" };
   switch (type) {
@@ -63,11 +54,7 @@ const getCustomerTypeIcon = (type: Customer['customerType']): JSX.Element | null
   }
 };
 
-/**
- * Generates a specified number of random customer data for demonstration.
- * @param count - The number of customers to generate.
- * @returns An array of Customer objects.
- */
+
 const generateRandomCustomers = (count: number): Customer[] => {
   const customerTypes: Customer['customerType'][] = ['New', 'Active', 'Churned', 'VIP'];
   const names = [
@@ -227,16 +214,15 @@ const CustomerPage: React.FC = () => {
     );
   }
 
-  // --- Main Component Render ---
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 p-4 sm:p-6 lg:p-8">
+    <div className="max-w-7xl mx-auto flex-1 flex flex-col bg-slate-50 p-4 sm:p-6 lg:p-8">
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row md:items-center justify-between border border-slate-200"
       >
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-4 md:mb-0">Customer Management</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight mb-4 md:mb-0">Customer Management</h1>
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute h-5 w-5 text-slate-400 top-1/2 -translate-y-1/2 left-4" aria-hidden="true" />
@@ -278,7 +264,7 @@ const CustomerPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
+        className="bg-white  rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
       >
         {filteredAndSortedCustomers.length === 0 ? (
           <div className="flex-grow flex flex-col items-center justify-center py-20 text-slate-500">

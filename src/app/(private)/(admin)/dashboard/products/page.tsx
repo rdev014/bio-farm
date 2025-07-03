@@ -163,7 +163,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, mode, onClose, onSub
       animate={{ x: 0 }}
       exit={{ x: '100%' }}
       transition={{ type: 'tween', duration: 0.3 }}
-      className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-1/3 bg-white shadow-2xl p-6 flex flex-col z-50 overflow-y-auto border-l border-slate-200"
+      className="fixed inset-y-0 right-0 w-full md:w-1/2 lg:w-1/3 bg-white shadow-2xl p-6 flex flex-col z-50 overflow-y-auto border-l border-slate-200 rounded-l-3xl"
     >
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-200">
         <h2 className="text-2xl font-bold text-slate-900">
@@ -497,14 +497,14 @@ const ProductPage: React.FC = () => {
 
   // --- Main Component Render ---
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 p-4 sm:p-6 lg:p-8">
+    <div className="flex-1 flex flex-col bg-slate-50 ">
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row md:items-center justify-between border border-slate-200"
       >
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-4 md:mb-0">Product Management</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight mb-4 md:mb-0">Product Management</h1>
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute h-5 w-5 text-slate-400 top-1/2 -translate-y-1/2 left-4" aria-hidden="true" />
@@ -570,7 +570,7 @@ const ProductPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
+        className="bg-white rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
       >
         {filteredAndSortedProducts.length === 0 ? (
           <div className="flex-grow flex flex-col items-center justify-center py-20 text-slate-500">
@@ -738,7 +738,7 @@ const ProductPage: React.FC = () => {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
               onClick={handleCloseDrawer}
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 "
               aria-hidden="true"
             />
             <ProductForm

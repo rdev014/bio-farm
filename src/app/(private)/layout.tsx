@@ -28,6 +28,7 @@ export default async function AppRootLayout({
         email: user?.email ?? undefined,
         image: user?.image ?? undefined,
         role: allowedRoles.includes(user?.role as AllowedRole) ? user?.role as AllowedRole : undefined
+
     };
     return (
         <AppLayout user={safeUser}>

@@ -1,8 +1,10 @@
 import { handleSignOut } from '@/actions/user'
 import { SignOutButton } from '@/components/General/Header/SignOutButton'
-import { FooterUnsubscribe } from '@/components/General/Newsletters'
+import { NewsletterToggleSubscribe } from '@/components/General/Newsletters'
+import { getSession } from '@/lib/getSession'
 import { Activity } from 'lucide-react'
 import { Metadata } from 'next'
+
 import React from 'react'
 
 export const metadata: Metadata = {
@@ -11,10 +13,12 @@ export const metadata: Metadata = {
   description: "Manage platform-wide settings including site configuration, SEO controls, user permissions, and operational preferences within the Arkin Organics admin panel.",
 };
 
-export default function page() {
+export default async function page() {
+  const session = await getSession();
+  const user = session?.user;
   return (
     <div>Setting page
-      <FooterUnsubscribe />
+      <NewsletterToggleSubscribe useremail={user?.email ?? undefined} />
       <div>
         <SignOutButton handleSignOut={handleSignOut} />
       </div>

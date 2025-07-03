@@ -24,14 +24,15 @@ interface NavItem {
   title: string
   href: string
   icon: React.ReactNode
+  adminOnly?: boolean
 }
 
 const navItems: NavItem[] = [
-  { title: 'Home', href: '/', icon: <Home className="w-5 h-5" /> },
-  { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" /> },
-  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
-  { title: 'Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" /> },
+  { title: 'Home', href: '/home', icon: <Home className="w-5 h-5" /> },
+  { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, adminOnly: true },
+  { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" />, adminOnly: true },
+  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, adminOnly: true },
+  { title: 'Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" />, adminOnly: true },
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
 ]
 
@@ -83,6 +84,7 @@ const Sidebar = ({ user }: { user: UserType }) => {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200">
         {navItems.map((item) => {
+          if (item.adminOnly && user.role !== 'admin') return null
           const isActive = pathname === item.href
           return (
             <Link
@@ -121,7 +123,7 @@ const Sidebar = ({ user }: { user: UserType }) => {
             }`}
           aria-current={pathname === '/admin' ? 'page' : undefined}
         >
-          <div className={`min-w-[24px] ${pathname === '/admin' ? 'text-green-600' : ''}`}><LayoutGrid/></div>
+          <div className={`min-w-[24px] ${pathname === '/admin' ? 'text-green-600' : ''}`}><LayoutGrid /></div>
           <AnimatePresence>
             {!isCollapsed && (
               <motion.span
@@ -141,9 +143,9 @@ const Sidebar = ({ user }: { user: UserType }) => {
       {/* Footer */}
       <div className="px-3 py-4 border-t border-gray-100 space-y-1.5 bg-gray-50/50">
         <Link
-          href="/dashboard/settings"
+          href="/profile/settings"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-200
-            ${pathname === '/dashboard/settings' ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+            ${pathname === '/profile/settings' ? 'bg-green-50 text-green-700' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
         >
           <Settings className="w-5 h-5" />
           <AnimatePresence>

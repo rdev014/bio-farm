@@ -239,14 +239,14 @@ const OrderPage: React.FC = () => {
 
   // --- Main Component Render ---
   return (
-    <div className="flex-1 flex flex-col bg-slate-50 ">
+    <div className="flex-1 flex flex-col bg-slate-50 p-4 sm:p-6 lg:p-8">
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg mb-6 flex flex-col md:flex-row md:items-center justify-between border border-slate-200"
       >
-        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight mb-4 md:mb-0">Order Management</h1>
+        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-4 md:mb-0">Order Management</h1>
         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute h-5 w-5 text-slate-400 top-1/2 -translate-y-1/2 left-4" aria-hidden="true" />
@@ -290,7 +290,7 @@ const OrderPage: React.FC = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="bg-white  rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
+        className="bg-white p-6 rounded-2xl border border-slate-200 shadow-lg overflow-x-auto min-h-[60vh] flex flex-col"
       >
         {filteredAndSortedOrders.length === 0 ? (
           <div className="flex-grow flex flex-col items-center justify-center py-20 text-slate-500">
