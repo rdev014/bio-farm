@@ -40,6 +40,24 @@ const UserSchema = new mongoose.Schema({
   contact_no: {
     type: String,
   },
+  achievements: [
+    {
+      title: { type: String, required: true },
+      description: { type: String },
+      year: { type: Number },
+      iconColor: { type: String },
+    }
+  ],
+  farms: [
+    {
+      name: { type: String, required: true },
+      size: { type: String },
+      location: { type: String },
+      established: { type: Number },
+      crops: { type: String },
+      status: { type: String, enum: ["Active", "Planning", "Inactive"], default: "Active" }
+    }
+  ],
   authProviderId: {
     type: String,
   },
