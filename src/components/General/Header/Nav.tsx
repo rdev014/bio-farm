@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo } from "react";
 
 export default function Nav({ user }: { user: User | null }) {
-   const { activeDropdown, setActiveDropdown } = useHeaderStore();
+    const { activeDropdown, setActiveDropdown } = useHeaderStore();
     const pathname = usePathname();
     const navItems: NavItem[] = useMemo(() => nav, []);
     const handleDropdownToggle = (name: string) => {
@@ -21,18 +21,18 @@ export default function Nav({ user }: { user: User | null }) {
     // Close menus on route change
     useEffect(() => {
         setActiveDropdown(null);
-    }, [pathname,setActiveDropdown]);
+    }, [pathname, setActiveDropdown]);
     return (
         <>
             {user?.role && ['user', 'admin', 'moderator'].includes(user.role) ? (
                 <Link
-                    href="/dashboard"
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/dashboard'
+                    href="/home"
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/dashboard'
                         ? 'bg-green-50 text-green-700 shadow-sm'
                         : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
                         }`}
                 >
-                    Dashboard
+                    <Home className="w-4 h-4" />   Home
                 </Link>
             ) : <Link
                 href={'/'}

@@ -6,8 +6,8 @@ import React from 'react'
 
 
 export const metadata: Metadata = {
-  title: "Private Page | Arkin Organics",
-  description: "This section of Arkin Organics is restricted to authorized personnel only. Access requires valid authentication credentials.",
+    title: " Arkin Organics",
+    description: "This section of Arkin Organics is restricted to authorized personnel only. Access requires valid authentication credentials.",
 };
 
 
@@ -22,9 +22,9 @@ export default async function AppRootLayout({
     // Ensure user.name is never null and email is never null
     const allowedRoles = ["user", "admin", "moderator", "guest"] as const;
     type AllowedRole = typeof allowedRoles[number];
-    const safeUser = { 
-        ...user, 
-        name: user?.name ?? undefined, 
+    const safeUser = {
+        ...user,
+        name: user?.name ?? undefined,
         email: user?.email ?? undefined,
         image: user?.image ?? undefined,
         role: allowedRoles.includes(user?.role as AllowedRole) ? user?.role as AllowedRole : undefined

@@ -49,7 +49,7 @@ const Sidebar = ({ user }: { user: UserType }) => {
       initial={{ width: isCollapsed ? 72 : 256 }}
       animate={{ width: isCollapsed ? 72 : 256 }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
-      className="fixed inset-y-0 left-0 z-50 h-screen bg-white border-r border-gray-200 shadow-md flex flex-col"
+      className="fixed inset-y-0 left-0 z-50 rounded-b-4xl  h-screen bg-white border-r border-gray-200 shadow-md flex flex-col"
       role="navigation"
       aria-label="Main navigation"
     >
