@@ -1,19 +1,81 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
-  TrendingUp,
-  Users,
-  Award,
-  Settings,
-  Bell,
-  Shield,
-  Save,
-  MapPin,
-  Building2,
-  Phone,
+  TrendingUp, Users, Award, Settings, Bell, Shield, Save,
+  MapPin, Phone,
 } from "lucide-react";
-export default function ProfileDetails() {
+import { getUserDetails, editProfile } from '@/actions/user';
+import { toast } from 'sonner';
+
+export default function ProfileDetails({ userId }: { userId?: string }) {
   const [activeTab, setActiveTab] = useState("profile");
+  const [userData, setUserData] = useState({
+    name: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    contact_no: '',
+    location: '',
+    bio: '',
+    farms: [],
+    achievements: [],
+    role: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (userId) {
+        const response = await getUserDetails(userId);
+        if (response.success && response.user) {
+          setUserData({
+            ...userData,
+            ...response.user,
+            firstname: response.user.firstname || '',
+            lastname: response.user.lastname || '',
+            name: response.user.name || '',
+            role: response.user.role || '',
+          });
+        }
+      }
+    };
+    fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (!userId) throw new Error('User not authenticated');
+
+      const formData = new FormData();
+      formData.append('name', userData.firstname + ' ' + userData.lastname);
+      formData.append('firstname', userData.firstname);
+      formData.append('lastname', userData.lastname);
+      formData.append('email', userData.email);
+      formData.append('bio', userData.bio);
+      formData.append('location', userData.location);
+      formData.append('contact_no', userData.contact_no);
+
+      const response = await editProfile(userId, formData);
+      if (response.success) {
+        toast.success('Profile updated successfully');
+      } else {
+        throw new Error(response.error || 'Failed to update profile');
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setUserData(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left Sidebar */}
@@ -88,32 +150,33 @@ export default function ProfileDetails() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Profile Information Tab */}
           {activeTab === "profile" && (
-            <div className="space-y-6 p-4">
+            <form onSubmit={handleSubmit} className="space-y-6 p-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-semibold text-gray-900">Profile Information</h2>
                 <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                  {/* {user.accountType} */} asdasdd
+                  {userData.role || 'User'}
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
                   <input
                     type="text"
-                    // defaultValue={user.name}
-                    defaultValue={'sdfdsf'}
+                    name="name"
+                    value={userData.name || ''}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                   <input
                     type="email"
-                    // defaultValue={user.email}
-                     defaultValue={'sdfdsf@assfgh.bgg'}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    name="email"
+                    disabled
+                    value={userData.email || ''}
+                    className="w-full px-4 py-2 cursor-not-allowed select-none border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   />
                 </div>
 
@@ -123,24 +186,23 @@ export default function ProfileDetails() {
                     <Phone className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
                     <input
                       type="tel"
-                      // defaultValue={user.phone}
-                       defaultValue={'1234567890'}
+                      name="contact_no"
+                      value={userData.contact_no || ''}
+                      onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Company/Organization</label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
-                    <input
-                      type="text"
-                      // defaultValue={user.company}
-                      defaultValue={'sadfdsf'}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    />
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <input
+                    type="text"
+                    name="bio"
+                    value={userData.bio || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
                 </div>
 
                 <div className="md:col-span-2">
@@ -148,9 +210,10 @@ export default function ProfileDetails() {
                   <div className="relative">
                     <MapPin className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
                     <textarea
+                      name="location"
                       rows={3}
-                      // defaultValue={user.address}
-                      defaultValue={'sdfdsf asdsad asdasd asdasd asdsd '}
+                      value={userData.location || ''}
+                      onChange={handleInputChange}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
                   </div>
@@ -158,13 +221,16 @@ export default function ProfileDetails() {
               </div>
 
               <div className="flex justify-end">
-                <button className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+                >
                   <Save className="w-4 h-4 mr-2" />
-                  Save Changes
+                  {loading ? 'Saving...' : 'Save Changes'}
                 </button>
               </div>
-            </div>
-
+            </form>
           )}
 
           {/* Farm Details Tab */}

@@ -70,7 +70,7 @@ export default async function ProfilePage() {
           </div>
         </div>
 
-        <ProfileDetails />
+        <ProfileDetails userId={user?.id} />
       </div>
     </div>
   );
