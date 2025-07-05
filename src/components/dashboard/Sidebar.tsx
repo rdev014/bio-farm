@@ -18,6 +18,7 @@ import {
   Leaf,
   Zap,
   Sprout,
+  Newspaper,
 } from 'lucide-react'
 import Link from 'next/link'
 import { User as UserType } from '@/types'
@@ -33,14 +34,15 @@ const navItems: NavItem[] = [
   { title: 'Home', href: '/home', icon: <Home className="w-5 h-5" /> },
   { title: 'Products', href: '/homde', icon: <Zap className="w-5 h-5" /> },
   { title: 'Farms', href: '/farms', icon: <Sprout className="w-5 h-5" /> },
+  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
 ]
 const adminNavItems: NavItem[] = [
-  { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" /> },
-  { title: 'Manage Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
-  { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
-  { title: 'user Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" /> },
+  { title: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { title: 'Customers', href: '/admin/customers', icon: <Users className="w-5 h-5" /> },
+  { title: 'Manage Orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
+  { title: 'Manage Products', href: '/admin/products', icon: <Boxes className="w-5 h-5" /> },
+  { title: 'Manage Blogs', href: '/admin/create-blog', icon: <Newspaper className="w-5 h-5" /> },
   { title: 'Admin', href: '/admin', icon: <LayoutGrid className="w-5 h-5" /> },
 
 ]
@@ -126,18 +128,18 @@ const Sidebar = ({ user }: { user: UserType }) => {
         {user.role === 'admin' &&
           <div className=' border bg-gray-50 p-1 rounded-xl'>
             <h2 className='p-2 text-lg font-medium'> <AnimatePresence>
-                {!isCollapsed && (
-                  <motion.span
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: 'auto' }}
-                    exit={{ opacity: 0, width: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="truncate"
-                  >
-                   Admin
-                  </motion.span>
-                )}
-              </AnimatePresence></h2>
+              {!isCollapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="truncate"
+                >
+                  Admin
+                </motion.span>
+              )}
+            </AnimatePresence></h2>
             {adminNavItems.map((item) => {
               const isActive = pathname === item.href
               return (
