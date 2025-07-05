@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 import { getProducts } from '@/lib/products';
-import { IProduct } from '@/models/ProductSchema';
 import ProductCard from '@/components/products/ProductCard';
 import ProductsFilter from '@/components/products/ProductsFilter';
 import { Pagination } from '@/components/ui/pagination';
@@ -112,7 +111,7 @@ export default async function ProductsPage({
           >
             {/* Products Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {products.map((product: IProduct) => (
+              {products.map((product) => (
                 <ProductCard key={product.slug} product={product} />
               ))}
             </div>

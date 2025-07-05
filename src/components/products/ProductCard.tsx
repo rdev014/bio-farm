@@ -1,10 +1,29 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { IProduct } from '@/models/ProductSchema';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
-export default function ProductCard({ product }: { product: IProduct }) {
+interface Product {
+  slug: string;
+  images: string[];
+  name: string;
+  organic?: boolean;
+  seasonal?: boolean;
+  comparePrice?: number;
+  price: number;
+  description: string;
+  farm: {
+    name: string;
+  };
+  rating: number;
+  reviews: number;
+}
+
+interface ProductCardProps {
+  product: Product;
+}
+
+export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="group overflow-hidden rounded-xl transition-all hover:shadow-lg">
       <Link href={`/products/${product.slug}`} className="relative block aspect-square">
@@ -54,9 +73,8 @@ export default function ProductCard({ product }: { product: IProduct }) {
           {[...Array(5)].map((_, i) => (
             <svg
               key={i}
-              className={`h-4 w-4 ${
-                i < product.rating ? 'text-yellow-400' : 'text-gray-300'
-              }`}
+              className={`h-4 w-4 ${i < product.rating ? 'text-yellow-400' : 'text-gray-300'
+                }`}
               fill="currentColor"
               viewBox="0 0 20 20"
             >
