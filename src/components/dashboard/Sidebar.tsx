@@ -32,7 +32,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { title: 'Home', href: '/home', icon: <Home className="w-5 h-5" /> },
-  { title: 'Products', href: '/homde', icon: <Zap className="w-5 h-5" /> },
+  { title: 'Products', href: '/our-products', icon: <Zap className="w-5 h-5" /> },
   { title: 'Farms', href: '/farms', icon: <Sprout className="w-5 h-5" /> },
   { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
