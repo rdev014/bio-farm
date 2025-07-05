@@ -82,13 +82,11 @@ export async function createBlog(formData: FormData, user_id: string) {
 }
 
 // Update blog
-export async function updateBlog(formData: FormData) {
+export async function updateBlog(formData: FormData,blog_id:string) {
   try {
-    const id = formData.get("id")?.toString();
     const title = formData.get("title")?.toString();
     const content = formData.get("content")?.toString();
     const excerpt = formData.get("excerpt")?.toString();
-    const author = formData.get("author")?.toString();
     const featuredImage = formData.get("featuredImage")?.toString();
     const categories = JSON.parse(
       formData.get("categories")?.toString() || "[]"
@@ -101,11 +99,10 @@ export async function updateBlog(formData: FormData) {
     const keywords = JSON.parse(formData.get("keywords")?.toString() || "[]");
 
     if (
-      !id ||
+      
       !title ||
       !content ||
       !excerpt ||
-      !author ||
       !featuredImage ||
       !readTime ||
       categories.length === 0
@@ -117,13 +114,12 @@ export async function updateBlog(formData: FormData) {
     const slug = generateSlug(title);
 
     const blog = await Blog.findByIdAndUpdate(
-      id,
+      blog_id,
       {
         title,
         slug,
         content,
         excerpt,
-        author,
         featuredImage,
         categories,
         tags,
@@ -142,8 +138,9 @@ export async function updateBlog(formData: FormData) {
     if (!blog) throw new Error("Blog not found");
 
     revalidatePath("/blogs");
+    revalidatePath("/admin/blogs");
 
-    return { success: true, blog };
+    return { success: true, };
   } catch (error) {
     return {
       success: false,

@@ -6,7 +6,6 @@ import { useSidebar } from '@/contexts/SidebarContext'
 import {
   Home,
   LayoutDashboard,
-  Users,
   ShoppingCart,
   Boxes,
   Settings,
@@ -19,6 +18,7 @@ import {
   Zap,
   Sprout,
   Newspaper,
+  Sparkles,
 } from 'lucide-react'
 import Link from 'next/link'
 import { User as UserType } from '@/types'
@@ -39,10 +39,10 @@ const navItems: NavItem[] = [
 ]
 const adminNavItems: NavItem[] = [
   { title: 'Dashboard', href: '/admin/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { title: 'Customers', href: '/admin/customers', icon: <Users className="w-5 h-5" /> },
   { title: 'Manage Orders', href: '/admin/orders', icon: <ShoppingCart className="w-5 h-5" /> },
   { title: 'Manage Products', href: '/admin/products', icon: <Boxes className="w-5 h-5" /> },
-  { title: 'Manage Blogs', href: '/admin/create-blog', icon: <Newspaper className="w-5 h-5" /> },
+  { title: 'Manage Blogs', href: '/admin/blogs', icon: <Newspaper className="w-5 h-5" /> },
+  { title: 'Manage Categories', href: '/admin/category', icon: <Sparkles className="w-5 h-5" /> },
   { title: 'Admin', href: '/admin', icon: <LayoutGrid className="w-5 h-5" /> },
 
 ]
