@@ -297,4 +297,133 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
 
 
 
+// Farm
+interface FarmResponse {
+  success: boolean;
+  farm?: Farm;
+  farms?: Farm[];
+  error?: string;
+}
 
+// Create a new farm for a user
+export async function createFarm(userId: string, farmData: Farm): Promise<FarmResponse> {
+  try {
+    await connectDb();
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const newFarm = {
+      name: farmData.name,
+      size: farmData.size || '',
+      location: farmData.location || '',
+      established: farmData.established || undefined,
+      crops: farmData.crops || '',
+      status: farmData.status || 'Active',
+    };
+
+    user.farms.push(newFarm);
+    await user.save();
+
+    revalidatePath('/profile');
+    return { success: true, farm: newFarm };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create farm';
+    return { success: false, error: errorMessage };
+  }
+}
+
+// Read all farms for a user
+export async function getFarms(userId: string): Promise<FarmResponse> {
+  try {
+    await connectDb();
+    const user = await User.findById(userId).select('farms').lean() as { farms?: Farm[] } | null;
+    if (!user) {
+      throw new Error('User not found');
+    }
+    // Serialize farms to plain objects
+    const serializedFarms = (user.farms || []).map((farm: Farm) => ({
+      name: farm.name || '',
+      size: farm.size || '',
+      location: farm.location || '',
+      established: typeof farm.established === 'number' ? farm.established : undefined,
+      crops: farm.crops || '',
+      status: ['Active', 'Planning', 'Inactive'].includes(farm.status ?? '') ? farm.status : 'Active',
+    }));
+    return { success: true, farms: serializedFarms };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch farms';
+    return { success: false, error: errorMessage };
+  }
+}
+
+// Update a specific farm by index
+export async function updateFarm(userId: string, farmIndex: number, farmData: Partial<Farm>): Promise<FarmResponse> {
+  try {
+    await connectDb();
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.farms || farmIndex < 0 || farmIndex >= user.farms.length) {
+      throw new Error('Invalid farm index');
+    }
+
+    // Create a plain object for the updated farm
+    const updatedFarm: Farm = {
+      name: farmData.name || user.farms[farmIndex].name,
+      size: farmData.size !== undefined ? farmData.size : user.farms[farmIndex].size || '',
+      location: farmData.location !== undefined ? farmData.location : user.farms[farmIndex].location || '',
+      established: farmData.established !== undefined ? farmData.established : user.farms[farmIndex].established,
+      crops: farmData.crops !== undefined ? farmData.crops : user.farms[farmIndex].crops || '',
+      status: farmData.status && ['Active', 'Planning', 'Inactive'].includes(farmData.status)
+        ? farmData.status
+        : user.farms[farmIndex].status || 'Active',
+    };
+
+    user.farms[farmIndex] = updatedFarm;
+    await user.save();
+    // Serialize the updated farm for response
+    const serializedFarm: Farm = {
+      name: updatedFarm.name,
+      size: updatedFarm.size || '',
+      location: updatedFarm.location || '',
+      established: updatedFarm.established,
+      crops: updatedFarm.crops || '',
+      status: updatedFarm.status || 'Active',
+    };
+    revalidatePath('/farms');
+    revalidatePath('/profile');
+    return { success: true, farm: serializedFarm };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to update farm';
+    return { success: false, error: errorMessage };
+  }
+}
+
+// Delete a specific farm by index
+export async function deleteFarm(userId: string, farmIndex: number): Promise<FarmResponse> {
+  try {
+    await connectDb();
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    if (!user.farms || farmIndex < 0 || farmIndex >= user.farms.length) {
+      throw new Error('Invalid farm index');
+    }
+
+    user.farms.splice(farmIndex, 1);
+    await user.save();
+
+    revalidatePath('/profile');
+    revalidatePath('/farms');
+    return { success: true };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to delete farm';
+    return { success: false, error: errorMessage };
+  }
+}
