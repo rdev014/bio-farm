@@ -140,6 +140,7 @@ interface UserUpdate {
   bio?: string;
   location?: string;
   contact_no?: string;
+  alternate_contact_no?: string;
   image?: string;
   isVerified?: boolean;
   isSubscribedToNewsletter?: boolean;
@@ -161,10 +162,12 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
       bio: formData.get("bio") as string,
       location: formData.get("location") as string,
       contact_no: formData.get("contact_no") as string,
+      alternate_contact_no: formData.get("alternate_contact_no") as string,
       image: formData.get("image") as string,
       isSubscribedToNewsletter: formData.get("isSubscribedToNewsletter") === "true",
       isVerified: formData.get("isVerified") === "true",
     };
+
 
     Object.keys(updates).forEach((key) =>
       updates[key as keyof UserUpdate] === null || updates[key as keyof UserUpdate] === undefined
@@ -177,6 +180,7 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
       { $set: updates },
       { new: true, runValidators: true }
     ).select("-password -verificationToken -verificationTokenExpiry -resetPasswordToken -resetPasswordTokenExpiry");
+
 
     if (!user) {
       throw new Error("User not found");
@@ -207,6 +211,7 @@ interface UserGet {
   bio?: string;
   location?: string;
   contact_no?: string;
+  alternate_contact_no?: string;
 }
 interface GetUserResponse {
   success: boolean;
@@ -239,6 +244,7 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
       bio: user.bio ?? "",
       location: user.location ?? "",
       contact_no: user.contact_no ?? "",
+      alternate_contact_no: user.alternate_contact_no ?? "",
     };
     return { success: true, user: serializedUser };
   } catch (error: unknown) {
@@ -249,3 +255,9 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
     return { success: false, error: errorMessage };
   }
 }
+
+
+
+
+
+

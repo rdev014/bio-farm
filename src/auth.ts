@@ -94,6 +94,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
           // Set id and role on user object
           user.id = existingUser._id.toString();
+          user.name = existingUser.name;
+          user.image = existingUser.image;
           user.role = existingUser.role || "user";
           return true;
         } catch (error) {

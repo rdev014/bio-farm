@@ -1,8 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import {
-  TrendingUp, Users, Award, Settings, Bell, Shield, Save,
+  TrendingUp, Users, Award, Save,
   MapPin, Phone,
+  ShieldUser,
+
 } from "lucide-react";
 import { getUserDetails, editProfile } from '@/actions/user';
 import { toast } from 'sonner';
@@ -15,6 +17,7 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
     lastname: '',
     email: '',
     contact_no: '',
+    alternate_contact_no: '123456',
     location: '',
     bio: '',
     farms: [],
@@ -27,6 +30,7 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
     const fetchUserData = async () => {
       if (userId) {
         const response = await getUserDetails(userId);
+        
         if (response.success && response.user) {
           setUserData({
             ...userData,
@@ -50,13 +54,14 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
       if (!userId) throw new Error('User not authenticated');
 
       const formData = new FormData();
-      formData.append('name', userData.firstname + ' ' + userData.lastname);
+      formData.append('name', userData.name);
       formData.append('firstname', userData.firstname);
       formData.append('lastname', userData.lastname);
       formData.append('email', userData.email);
       formData.append('bio', userData.bio);
       formData.append('location', userData.location);
       formData.append('contact_no', userData.contact_no);
+      formData.append('alternate_contact_no', userData.alternate_contact_no);
 
       const response = await editProfile(userId, formData);
       if (response.success) {
@@ -92,12 +97,7 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
                 },
                 { id: "farm", label: "Farm Details", icon: TrendingUp },
                 { id: "achievements", label: "Achievements", icon: Award },
-                { id: "notifications", label: "Notifications", icon: Bell },
-                {
-                  id: "security",
-                  label: "Privacy & Security",
-                  icon: Shield,
-                },
+
               ].map((item) => (
                 <button
                   key={item.id}
@@ -193,19 +193,34 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
                     />
                   </div>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
-                  <input
-                    type="text"
-                    name="bio"
-                    value={userData.bio || ''}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-900 mb-2">Alternate Number</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                    <input
+                      type="tel"
+                      name="alternate_contact_no"
+                      value={userData.alternate_contact_no || ''}
+                      onChange={handleInputChange}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
                 </div>
 
-                <div className="md:col-span-2">
+                <div >
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                  <div className="relative">
+                    <ShieldUser className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
+                    <textarea
+                      name="bio"
+                      rows={3}
+                      value={userData.bio || ''}
+                      onChange={handleInputChange} maxLength={500}
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    />
+                  </div>
+                </div>
+                <div >
                   <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
                   <div className="relative">
                     <MapPin className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" />
@@ -426,26 +441,6 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
             </div>
           )}
 
-
-
-          {/* Other tabs can be added similarly */}
-          {(activeTab === "notifications" || activeTab === "security") && (
-            <div className="p-6">
-              <div className="text-center py-12">
-                <div className="text-gray-400 mb-2">
-                  <Settings className="w-12 h-12 mx-auto" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">
-                  {activeTab === "notifications"
-                    ? "Notifications"
-                    : "Privacy & Security"}
-                </h3>
-                <p className="text-gray-500">
-                  This section is coming soon.
-                </p>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>

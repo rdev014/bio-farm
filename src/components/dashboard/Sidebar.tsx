@@ -17,6 +17,7 @@ import {
   LayoutGrid,
   Leaf,
   Zap,
+  Sprout,
 } from 'lucide-react'
 import Link from 'next/link'
 import { User as UserType } from '@/types'
@@ -32,9 +33,10 @@ interface NavItem {
 const navItems: NavItem[] = [
   { title: 'Home', href: '/home', icon: <Home className="w-5 h-5" /> },
   { title: 'Products', href: '/homde', icon: <Zap className="w-5 h-5" /> },
+  { title: 'Farms', href: '/farms', icon: <Sprout className="w-5 h-5" /> },
   { title: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" />, adminOnly: true },
   { title: 'Customers', href: '/dashboard/customers', icon: <Users className="w-5 h-5" />, adminOnly: true },
-  { title: 'Maage Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, adminOnly: true },
+  { title: 'Manage Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, adminOnly: true },
   { title: 'Orders', href: '/orders', icon: <ShoppingCart className="w-5 h-5" />, },
   { title: 'user Products', href: '/dashboard/products', icon: <Boxes className="w-5 h-5" />, adminOnly: true },
   { title: 'Profile', href: '/profile', icon: <User className="w-5 h-5" /> },
