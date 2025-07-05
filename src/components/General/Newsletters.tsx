@@ -66,9 +66,7 @@ export function NewsletterToggleSubscribe({ useremail }: { useremail?: string })
     setIsValidEmail(emailRegex.test(email ?? ""));
 
     // Clear message when email changes
-    if (message) {
-      setMessage(null);
-    }
+    setMessage(null);
   }, [email]);
 
   // Check subscription status when email is valid

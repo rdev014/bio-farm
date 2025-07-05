@@ -3,20 +3,25 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
-interface Product {
+export interface Product {
+  _id?: string;
   slug: string;
   images: string[];
   name: string;
   organic?: boolean;
   seasonal?: boolean;
+  featured?: boolean;
   comparePrice?: number;
   price: number;
   description: string;
+  category?: string;
   farm: {
     name: string;
   };
   rating: number;
   reviews: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 interface ProductCardProps {

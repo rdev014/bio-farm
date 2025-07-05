@@ -51,7 +51,6 @@ export default async function ProductsPage({
   const { products, pagination } = await getProducts({
     page,
     category,
-    sort,
     organic,
     seasonal,
   });
