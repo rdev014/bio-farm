@@ -6,31 +6,61 @@ import {
   ShieldUser,
 
 } from "lucide-react";
-import { getUserDetails, editProfile } from '@/actions/user';
+import { getUserDetails, editProfile,} from '@/actions/user';
 import { toast } from 'sonner';
+interface Achievement {
+  title: string;
+  description?: string;
+  year?: number;
+  iconColor?: string;
+}
 
+interface Farm {
+  name: string;
+  size?: string;
+  location?: string;
+  established?: number;
+  crops?: string;
+  status?: 'Active' | 'Planning' | 'Inactive';
+}
 export default function ProfileDetails({ userId }: { userId?: string }) {
   const [activeTab, setActiveTab] = useState("profile");
-  const [userData, setUserData] = useState({
+  type UserData = {
+    name: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    contact_no: string;
+    alternate_contact_no: string;
+    location: string;
+    bio: string;
+    farms: Farm[];
+    achievements: Achievement[];
+    role: string;
+  };
+
+  const [userData, setUserData] = useState<UserData>({
     name: '',
     firstname: '',
     lastname: '',
     email: '',
     contact_no: '',
-    alternate_contact_no: '123456',
+    alternate_contact_no: '',
     location: '',
     bio: '',
     farms: [],
     achievements: [],
     role: '',
   });
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (userId) {
         const response = await getUserDetails(userId);
-        
+
+
         if (response.success && response.user) {
           setUserData({
             ...userData,
@@ -249,194 +279,85 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
           )}
 
           {/* Farm Details Tab */}
-          {activeTab === "farm" && (
+          {activeTab === 'farm' && (
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Farm Details
-                </h2>
+                <h2 className="text-lg font-medium text-gray-900">Farm Details</h2>
                 <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
                   Manage Farms
                 </button>
               </div>
-
               <div className="space-y-6">
-                {/* Farm 1 */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900">
-                      Green Valley Organic Farm
-                    </h3>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Active
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-500">Size</span>
-                      <p className="font-medium text-gray-900">150 acres</p>
+                {userData.farms.length > 0 ? (
+                  userData.farms.map((farm, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-medium text-gray-900">{farm.name}</h3>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${farm.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
+                            : farm.status === 'Planning'
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-gray-100 text-gray-800'
+                            }`}
+                        >
+                          {farm.status || 'Active'}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">Size</span>
+                          <p className="font-medium text-gray-900">{farm.size || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Location</span>
+                          <p className="font-medium text-gray-900">{farm.location || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Established</span>
+                          <p className="font-medium text-gray-900">{farm.established || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Crops</span>
+                          <p className="font-medium text-gray-900">{farm.crops || 'N/A'}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-gray-500">Location</span>
-                      <p className="font-medium text-gray-900">
-                        Fresno, CA
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Established</span>
-                      <p className="font-medium text-gray-900">2018</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Crops</span>
-                      <p className="font-medium text-gray-900">
-                        5 varieties
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Farm 2 */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900">
-                      Sunshine Acres
-                    </h3>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                      Active
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-500">Size</span>
-                      <p className="font-medium text-gray-900">200 acres</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Location</span>
-                      <p className="font-medium text-gray-900">
-                        Bakersfield, CA
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Established</span>
-                      <p className="font-medium text-gray-900">2020</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Crops</span>
-                      <p className="font-medium text-gray-900">
-                        4 varieties
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Farm 3 */}
-                <div className="border border-gray-200 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-gray-900">
-                      Heritage Fields
-                    </h3>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      Planning
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-gray-500">Size</span>
-                      <p className="font-medium text-gray-900">100 acres</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Location</span>
-                      <p className="font-medium text-gray-900">
-                        Modesto, CA
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Established</span>
-                      <p className="font-medium text-gray-900">2024</p>
-                    </div>
-                    <div>
-                      <span className="text-gray-500">Crops</span>
-                      <p className="font-medium text-gray-900">
-                        3 varieties
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No farms available.</p>
+                )}
               </div>
             </div>
           )}
-
-          {/* Achievements Tab */}
-          {activeTab === "achievements" && (
+          {activeTab === 'achievements' && (
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Achievements & Certifications
-                </h2>
+                <h2 className="text-lg font-medium text-gray-900">Achievements & Certifications</h2>
               </div>
-
               <div className="space-y-4">
-                <div className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
-                  <div className="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                    <Award className="w-4 h-4 text-yellow-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
-                      USDA Organic Certification
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Certified organic farming practices • Valid until 2025
-                    </p>
-                  </div>
-                  <span className="text-xs text-gray-400">2023</span>
-                </div>
-
-                <div className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
-                  <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <Award className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
-                      Sustainable Agriculture Award
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Recognized for environmental stewardship and
-                      innovation
-                    </p>
-                  </div>
-                  <span className="text-xs text-gray-400">2024</span>
-                </div>
-
-                <div className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
-                  <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <Award className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
-                      Water Conservation Leader
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Achieved 35% water reduction through efficient
-                      irrigation
-                    </p>
-                  </div>
-                  <span className="text-xs text-gray-400">2023</span>
-                </div>
-
-                <div className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
-                  <div className="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Award className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900">
-                      Community Impact Recognition
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Outstanding contribution to local food security
-                    </p>
-                  </div>
-                  <span className="text-xs text-gray-400">2022</span>
-                </div>
+                {userData.achievements.length > 0 ? (
+                  userData.achievements.map((achievement, index) => (
+                    <div key={index} className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg">
+                      <div
+                        className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${achievement.iconColor ? `bg-${achievement.iconColor}-100` : 'bg-gray-100'
+                          }`}
+                      >
+                        <Award
+                          className={`w-4 h-4 ${achievement.iconColor ? `text-${achievement.iconColor}-600` : 'text-gray-600'
+                            }`}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900">{achievement.title}</p>
+                        <p className="text-sm text-gray-500">{achievement.description || 'No description'}</p>
+                      </div>
+                      <span className="text-xs text-gray-400">{achievement.year || 'N/A'}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-gray-500">No achievements available.</p>
+                )}
               </div>
             </div>
           )}

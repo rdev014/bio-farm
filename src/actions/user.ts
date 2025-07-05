@@ -196,6 +196,21 @@ export async function editProfile(userId: string, formData: FormData): Promise<E
     return { success: false, error: errorMessage };
   }
 }
+interface Achievement {
+  title: string;
+  description?: string;
+  year?: number;
+  iconColor?: string;
+}
+
+interface Farm {
+  name: string;
+  size?: string;
+  location?: string;
+  established?: number;
+  crops?: string;
+  status?: 'Active' | 'Planning' | 'Inactive';
+}
 interface UserGet {
   _id: string;
   name: string;
@@ -212,6 +227,8 @@ interface UserGet {
   location?: string;
   contact_no?: string;
   alternate_contact_no?: string;
+  achievements?: Achievement[];
+  farms?: Farm[];
 }
 interface GetUserResponse {
   success: boolean;
@@ -245,6 +262,24 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
       location: user.location ?? "",
       contact_no: user.contact_no ?? "",
       alternate_contact_no: user.alternate_contact_no ?? "",
+      achievements: Array.isArray(user.achievements)
+        ? user.achievements.map((ach) => ({
+          title: ach.title || '',
+          description: ach.description || '',
+          year: typeof ach.year === 'number' ? ach.year : undefined,
+          iconColor: ach.iconColor || '',
+        }))
+        : [],
+      farms: Array.isArray(user.farms)
+        ? user.farms.map((farm) => ({
+          name: farm.name || '',
+          size: farm.size || '',
+          location: farm.location || '',
+          established: typeof farm.established === 'number' ? farm.established : undefined,
+          crops: farm.crops || '',
+          status: ['Active', 'Planning', 'Inactive'].includes(farm.status ?? '') ? farm.status : 'Active',
+        }))
+        : [],
     };
     return { success: true, user: serializedUser };
   } catch (error: unknown) {
@@ -255,6 +290,8 @@ export async function getUserDetails(userId: string): Promise<GetUserResponse> {
     return { success: false, error: errorMessage };
   }
 }
+
+
 
 
 
