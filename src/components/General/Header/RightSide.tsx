@@ -3,6 +3,7 @@ import { handleSignOut } from '@/actions/user';
 import { useHeaderStore } from '@/store/headerStore';
 import { User as UserType } from '@/types';
 import { ChevronDown, LogOut, Menu, Settings, ShoppingBag, User, X } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useEffect, } from 'react'
@@ -18,7 +19,7 @@ export default function RightSide({ user, }: { user: UserType | null }) {
     useEffect(() => {
         setMobileMenuOpen(false);
         setActiveDropdown(null);
-    }, [pathname,setActiveDropdown, setMobileMenuOpen]);
+    }, [pathname, setActiveDropdown, setMobileMenuOpen]);
     const handleDropdownToggle = (name: string) => {
         setActiveDropdown(activeDropdown === name ? null : name);
     };
@@ -32,9 +33,14 @@ export default function RightSide({ user, }: { user: UserType | null }) {
                         aria-haspopup="true"
                         aria-expanded={activeDropdown === 'user'}
                     >
-                        <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-md">
+                        {user.image ? <Image width={10} height={10}
+                            src={user.image}
+                            alt={user.name || 'User avatar'}
+                            className="w-9 h-9 rounded-full border-2 border-gray-200"
+                        /> : <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-md">
                             {user.email[0].toUpperCase()}
-                        </div>
+                        </div>}
+
                         <ChevronDown
                             className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${activeDropdown === 'user' ? 'rotate-180' : ''
                                 }`}

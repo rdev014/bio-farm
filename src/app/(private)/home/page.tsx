@@ -180,7 +180,7 @@ export default async function Home() {
               </button>
 
               <div className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <Image width={400} height={400}
+                <Image width={10} height={10}
                   src={user.avatar}
                   alt={user.name}
                   className="w-9 h-9 rounded-full border-2 border-gray-200"
