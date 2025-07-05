@@ -97,7 +97,7 @@ export default function HomePage() {
               </div>
             </div>
             <Link
-              href="/admin/blogs/create-blog"
+              href="/admin/blogs/create"
               className="inline-flex items-center px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -171,7 +171,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No blog posts yet</h3>
               <p className="text-gray-500 mb-6">Start creating content to engage your audience</p>
               <Link
-                href="/admin/blogs/create-blog"
+                href="/admin/blogs/create"
                 className="inline-flex items-center px-6 py-3 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />

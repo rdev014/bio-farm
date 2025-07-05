@@ -2,15 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchAllUsers } from '@/actions/user';
 import { getNotifications } from '@/actions/notification';
-import { Users, Bell, Settings, AlertCircle, BarChart2 } from 'lucide-react';
+import { Users, Bell, AlertCircle, BarChart2 } from 'lucide-react';
 import Link from 'next/link';
-// import { Metadata } from 'next';
-
-// export const metadata: Metadata = {
-//   metadataBase: new URL(process.env.APP_URL || 'http://localhost:3000'),
-//   title: 'Admin Dashboard | Arkin Organics',
-//   description: 'Central hub for managing users, notifications, and settings for Arkin Organics.',
-// };
 
 interface User {
   _id: string;
@@ -72,36 +65,7 @@ const AdminHome: React.FC = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900">Arkin Organics</h2>
-          <p className="text-sm text-gray-500 mt-1">Admin Dashboard</p>
-        </div>
-        <nav className="mt-6">
-          <Link
-            href="/admin/users"
-            className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-          >
-            <Users size={20} />
-            Users
-          </Link>
-          <Link
-            href="/admin/notifications"
-            className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-          >
-            <Bell size={20} />
-            Notifications
-          </Link>
-          <Link
-            href="/admin/settings"
-            className="flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
-          >
-            <Settings size={20} />
-            Settings
-          </Link>
-        </nav>
-      </aside>
+    
 
       {/* Main Content */}
       <main className="flex-1 p-6">
@@ -151,7 +115,7 @@ const AdminHome: React.FC = () => {
                       {unreadNotifications} Unread, {priorityNotifications} Priority
                     </p>
                     <Link
-                      href="/admin/notifications"
+                      href="/notifications"
                       className="text-sm text-green-600 hover:underline mt-2 block"
                     >
                       View Notifications
@@ -169,12 +133,7 @@ const AdminHome: React.FC = () => {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Analytics</h3>
                     <p className="text-sm text-gray-500">Coming soon...</p>
-                    <Link
-                      href="/admin/analytics"
-                      className="text-sm text-purple-600 hover:underline mt-2 block"
-                    >
-                      View Analytics
-                    </Link>
+                    
                   </div>
                 </div>
               </div>
