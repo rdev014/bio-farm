@@ -6,7 +6,7 @@ import {
   ShieldUser,
 
 } from "lucide-react";
-import { getUserDetails, editProfile,} from '@/actions/user';
+import { getUserDetails, editProfile, } from '@/actions/user';
 import { toast } from 'sonner';
 interface Achievement {
   title: string;
@@ -148,31 +148,32 @@ export default function ProfileDetails({ userId }: { userId?: string }) {
         {/* Quick Stats */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           <div className="p-4 border-b border-gray-200">
-            <h3 className="text-sm font-medium text-gray-900">
-              Quick Statistics
-            </h3>
+            <h3 className="text-sm font-medium text-gray-900">Quick Statistics</h3>
           </div>
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Total Farms</span>
-              <span className="text-sm font-medium text-gray-900">3</span>
+              <span className="text-sm font-medium text-gray-900">{userData.farms.length}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Total Area</span>
               <span className="text-sm font-medium text-gray-900">
-                450 acres
+                {userData.farms.reduce((total, farm) => total + (parseFloat(farm.size || '0') || 0), 0)} acres
               </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Active Crops</span>
-              <span className="text-sm font-medium text-gray-900">12</span>
+              <span className="text-sm font-medium text-gray-900">
+                {userData.farms.reduce((total, farm) => total + (farm.crops?.split(',').length || 0), 0)}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-gray-600">Certifications</span>
-              <span className="text-sm font-medium text-gray-900">4</span>
+              <span className="text-sm font-medium text-gray-900">{userData.achievements.length}</span>
             </div>
           </div>
         </div>
+
       </div>
 
       {/* Main Content */}

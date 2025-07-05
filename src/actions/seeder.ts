@@ -5,9 +5,9 @@ import { User } from "@/models/UserSchema";
 
 export async function seedFarmsAndAchievements() {
   try {
-    await connectDb() // Use environment variable for URI
+    await connectDb() 
 
-    const users = await User.find({}); // Fetch all users
+    const users = await User.find({}); 
 
     for (const user of users) {
       // Only seed if farms or achievements are empty
