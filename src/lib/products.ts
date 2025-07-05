@@ -1,19 +1,41 @@
-import Product, { IProduct } from '@/models/ProductSchema';
+import Product from '@/models/ProductSchema';
 import connectDb from './db';
+import { Document } from 'mongoose';
 
-export async function getProducts(options: {
+interface ProductType extends Document {
   category?: string;
   organic?: boolean;
   seasonal?: boolean;
   featured?: boolean;
-  sort?: string;
+  price?: number;
+  rating?: number;
+  createdAt?: Date;
+}
+
+interface GetProductsOptions {
+  category?: string;
+  organic?: boolean;
+  seasonal?: boolean;
+  featured?: boolean;
+  sort?: 'price-asc' | 'price-desc' | 'rating' | string;
   limit?: number;
   page?: number;
-}) {
+}
+
+export async function getProducts(options: GetProductsOptions) {
   await connectDb();
-  const { category, organic, seasonal, featured, sort = 'createdAt', limit = 8, page = 1 } = options;
-  
-  const query: Partial<Pick<IProduct, 'category' | 'organic' | 'seasonal' | 'featured'>> = {};
+
+  const {
+    category,
+    organic,
+    seasonal,
+    featured,
+    sort = 'createdAt',
+    limit = 8,
+    page = 1
+  } = options;
+
+  const query: Partial<Pick<ProductType, 'category' | 'organic' | 'seasonal' | 'featured'>> = {};
   if (category) query.category = category;
   if (organic !== undefined) query.organic = organic;
   if (seasonal !== undefined) query.seasonal = seasonal;
@@ -32,54 +54,43 @@ export async function getProducts(options: {
       break;
     default:
       sortQuery[sort] = -1;
-  }  const skip = (page - 1) * limit;
-  
+  }
+
+  const skip = (page - 1) * limit;
+
   try {
-    // Execute the query and get total count
     const [products, total] = await Promise.all([
       Product.find(query)
         .sort(sortQuery)
         .skip(skip)
         .limit(limit)
-        .lean() as unknown as Promise<IProduct[]>,
+        .lean<ProductType[]>(),
       Product.countDocuments(query)
     ]);
 
-    console.log(`Retrieved ${products.length} products out of ${total} total`);
+    const totalPages = Math.ceil(total / limit);
+    const currentPage = total > 0 && products.length === 0
+      ? Math.max(1, totalPages)
+      : page;
 
-    // If we have no products but there should be some, we might be on an invalid page
-    if (products.length === 0 && total > 0) {
-      // Recalculate the last valid page
-      const lastValidPage = Math.max(1, Math.ceil(total / limit));
-      const newSkip = (lastValidPage - 1) * limit;
-      
-      // Fetch products from the last valid page
-      const fallbackProducts = await Product.find(query)
-        .sort(sortQuery)
-        .skip(newSkip)
-        .limit(limit)
-        .lean() as unknown as IProduct[];
-
-      return {
-        products: fallbackProducts,
-        pagination: {
-          total,
-          pages: Math.ceil(total / limit),
-          current: lastValidPage
-        }
-      };
-    }
+    const finalProducts = products.length === 0 && total > 0
+      ? await Product.find(query)
+          .sort(sortQuery)
+          .skip((currentPage - 1) * limit)
+          .limit(limit)
+          .lean<ProductType[]>()
+      : products;
 
     return {
-      products,
+      products: finalProducts,
       pagination: {
         total,
-        pages: Math.ceil(total / limit),
-        current: page
+        pages: totalPages,
+        current: currentPage
       }
     };
   } catch (error) {
     console.error('Error fetching products:', error);
-    throw error;
+    throw new Error('Failed to fetch products');
   }
 }
