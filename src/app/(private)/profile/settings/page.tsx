@@ -15,10 +15,11 @@ import {
   EyeOff,
   Users,
   Package,
-  Newspaper
+  Newspaper,
+  User
 } from 'lucide-react';
 import { NewsletterToggleSubscribe } from '@/components/General/Newsletters';
-import { getUserSession } from '@/actions/user';
+import { getUserSession, handleSignOut } from '@/actions/user';
 
 interface User {
   _id: string;
@@ -118,6 +119,13 @@ const SettingsPage: React.FC = () => {
     };
     loadUser();
   }, []);
+
+  const logOutUser = async () => {
+
+    await handleSignOut();
+
+  };
+
 
   const handleEmailPreferenceChange = (key: keyof EmailPreferences): void => {
     setEmailPreferences((prev) => ({
@@ -476,20 +484,38 @@ const SettingsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-lg border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <Settings className="w-8 h-8 text-green-600 mr-3" />
-              <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
+          <div className="flex items-center justify-between h-20">
+            {/* Left side - Title and icon */}
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-sm">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                  Account Settings
+                </h1>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  Manage your account preferences and security
+                </p>
+              </div>
             </div>
-            <button className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </button>
+
+            {/* Right side - User info and actions */}
+            <div className="flex items-center space-x-4">
+              {/* Sign out button */}
+              <button
+                onClick={logOutUser}
+                className="cursor-pointer flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
