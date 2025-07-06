@@ -1,4 +1,4 @@
-import Product from '@/models/ProductSchema';
+import Product from '@/models/Product';
 import connectDb from './db';
 import { Product as ProductType } from '@/components/products/ProductCard';
 

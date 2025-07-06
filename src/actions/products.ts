@@ -1,212 +1,420 @@
-"use server";
+'use server';
 
-import connectDb from "@/lib/db";
-import { generateSlug } from "@/lib/utils";
-import Product from "@/models/ProductSchema";
+import { Types } from "mongoose";
 import { revalidatePath } from "next/cache";
+import { randomUUID } from 'crypto';
+import connectDb from "@/lib/db";
+import Product, { IProduct } from "@/models/Product";
 
-// Create product
-export async function createProduct(formData: FormData) {
-  try {
-    const name = formData.get("name")?.toString();
-    const description = formData.get("description")?.toString();
-    const price = Number(formData.get("price"));
-    const comparePrice = Number(formData.get("comparePrice"));
-    const images = JSON.parse(formData.get("images")?.toString() || "[]");
-    const category = formData.get("category")?.toString();
-    const subcategory = formData.get("subcategory")?.toString();
-    const farm = JSON.parse(formData.get("farm")?.toString() || "{}");
-    const stock = Number(formData.get("stock"));
-    const unit = formData.get("unit")?.toString();
-    const weight = Number(formData.get("weight"));
-    const organic = formData.get("organic") === "true";
-    const seasonal = formData.get("seasonal") === "true";
-    const seasonAvailability = JSON.parse(formData.get("seasonAvailability")?.toString() || "null");
-    const nutritionalInfo = JSON.parse(formData.get("nutritionalInfo")?.toString() || "null");
-    const certifications = JSON.parse(formData.get("certifications")?.toString() || "[]");
-    const storageInstructions = formData.get("storageInstructions")?.toString();
-    const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
-    const featured = formData.get("featured") === "true";
-    const rating = Number(formData.get("rating"));
-    const reviews = Number(formData.get("reviews"));
+export interface ActionResponse<T> {
+  success: boolean;
+  product?: T;
+  products?: T[];
+  error?: string;
+  message?: string;
+}
 
-    if (!name || !description || !images.length || !category || !unit || !farm.name || !farm.location) {
-      throw new Error("Missing required fields");
+interface ProductFormData {
+  name?: string;
+  description?: string;
+  sku?: string;
+  category?: string;
+  brand?: string;
+  images?: string[];
+  price?: string;
+  discount?: string;
+  stock?: string;
+  isActive?: string;
+  tags?: string[];
+  weight?: string;
+  unit?: IProduct["unit"];
+  specifications?: string;
+  createdBy?: string;
+  productId?: string;
+}
+interface ProductFilter {
+  $or?: Array<{ [key in keyof IProduct]?: { $regex: string; $options: string } }>;
+  category?: Types.ObjectId;
+  isActive?: boolean;
+}
+// Utility function to validate ObjectId
+function isValidObjectId(id: string): boolean {
+  return Types.ObjectId.isValid(id);
+}
+
+// Utility function to sanitize form data
+function sanitizeFormData(formData: ProductFormData): Partial<IProduct> {
+  const name = formData.name?.trim();
+
+  return {
+    productId: formData.productId || `prod-${randomUUID()}`,
+    name,
+    description: formData.description?.trim(),
+    sku: formData.sku?.trim(),
+    category: formData.category ? new Types.ObjectId(formData.category) : undefined,
+    brand: formData.brand?.trim() || undefined,
+    images: formData.images?.filter(img => img && img !== '') ?? [],
+    price: formData.price ? parseFloat(formData.price) : 0,
+    discount: formData.discount ? parseFloat(formData.discount) : 0,
+    stock: formData.stock ? parseInt(formData.stock, 10) : 0,
+    isActive: formData.isActive === "true",
+    tags: formData.tags?.filter(tag => tag && tag !== '') ?? [],
+    weight: formData.weight ? parseFloat(formData.weight) : 0,
+    unit: formData.unit,
+    specifications: (() => {
+      try {
+        const specs = formData.specifications ? JSON.parse(formData.specifications) : {};
+        return new Map<string, string>(Object.entries(specs));
+      } catch {
+        return new Map<string, string>();
+      }
+    })(),
+    createdBy: formData.createdBy ? new Types.ObjectId(formData.createdBy) : undefined,
+  };
+}
+
+// Validation function
+function validateProductData(productData: Partial<IProduct>): string | null {
+  const required: (keyof IProduct)[] = ['name', 'sku', 'category', 'price', 'weight', 'unit'];
+
+  for (const field of required) {
+    if (!productData[field]) {
+      return `${field} is required`;
     }
+  }
 
-    const slug = generateSlug(name);
+  if (productData.price && productData.price < 0) {
+    return 'Price must be positive';
+  }
 
+  if (productData.weight && productData.weight < 0) {
+    return 'Weight must be positive';
+  }
+
+  if (productData.stock && productData.stock < 0) {
+    return 'Stock must be positive';
+  }
+
+  if (productData.discount && (productData.discount < 0 || productData.discount > 100)) {
+    return 'Discount must be between 0 and 100';
+  }
+
+  return null;
+}
+
+// Create Product
+export async function createProduct(formData: ProductFormData): Promise<ActionResponse<IProduct>> {
+  try {
     await connectDb();
 
-    const product = await Product.create({
-      name,
-      slug,
-      description,
-      price,
-      comparePrice,
-      images,
-      category,
-      subcategory,
-      farm,
-      stock,
-      unit,
-      weight,
-      organic,
-      seasonal,
-      seasonAvailability,
-      nutritionalInfo,
-      certifications,
-      storageInstructions,
-      tags,
-      featured,
-      rating,
-      reviews,
-    });
+    const productData = sanitizeFormData(formData);
 
-    revalidatePath("/products");
+    // Validate data
+    const validationError = validateProductData(productData);
+    if (validationError) {
+      return { success: false, error: validationError };
+    }
+
+    // Check if SKU already exists
+    const existingSku = await Product.findOne({ sku: productData.sku }).lean();
+    if (existingSku) {
+      return { success: false, error: "SKU already exists" };
+    }
+
+    // Check if productId already exists
+    const existingProductId = await Product.findOne({ productId: productData.productId }).lean();
+    if (existingProductId) {
+      return { success: false, error: "Product ID already exists" };
+    }
+
+    const product = await Product.create(productData);
+    const populatedProduct = await Product.findById(product._id)
+      .populate({ path: "category", select: "name" })
+      .populate({ path: "createdBy", select: "name email" })
+      .lean()
+      .exec();
+
+    revalidatePath('/products');
+    return {
+      success: true,
+      product: populatedProduct as unknown as IProduct,
+      message: "Product created successfully"
+    };
+  } catch (error) {
+    console.error("Create product error:", error);
+
+    if (error instanceof Error) {
+      if (error.name === 'ValidationError') {
+        return { success: false, error: "Validation failed: " + error.message };
+      }
+
+      if (error.message.includes('duplicate key')) {
+        return { success: false, error: "Product with this SKU or productId already exists" };
+      }
+
+      return { success: false, error: error.message };
+    }
+
+    return { success: false, error: "Failed to create product" };
+  }
+}
+
+// Get All Products with pagination and filtering
+export async function getProducts(
+  page: number = 1,
+  limit: number = 10,
+  search?: string,
+  category?: string,
+  isActive?: boolean
+): Promise<ActionResponse<IProduct>> {
+  try {
+    await connectDb();
+
+    const skip = (page - 1) * limit;
+    const filter: ProductFilter = {};
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { sku: { $regex: search, $options: 'i' } },
+        { brand: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    if (category && isValidObjectId(category)) {
+      filter.category = new Types.ObjectId(category);
+    }
+
+    if (typeof isActive === 'boolean') {
+      filter.isActive = isActive;
+    }
+
+    const products = await Product.find(filter)
+      .populate({ path: "category", select: "name" })
+      .populate({ path: "createdBy", select: "name email" })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+      .exec();
+
+    const total = await Product.countDocuments(filter);
 
     return {
       success: true,
-      product,
+      products: products as unknown as IProduct[],
+      message: `Found ${products.length} products (${total} total)`
     };
   } catch (error) {
+    console.error("Get products error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to create product",
+      error: error instanceof Error ? error.message : "Failed to fetch products"
     };
   }
 }
 
-// Update product
-export async function updateProduct(formData: FormData) {
+// Get Single Product by ID or productId
+export async function getProduct(identifier: string): Promise<ActionResponse<IProduct>> {
   try {
-    const id = formData.get("id")?.toString();
-    const name = formData.get("name")?.toString();
-    const description = formData.get("description")?.toString();
-    const price = Number(formData.get("price"));
-    const comparePrice = Number(formData.get("comparePrice"));
-    const images = JSON.parse(formData.get("images")?.toString() || "[]");
-    const category = formData.get("category")?.toString();
-    const subcategory = formData.get("subcategory")?.toString();
-    const farm = JSON.parse(formData.get("farm")?.toString() || "{}");
-    const stock = Number(formData.get("stock"));
-    const unit = formData.get("unit")?.toString();
-    const weight = Number(formData.get("weight"));
-    const organic = formData.get("organic") === "true";
-    const seasonal = formData.get("seasonal") === "true";
-    const seasonAvailability = JSON.parse(formData.get("seasonAvailability")?.toString() || "null");
-    const nutritionalInfo = JSON.parse(formData.get("nutritionalInfo")?.toString() || "null");
-    const certifications = JSON.parse(formData.get("certifications")?.toString() || "[]");
-    const storageInstructions = formData.get("storageInstructions")?.toString();
-    const tags = JSON.parse(formData.get("tags")?.toString() || "[]");
-    const featured = formData.get("featured") === "true";
-    const rating = Number(formData.get("rating"));
-    const reviews = Number(formData.get("reviews"));
-
-    if (!id || !name || !description || !images.length || !category || !unit || !farm.name || !farm.location) {
-      throw new Error("Missing required fields");
-    }
-
-    const slug = generateSlug(name);
-
     await connectDb();
 
-    const product = await Product.findByIdAndUpdate(
-      id,
+    let product;
+
+    if (isValidObjectId(identifier)) {
+      product = await Product.findById(identifier)
+        .populate({ path: "category", select: "name" })
+        .populate({ path: "createdBy", select: "name email" })
+        .lean()
+        .exec();
+    }
+
+    if (!product) {
+      product = await Product.findOne({ productId: identifier })
+        .populate({ path: "category", select: "name" })
+        .populate({ path: "createdBy", select: "name email" })
+        .lean()
+        .exec();
+    }
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    return { success: true, product: product as unknown as IProduct };
+  } catch (error) {
+    console.error("Get product error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to fetch product"
+    };
+  }
+}
+
+// Update Product
+export async function updateProduct(identifier: string, formData: ProductFormData): Promise<ActionResponse<IProduct>> {
+  try {
+    await connectDb();
+
+    const productData = sanitizeFormData(formData);
+    delete productData.productId;
+
+    const validationError = validateProductData(productData);
+    if (validationError) {
+      return { success: false, error: validationError };
+    }
+
+    let product;
+
+    if (isValidObjectId(identifier)) {
+      product = await Product.findById(identifier);
+    } else {
+      product = await Product.findOne({ productId: identifier });
+    }
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    if (productData.sku && productData.sku !== product.sku) {
+      const existingSku = await Product.findOne({
+        sku: productData.sku,
+        _id: { $ne: product._id }
+      }).lean();
+      if (existingSku) {
+        return { success: false, error: "SKU already exists" };
+      }
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      product._id,
+      productData,
       {
-        name,
-        slug,
-        description,
-        price,
-        comparePrice,
-        images,
-        category,
-        subcategory,
-        farm,
-        stock,
-        unit,
-        weight,
-        organic,
-        seasonal,
-        seasonAvailability,
-        nutritionalInfo,
-        certifications,
-        storageInstructions,
-        tags,
-        featured,
-        rating,
-        reviews,
-        updatedAt: new Date(),
-      },
-      { new: true }
-    );
+        new: true,
+        runValidators: true,
+      }
+    )
+      .populate({ path: "category", select: "name" })
+      .populate({ path: "createdBy", select: "name email" })
+      .lean()
+      .exec();
 
-    if (!product) throw new Error("Product not found");
-
-    revalidatePath("/products");
-
+    revalidatePath('/products');
     return {
       success: true,
-      product,
+      product: updatedProduct as unknown as IProduct,
+      message: "Product updated successfully"
     };
   } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to update product",
-    };
+    console.error("Update product error:", error);
+
+    if (error instanceof Error) {
+      if (error.name === 'ValidationError') {
+        return { success: false, error: "Validation failed: " + error.message };
+      }
+
+      if (error.message.includes('duplicate key')) {
+        return { success: false, error: "Product with this SKU or productId already exists" };
+      }
+
+      return { success: false, error: error.message };
+    }
+
+    return { success: false, error: "Failed to update product" };
   }
 }
 
-// Delete product
-export async function deleteProduct(formData: FormData) {
+// Delete Product
+export async function deleteProduct(identifier: string): Promise<ActionResponse<never>> {
   try {
-    const id = formData.get("id")?.toString();
-    if (!id) throw new Error("Product ID is required");
-
     await connectDb();
-    await Product.findByIdAndDelete(id);
 
-    revalidatePath("/products");
+    let product;
 
-    return { success: true };
+    if (isValidObjectId(identifier)) {
+      product = await Product.findByIdAndDelete(identifier).lean().exec();
+    } else {
+      product = await Product.findOneAndDelete({ productId: identifier }).lean().exec();
+    }
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    revalidatePath('/products');
+    return { success: true, message: "Product deleted successfully" };
   } catch (error) {
+    console.error("Delete product error:", error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete product",
+      error: error instanceof Error ? error.message : "Failed to delete product"
     };
   }
 }
 
-// Get all products
-export async function getProducts() {
-  await connectDb();
-  const products = await Product.find({}).sort({ createdAt: -1 });
+// Get Product by ProductId
+export async function getProductByProductId(productId: string): Promise<ActionResponse<IProduct>> {
+  try {
+    await connectDb();
 
-  return products.map((product) => ({
-    _id: product._id.toString(),
-    name: product.name,
-    slug: product.slug,
-    description: product.description,
-    price: product.price,
-    comparePrice: product.comparePrice,
-    images: product.images,
-    category: product.category,
-    subcategory: product.subcategory,
-    farm: product.farm,
-    stock: product.stock,
-    unit: product.unit,
-    weight: product.weight,
-    organic: product.organic,
-    seasonal: product.seasonal,
-    seasonAvailability: product.seasonAvailability,
-    nutritionalInfo: product.nutritionalInfo,
-    certifications: product.certifications,
-    storageInstructions: product.storageInstructions,
-    tags: product.tags,
-    featured: product.featured,
-    rating: product.rating,
-    reviews: product.reviews,
-    createdAt: product.createdAt.toISOString(),
-    updatedAt: product.updatedAt.toISOString(),
-  }));
+    const product = await Product.findOne({ productId })
+      .populate({ path: "category", select: "name" })
+      .populate({ path: "createdBy", select: "name email" })
+      .lean()
+      .exec();
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    return { success: true, product: product as unknown as IProduct };
+  } catch (error) {
+    console.error("Get product by productId error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to fetch product"
+    };
+  }
+}
+
+// Toggle Product Active Status
+export async function toggleProductStatus(identifier: string): Promise<ActionResponse<IProduct>> {
+  try {
+    await connectDb();
+
+    let product;
+
+    if (isValidObjectId(identifier)) {
+      product = await Product.findById(identifier);
+    } else {
+      product = await Product.findOne({ productId: identifier });
+    }
+
+    if (!product) {
+      return { success: false, error: "Product not found" };
+    }
+
+    product.isActive = !product.isActive;
+    await product.save();
+
+    const updatedProduct = await Product.findById(product._id)
+      .populate({ path: "category", select: "name" })
+      .populate({ path: "createdBy", select: "name email" })
+      .lean()
+      .exec();
+
+    revalidatePath('/products');
+    return {
+      success: true,
+      product: updatedProduct as unknown as IProduct,
+      message: `Product ${product.isActive ? 'activated' : 'deactivated'} successfully`
+    };
+  } catch (error) {
+    console.error("Toggle product status error:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to toggle product status"
+    };
+  }
 }
