@@ -1,6 +1,5 @@
 'use client';
-
-import React, { useState, useEffect, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent, useCallback } from 'react';
 import { getProducts, deleteProduct, toggleProductStatus } from '@/actions/products';
 import ProductForm from '@/components/dashboard/products/ProductForm';
 import { IProduct } from '@/models/Product';
@@ -41,7 +40,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
 
   const totalPages = Math.ceil(total / limit);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     const response = await getProducts(page, limit, search || undefined, category || undefined, isActive);
     if (response.success && response.products) {
       setProducts(response.products);
@@ -51,11 +50,12 @@ const ProductsClient: React.FC<ProductsClientProps> = ({
     } else {
       setAlert({ type: 'error', message: response.error || 'Failed to fetch products' });
     }
-  };
+  }, [page, limit, search, category, isActive, setProducts, setTotal, setAlert]);
 
   useEffect(() => {
     fetchProducts();
-  }, [page, search, category, isActive]);
+  }, [fetchProducts]);
+
 
   const handleFilterSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -197,22 +197,17 @@ export async function getProducts(
       price: product.price,
       stock: product.stock,
       isActive: product.isActive,
-      createdAt: product.createdAt?.toISOString() || null,
-      updatedAt: product.updatedAt?.toISOString() || null,
+      createdAt: product.createdAt || undefined, // Use Date or undefined
+      updatedAt: product.updatedAt || undefined, // Use Date or undefined
       images: product.images || [],
       tags: product.tags || [],
       weight: product.weight || 0,
-      category:
-        product.category && typeof product.category === 'object' && 'name' in product.category
-          ? { _id: product.category._id.toString(), name: product.category.name }
-          : product.category,
-      createdBy:
-        product.createdBy && typeof product.createdBy === 'object' && 'name' in product.createdBy
-          ? {
-              _id: product.createdBy._id.toString(),
-              name: product.createdBy.name,
-            }
-          : product.createdBy,
+      unit: product.unit || 'unit',
+      specifications: product.specifications instanceof Map
+        ? product.specifications
+        : new Map<string, string>(Object.entries(product.specifications || {})),
+      category: product.category?._id || product.category,
+      createdBy: product.createdBy?._id || product.createdBy,
     }));
 
     const total = await Product.countDocuments(filter);
@@ -230,8 +225,6 @@ export async function getProducts(
     };
   }
 }
-
-
 
 export async function getProduct(identifier: string): Promise<ActionResponse<IProduct>> {
   try {
