@@ -20,7 +20,7 @@ export default async function AdminRootLayout({
     const session = await getSession();
     const user = session?.user;
     if (!user) return redirect("/sign-in");
-    if (user?.role !== "admin") return redirect("/dashboard");
+    if (user?.role !== "admin") return redirect("/home");
     return (
         <>
             {children}

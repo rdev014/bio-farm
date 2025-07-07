@@ -29,7 +29,13 @@ const NewsletterSubscriberSchema: Schema = new Schema(
     unsubscribedAt: {
       type: Date,
       default: null
-    }
+    },
+    newsletterPreferences: {
+      productUpdates: { type: Boolean, default: true },
+      blogUpdates: { type: Boolean, default: true },
+      promotions: { type: Boolean, default: true },
+      partnerAnnouncements: { type: Boolean, default: true },
+    },
   },
   {
     timestamps: true

@@ -13,7 +13,7 @@ export default async function Page() {
   const categories = await getCategories();
   const session = await getSession();
   const user = session?.user;
-console.log(categories);
+
 
   return (
     <div>
