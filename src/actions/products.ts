@@ -1,10 +1,12 @@
 'use server';
 
-import { Types } from "mongoose";
-import { revalidatePath } from "next/cache";
+import { Types } from 'mongoose';
+import { revalidatePath } from 'next/cache';
 import { randomUUID } from 'crypto';
-import connectDb from "@/lib/db";
-import Product, { IProduct } from "@/models/Product";
+import connectDb from '@/lib/db';
+import Product, { IProduct } from '@/models/Product';
+import '@/models/categorySchema';
+import '@/models/UserSchema';
 
 export interface ActionResponse<T> {
   success: boolean;
@@ -27,40 +29,38 @@ interface ProductFormData {
   isActive?: string;
   tags?: string[];
   weight?: string;
-  unit?: IProduct["unit"];
+  unit?: IProduct['unit'];
   specifications?: string;
   createdBy?: string;
   productId?: string;
 }
+
 interface ProductFilter {
   $or?: Array<{ [key in keyof IProduct]?: { $regex: string; $options: string } }>;
   category?: Types.ObjectId;
   isActive?: boolean;
 }
-// Utility function to validate ObjectId
+
 function isValidObjectId(id: string): boolean {
   return Types.ObjectId.isValid(id);
 }
 
-// Utility function to sanitize form data
 function sanitizeFormData(formData: ProductFormData): Partial<IProduct> {
-  const name = formData.name?.trim();
-
   return {
     productId: formData.productId || `prod-${randomUUID()}`,
-    name,
+    name: formData.name?.trim(),
     description: formData.description?.trim(),
-    sku: formData.sku?.trim(),
-    category: formData.category ? new Types.ObjectId(formData.category) : undefined,
+    sku: formData.sku?.trim()?.toUpperCase(),
+    category: formData.category && isValidObjectId(formData.category) ? new Types.ObjectId(formData.category) : undefined,
     brand: formData.brand?.trim() || undefined,
-    images: formData.images?.filter(img => img && img !== '') ?? [],
+    images: formData.images?.filter((img) => img && img.trim() !== '') ?? [],
     price: formData.price ? parseFloat(formData.price) : 0,
     discount: formData.discount ? parseFloat(formData.discount) : 0,
     stock: formData.stock ? parseInt(formData.stock, 10) : 0,
-    isActive: formData.isActive === "true",
-    tags: formData.tags?.filter(tag => tag && tag !== '') ?? [],
+    isActive: formData.isActive === 'true',
+    tags: formData.tags?.filter((tag) => tag && tag.trim() !== '') ?? [],
     weight: formData.weight ? parseFloat(formData.weight) : 0,
-    unit: formData.unit,
+    unit: formData.unit || 'unit',
     specifications: (() => {
       try {
         const specs = formData.specifications ? JSON.parse(formData.specifications) : {};
@@ -69,11 +69,10 @@ function sanitizeFormData(formData: ProductFormData): Partial<IProduct> {
         return new Map<string, string>();
       }
     })(),
-    createdBy: formData.createdBy ? new Types.ObjectId(formData.createdBy) : undefined,
+    createdBy: formData.createdBy && isValidObjectId(formData.createdBy) ? new Types.ObjectId(formData.createdBy) : undefined,
   };
 }
 
-// Validation function
 function validateProductData(productData: Partial<IProduct>): string | null {
   const required: (keyof IProduct)[] = ['name', 'sku', 'category', 'price', 'weight', 'unit'];
 
@@ -99,38 +98,36 @@ function validateProductData(productData: Partial<IProduct>): string | null {
     return 'Discount must be between 0 and 100';
   }
 
+  if (!productData.category || !isValidObjectId(productData.category.toString())) {
+    return 'Invalid category ID';
+  }
+
   return null;
 }
 
-// Create Product
 export async function createProduct(formData: ProductFormData): Promise<ActionResponse<IProduct>> {
   try {
     await connectDb();
-
     const productData = sanitizeFormData(formData);
-
-    // Validate data
     const validationError = validateProductData(productData);
     if (validationError) {
       return { success: false, error: validationError };
     }
 
-    // Check if SKU already exists
     const existingSku = await Product.findOne({ sku: productData.sku }).lean();
     if (existingSku) {
-      return { success: false, error: "SKU already exists" };
+      return { success: false, error: 'SKU already exists' };
     }
 
-    // Check if productId already exists
     const existingProductId = await Product.findOne({ productId: productData.productId }).lean();
     if (existingProductId) {
-      return { success: false, error: "Product ID already exists" };
+      return { success: false, error: 'Product ID already exists' };
     }
 
     const product = await Product.create(productData);
     const populatedProduct = await Product.findById(product._id)
-      .populate({ path: "category", select: "name" })
-      .populate({ path: "createdBy", select: "name email" })
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'createdBy', select: 'name email' })
       .lean()
       .exec();
 
@@ -138,28 +135,17 @@ export async function createProduct(formData: ProductFormData): Promise<ActionRe
     return {
       success: true,
       product: populatedProduct as unknown as IProduct,
-      message: "Product created successfully"
+      message: 'Product created successfully',
     };
   } catch (error) {
-    console.error("Create product error:", error);
-
-    if (error instanceof Error) {
-      if (error.name === 'ValidationError') {
-        return { success: false, error: "Validation failed: " + error.message };
-      }
-
-      if (error.message.includes('duplicate key')) {
-        return { success: false, error: "Product with this SKU or productId already exists" };
-      }
-
-      return { success: false, error: error.message };
-    }
-
-    return { success: false, error: "Failed to create product" };
+    console.error('Create product error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to create product',
+    };
   }
 }
 
-// Get All Products with pagination and filtering
 export async function getProducts(
   page: number = 1,
   limit: number = 10,
@@ -169,94 +155,122 @@ export async function getProducts(
 ): Promise<ActionResponse<IProduct>> {
   try {
     await connectDb();
-
     const skip = (page - 1) * limit;
     const filter: ProductFilter = {};
+    const appliedFilters: string[] = [];
 
     if (search) {
       filter.$or = [
         { name: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
         { sku: { $regex: search, $options: 'i' } },
-        { brand: { $regex: search, $options: 'i' } }
+        { brand: { $regex: search, $options: 'i' } },
       ];
+      appliedFilters.push(`search="${search}"`);
     }
 
     if (category && isValidObjectId(category)) {
       filter.category = new Types.ObjectId(category);
+      appliedFilters.push(`category="${category}"`);
     }
 
     if (typeof isActive === 'boolean') {
       filter.isActive = isActive;
+      appliedFilters.push(`isActive=${isActive}`);
     }
 
-    const products = await Product.find(filter)
-      .populate({ path: "category", select: "name" })
-      .populate({ path: "createdBy", select: "name email" })
+    const rawProducts = await Product.find(filter)
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'createdBy', select: 'name email' })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .lean()
-      .exec();
+      .lean();
+
+    const products = rawProducts.map((product) => ({
+      _id: product._id.toString(),
+      productId: product.productId || '',
+      name: product.name,
+      sku: product.sku,
+      brand: product.brand ?? '',
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      isActive: product.isActive,
+      createdAt: product.createdAt?.toISOString() || null,
+      updatedAt: product.updatedAt?.toISOString() || null,
+      images: product.images || [],
+      tags: product.tags || [],
+      weight: product.weight || 0,
+      category:
+        product.category && typeof product.category === 'object' && 'name' in product.category
+          ? { _id: product.category._id.toString(), name: product.category.name }
+          : product.category,
+      createdBy:
+        product.createdBy && typeof product.createdBy === 'object' && 'name' in product.createdBy
+          ? {
+              _id: product.createdBy._id.toString(),
+              name: product.createdBy.name,
+            }
+          : product.createdBy,
+    }));
 
     const total = await Product.countDocuments(filter);
 
     return {
       success: true,
-      products: products as unknown as IProduct[],
-      message: `Found ${products.length} products (${total} total)`
+      products,
+      message: `Found ${products.length} products (${total} total)${appliedFilters.length ? ' with filters: ' + appliedFilters.join(', ') : ''}`,
     };
   } catch (error) {
-    console.error("Get products error:", error);
+    console.error('Get products error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch products"
+      error: error instanceof Error ? error.message : 'Failed to fetch products',
     };
   }
 }
 
-// Get Single Product by ID or productId
+
+
 export async function getProduct(identifier: string): Promise<ActionResponse<IProduct>> {
   try {
     await connectDb();
-
     let product;
 
     if (isValidObjectId(identifier)) {
       product = await Product.findById(identifier)
-        .populate({ path: "category", select: "name" })
-        .populate({ path: "createdBy", select: "name email" })
+        .populate({ path: 'category', select: 'name' })
+        .populate({ path: 'createdBy', select: 'name email' })
         .lean()
         .exec();
     }
 
     if (!product) {
       product = await Product.findOne({ productId: identifier })
-        .populate({ path: "category", select: "name" })
-        .populate({ path: "createdBy", select: "name email" })
+        .populate({ path: 'category', select: 'name' })
+        .populate({ path: 'createdBy', select: 'name email' })
         .lean()
         .exec();
     }
 
     if (!product) {
-      return { success: false, error: "Product not found" };
+      return { success: false, error: 'Product not found' };
     }
 
     return { success: true, product: product as unknown as IProduct };
   } catch (error) {
-    console.error("Get product error:", error);
+    console.error('Get product error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch product"
+      error: error instanceof Error ? error.message : 'Failed to fetch product',
     };
   }
 }
 
-// Update Product
 export async function updateProduct(identifier: string, formData: ProductFormData): Promise<ActionResponse<IProduct>> {
   try {
     await connectDb();
-
     const productData = sanitizeFormData(formData);
     delete productData.productId;
 
@@ -266,7 +280,6 @@ export async function updateProduct(identifier: string, formData: ProductFormDat
     }
 
     let product;
-
     if (isValidObjectId(identifier)) {
       product = await Product.findById(identifier);
     } else {
@@ -274,29 +287,26 @@ export async function updateProduct(identifier: string, formData: ProductFormDat
     }
 
     if (!product) {
-      return { success: false, error: "Product not found" };
+      return { success: false, error: 'Product not found' };
     }
 
     if (productData.sku && productData.sku !== product.sku) {
       const existingSku = await Product.findOne({
         sku: productData.sku,
-        _id: { $ne: product._id }
+        _id: { $ne: product._id },
       }).lean();
       if (existingSku) {
-        return { success: false, error: "SKU already exists" };
+        return { success: false, error: 'SKU already exists' };
       }
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
       product._id,
       productData,
-      {
-        new: true,
-        runValidators: true,
-      }
+      { new: true, runValidators: true }
     )
-      .populate({ path: "category", select: "name" })
-      .populate({ path: "createdBy", select: "name email" })
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'createdBy', select: 'name email' })
       .lean()
       .exec();
 
@@ -304,32 +314,20 @@ export async function updateProduct(identifier: string, formData: ProductFormDat
     return {
       success: true,
       product: updatedProduct as unknown as IProduct,
-      message: "Product updated successfully"
+      message: 'Product updated successfully',
     };
   } catch (error) {
-    console.error("Update product error:", error);
-
-    if (error instanceof Error) {
-      if (error.name === 'ValidationError') {
-        return { success: false, error: "Validation failed: " + error.message };
-      }
-
-      if (error.message.includes('duplicate key')) {
-        return { success: false, error: "Product with this SKU or productId already exists" };
-      }
-
-      return { success: false, error: error.message };
-    }
-
-    return { success: false, error: "Failed to update product" };
+    console.error('Update product error:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to update product',
+    };
   }
 }
 
-// Delete Product
 export async function deleteProduct(identifier: string): Promise<ActionResponse<never>> {
   try {
     await connectDb();
-
     let product;
 
     if (isValidObjectId(identifier)) {
@@ -339,50 +337,23 @@ export async function deleteProduct(identifier: string): Promise<ActionResponse<
     }
 
     if (!product) {
-      return { success: false, error: "Product not found" };
+      return { success: false, error: 'Product not found' };
     }
 
     revalidatePath('/products');
-    return { success: true, message: "Product deleted successfully" };
+    return { success: true, message: 'Product deleted successfully' };
   } catch (error) {
-    console.error("Delete product error:", error);
+    console.error('Delete product error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to delete product"
+      error: error instanceof Error ? error.message : 'Failed to delete product',
     };
   }
 }
 
-// Get Product by ProductId
-export async function getProductByProductId(productId: string): Promise<ActionResponse<IProduct>> {
-  try {
-    await connectDb();
-
-    const product = await Product.findOne({ productId })
-      .populate({ path: "category", select: "name" })
-      .populate({ path: "createdBy", select: "name email" })
-      .lean()
-      .exec();
-
-    if (!product) {
-      return { success: false, error: "Product not found" };
-    }
-
-    return { success: true, product: product as unknown as IProduct };
-  } catch (error) {
-    console.error("Get product by productId error:", error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Failed to fetch product"
-    };
-  }
-}
-
-// Toggle Product Active Status
 export async function toggleProductStatus(identifier: string): Promise<ActionResponse<IProduct>> {
   try {
     await connectDb();
-
     let product;
 
     if (isValidObjectId(identifier)) {
@@ -392,15 +363,15 @@ export async function toggleProductStatus(identifier: string): Promise<ActionRes
     }
 
     if (!product) {
-      return { success: false, error: "Product not found" };
+      return { success: false, error: 'Product not found' };
     }
 
     product.isActive = !product.isActive;
     await product.save();
 
     const updatedProduct = await Product.findById(product._id)
-      .populate({ path: "category", select: "name" })
-      .populate({ path: "createdBy", select: "name email" })
+      .populate({ path: 'category', select: 'name' })
+      .populate({ path: 'createdBy', select: 'name email' })
       .lean()
       .exec();
 
@@ -408,13 +379,13 @@ export async function toggleProductStatus(identifier: string): Promise<ActionRes
     return {
       success: true,
       product: updatedProduct as unknown as IProduct,
-      message: `Product ${product.isActive ? 'activated' : 'deactivated'} successfully`
+      message: `Product ${product.isActive ? 'activated' : 'deactivated'} successfully`,
     };
   } catch (error) {
-    console.error("Toggle product status error:", error);
+    console.error('Toggle product status error:', error);
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Failed to toggle product status"
+      error: error instanceof Error ? error.message : 'Failed to toggle product status',
     };
   }
 }

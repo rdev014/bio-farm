@@ -9,6 +9,7 @@ export async function seedFarmsAndAchievements() {
 
     const users = await User.find({}); 
 
+
     for (const user of users) {
       // Only seed if farms or achievements are empty
       if (!user.farms?.length) {
