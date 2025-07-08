@@ -4,42 +4,12 @@ import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 import { randomUUID } from 'crypto';
 import connectDb from '@/lib/db';
-import Product, { IProduct } from '@/models/Product';
+import Product from '@/models/Product';
 import '@/models/categorySchema';
 import '@/models/UserSchema';
+import { ActionResponse, ProductFilter, ProductFormData, IProduct } from '@/types/product';
 
-export interface ActionResponse<T> {
-  success: boolean;
-  product?: T;
-  products?: T[];
-  error?: string;
-  message?: string;
-}
 
-interface ProductFormData {
-  name?: string;
-  description?: string;
-  sku?: string;
-  category?: string;
-  brand?: string;
-  images?: string[];
-  price?: string;
-  discount?: string;
-  stock?: string;
-  isActive?: string;
-  tags?: string[];
-  weight?: string;
-  unit?: IProduct['unit'];
-  specifications?: string;
-  createdBy?: string;
-  productId?: string;
-}
-
-interface ProductFilter {
-  $or?: Array<{ [key in keyof IProduct]?: { $regex: string; $options: string } }>;
-  category?: Types.ObjectId;
-  isActive?: boolean;
-}
 
 function isValidObjectId(id: string): boolean {
   return Types.ObjectId.isValid(id);

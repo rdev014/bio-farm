@@ -1,28 +1,9 @@
 import mongoose, { Schema, model, Model } from 'mongoose';
 import { randomUUID } from 'crypto';
+import { IProduct } from '@/types/product';
 
 // Define the interface for TypeScript type safety
-export interface IProduct {
-  productId: string;
-  name: string;
-  description: string;
-  sku: string;
-  category: mongoose.Types.ObjectId;
-  brand?: string;
-  images: string[];
-  price: number;
-  discount?: number;
-  stock: number;
-  stockleft: number;
-  isActive: boolean;
-  tags: string[];
-  weight: number;
-  unit: 'g' | 'kg' | 'ml' | 'ltr' | 'unit';
-  specifications: Map<string, string>;
-  createdBy: mongoose.Types.ObjectId;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+
 
 // Define the Mongoose schema
 const productSchema = new Schema<IProduct>(
