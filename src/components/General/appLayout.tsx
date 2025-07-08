@@ -19,7 +19,7 @@ function MainContent({ children }: { children: React.ReactNode }) {
         transition: 'margin-left 0.3s ease-in-out',
       }}
     >
-      <div className="max-w-7xl mx-auto p-6 lg:p-8">{children}</div>
+      <div className="max-w-7xl mx-auto ">{children}</div>
     </motion.main>
   )
 }

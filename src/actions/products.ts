@@ -382,3 +382,116 @@ export async function toggleProductStatus(identifier: string): Promise<ActionRes
     };
   }
 }
+
+
+
+// frontend
+
+
+
+// Extend IProduct to include _id
+interface IProductExtended extends Omit<IProduct, 'specifications'> {
+  _id: Types.ObjectId;
+  specifications: Record<string, string>;
+}
+
+// Server action to fetch public products with pagination, search, and filters
+export async function getPublicProducts({
+  page = 1,
+  limit = 12,
+  search = "",
+  category = "",
+  minPrice = 0,
+  maxPrice = Number.MAX_SAFE_INTEGER,
+  sort = "createdAt",
+  order = "desc",
+}: {
+  page: number;
+  limit: number;
+  search: string;
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  sort: string;
+  order: string;
+}) {
+  try {
+    await connectDb();
+
+    const query = {
+      isActive: true,
+      price: { $gte: minPrice, $lte: maxPrice },
+      ...(search && { name: { $regex: search, $options: "i" } }),
+      ...(category && { category }),
+    };
+
+    const sortOptions: { [key: string]: 1 | -1 } = {
+      [sort]: order === "desc" ? -1 : 1,
+    };
+
+    const [rawProducts, total] = await Promise.all([
+      Product.find(query)
+        .sort(sortOptions)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean() as Promise<IProductExtended[]>,
+      Product.countDocuments(query) as Promise<number>,
+    ]);
+
+    const products = rawProducts.map((product) => ({
+      _id: product._id.toString(),
+      productId: product.productId || "",
+      name: product.name,
+      sku: product.sku,
+      brand: product.brand ?? "",
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      discount: product.discount,
+      isActive: product.isActive,
+      createdAt: product.createdAt || undefined,
+      updatedAt: product.updatedAt || undefined,
+      images: product.images || [],
+      tags: product.tags || [],
+      weight: product.weight || 0,
+      unit: product.unit || "unit",
+      specifications: new Map<string, string>(
+        Object.entries(product.specifications || {})
+      ),
+      category: product.category?._id?.toString() || product.category?.toString() || "",
+      createdBy: product.createdBy?._id?.toString() || product.createdBy?.toString() || "",
+    }));
+
+    return {
+      products,
+      total,
+      pages: Math.ceil(total / limit),
+      page,
+      limit,
+    };
+  } catch (error: unknown) {
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products");
+  }
+}
+
+
+export async function getProductById(productId: string) {
+  try {
+    await connectDb();
+    const product = await Product.findOne({ productId }).lean() as IProduct | null;
+    if (!product) return null;
+
+    return {
+      ...product,
+      category: product.category?.toString() || "",
+      createdBy: product.createdBy?.toString() || "",
+      specifications: new Map<string, string>(
+        Object.entries(product.specifications || {})
+      ),
+    };
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw new Error("Failed to fetch product");
+  }
+}
