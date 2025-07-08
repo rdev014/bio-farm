@@ -2,9 +2,11 @@ import { getCategories } from "@/actions/category";
 import { getPublicProducts } from "@/actions/products";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Star, ShoppingCart } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import { Suspense } from "react";
 import ProductFilters from "@/components/dashboard/products/ProductFilters";
+import { AddToCartButton } from "@/components/dashboard/products/AddToCartButton";
+
 
 
 type SearchParams = {
@@ -137,9 +139,7 @@ export default async function Page({
                 )}
 
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-50 transition-colors">
-                    <ShoppingCart className="w-5 h-5 text-gray-600" />
-                  </button>
+                 <AddToCartButton productId={product._id} />
                 </div>
               </div>
 
