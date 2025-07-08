@@ -196,6 +196,7 @@ export async function getProducts(
       description: product.description,
       price: product.price,
       stock: product.stock,
+      stockleft: product.stockleft,
       isActive: product.isActive,
       createdAt: product.createdAt || undefined, // Use Date or undefined
       updatedAt: product.updatedAt || undefined, // Use Date or undefined
