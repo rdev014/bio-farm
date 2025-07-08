@@ -2,6 +2,10 @@ import { getCategories } from "@/actions/category";
 import { getPublicProducts } from "@/actions/products";
 import Image from "next/image";
 import Link from "next/link";
+import { Search, Star, ShoppingCart } from "lucide-react";
+import { Suspense } from "react";
+import ProductFilters from "@/components/dashboard/products/ProductFilters";
+
 
 type SearchParams = {
   page?: string;
@@ -31,7 +35,6 @@ export default async function Page({
   const sort = resolvedParams.sort || "createdAt";
   const order = resolvedParams.order || "desc";
 
-
   const { products, pages } = await getPublicProducts({
     page,
     limit,
@@ -43,134 +46,206 @@ export default async function Page({
     order,
   });
 
-  const plainSearchParams = {
-    page: resolvedParams?.page,
-    limit: resolvedParams?.limit,
-    search: resolvedParams?.search,
-    category: resolvedParams?.category,
-    minPrice: resolvedParams?.minPrice,
-    maxPrice: resolvedParams?.maxPrice,
-    sort: resolvedParams?.sort,
-    order: resolvedParams?.order,
+  const buildPaginationUrl = (newPage: number) => {
+    const params = new URLSearchParams();
+    const allParams = { ...resolvedParams, page: newPage.toString() };
+
+    Object.entries(allParams).forEach(([key, value]) => {
+      if (value && value !== '' && value !== 'undefined') {
+        params.set(key, value);
+      }
+    });
+
+    return `/products?${params.toString()}`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-green-600 text-white py-6">
-        <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold">Arkin Organics</h1>
-          <p className="text-lg">Purely Natural, Organically Yours</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="bg-white shadow-lg border-b">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent">
+                Arkin Organics
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Purely Natural, Organically Yours</p>
+            </div>
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Premium Quality</p>
+                <p className="text-green-600 font-semibold">100% Organic</p>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
-      <section className="container mx-auto px-4 py-6">
-        <form className="flex flex-col md:flex-row gap-4 mb-6">
-          <input
-            type="text"
-            name="search"
-            placeholder="Search products..."
-            defaultValue={search}
-            className="border rounded-lg p-2 flex-1"
+      <div className="container mx-auto px-6 py-8">
+        {/* Filters */}
+        <Suspense fallback={<div className="bg-white rounded-2xl shadow-lg p-6 mb-8 animate-pulse h-24"></div>}>
+          <ProductFilters
+            categories={categories.filter((c): c is NonNullable<typeof c> => c !== undefined)}
+            currentParams={resolvedParams}
           />
-          <select
-            name="category"
-            defaultValue={category}
-            className="border rounded-lg p-2"
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) =>
-              cat ? (
-                <option key={cat._id} value={cat._id}>
-                  {cat.name}
-                </option>
-              ) : null
-            )}
-          </select>
-          <input
-            type="number"
-            name="minPrice"
-            placeholder="Min Price"
-            defaultValue={minPrice}
-            className="border rounded-lg p-2 w-24"
-          />
-          <input
-            type="number"
-            name="maxPrice"
-            placeholder="Max Price"
-            defaultValue={maxPrice}
-            className="border rounded-lg p-2 w-24"
-          />
-          <select name="sort" defaultValue={sort} className="border rounded-lg p-2">
-            <option value="createdAt">Date</option>
-            <option value="price">Price</option>
-            <option value="name">Name</option>
-          </select>
-          <select name="order" defaultValue={order} className="border rounded-lg p-2">
-            <option value="desc">Descending</option>
-            <option value="asc">Ascending</option>
-          </select>
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-4 py-2 rounded-lg"
-          >
-            Filter
-          </button>
-        </form>
+        </Suspense>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {/* Results Info */}
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-gray-600">
+            Showing <span className="font-semibold">{products.length}</span> products
+            {pages > 1 && (
+              <span className="text-sm text-gray-500 ml-2">
+                (Page {page} of {pages})
+              </span>
+            )}
+          </p>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">Grid View</span>
+            <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
+              <div className="w-3 h-3 grid grid-cols-2 gap-0.5">
+                <div className="w-1 h-1 bg-white rounded-sm"></div>
+                <div className="w-1 h-1 bg-white rounded-sm"></div>
+                <div className="w-1 h-1 bg-white rounded-sm"></div>
+                <div className="w-1 h-1 bg-white rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {products.map((product) => (
             <div
               key={product.productId}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition"
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
-              <Image
-                src={product.images[0] || "/placeholder.jpg"}
-                alt={product.name}
-                width={200}
-                height={200}
-                className="w-full h-48 object-cover rounded-md"
-              />
-              <h2 className="text-lg font-semibold mt-2">{product.name}</h2>
-              <p className="text-gray-600 text-sm line-clamp-2">
-                {product.description}
-              </p>
-              <p className="text-green-600 font-bold mt-2">
-                ${product.price - (product.discount || 0)}
-                {product.discount ? (
-                  <span className="text-gray-400 line-through ml-2">
-                    ${product.price}
+              <div className="relative">
+                <Image
+                  src={product.images[0] || "/placeholder.jpg"}
+                  alt={product.name}
+                  width={300}
+                  height={300}
+                  className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                {product.discount && product.discount > 0 && (
+                  <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    {Math.round((product.discount / product.price) * 100)}% OFF
+                  </div>
+                )}
+
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button className="bg-white p-2 rounded-full shadow-lg hover:bg-gray-50 transition-colors">
+                    <ShoppingCart className="w-5 h-5 text-gray-600" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-semibold text-gray-800 line-clamp-2">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-center gap-1 ml-2">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm text-gray-600">4.5</span>
+                  </div>
+                </div>
+
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  {product.description}
+                </p>
+
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-green-600">
+                      ${(product.price - (product.discount || 0)).toFixed(2)}
+                    </span>
+                    {product.discount && (
+                      <span className="text-lg text-gray-400 line-through">
+                        ${product.price.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-sm px-3 py-1 rounded-full ${product.stock > 10
+                    ? 'bg-green-100 text-green-800'
+                    : product.stock > 0
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-red-100 text-red-800'
+                    }`}>
+                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                   </span>
-                ) : null}
-              </p>
-              <p className="text-sm text-gray-500">Stock: {product.stock}</p>
-              <Link
-                href={`/products/${product.productId}`}
-                className="mt-3 inline-block bg-green-600 text-white px-4 py-2 rounded-lg text-center"
-              >
-                View Details
-              </Link>
+                </div>
+
+                <Link
+                  href={`/products/${product.productId}`}
+                  className="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-xl font-semibold transition-colors"
+                >
+                  View Details
+                </Link>
+              </div>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-center mt-6">
-          <nav className="flex gap-2">
-            {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
-              <Link
-                key={p}
-                href={{
-                  pathname: "/products",
-                  query: { ...plainSearchParams, page: p.toString() },
-                }}
-                className={`px-4 py-2 rounded-lg ${p === page ? "bg-green-600 text-white" : "bg-gray-200"
-                  }`}
-              >
-                {p}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      </section>
+        {/* Pagination */}
+        {pages > 1 && (
+          <div className="flex justify-center">
+            <nav className="flex items-center gap-2">
+              {page > 1 && (
+                <Link
+                  href={buildPaginationUrl(page - 1)}
+                  className="px-4 py-2 bg-white text-gray-700 rounded-xl hover:bg-gray-100 shadow transition-colors"
+                >
+                  Previous
+                </Link>
+              )}
+
+              {Array.from({ length: Math.min(pages, 5) }, (_, i) => {
+                const pageNum = i + Math.max(1, page - 2);
+                return pageNum <= pages ? (
+                  <Link
+                    key={pageNum}
+                    href={buildPaginationUrl(pageNum)}
+                    className={`px-4 py-2 rounded-xl font-medium transition-colors ${pageNum === page
+                      ? 'bg-green-600 text-white shadow-lg'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 shadow'
+                      }`}
+                  >
+                    {pageNum}
+                  </Link>
+                ) : null;
+              })}
+
+              {page < pages && (
+                <Link
+                  href={buildPaginationUrl(page + 1)}
+                  className="px-4 py-2 bg-white text-gray-700 rounded-xl hover:bg-gray-100 shadow transition-colors"
+                >
+                  Next
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {products.length === 0 && (
+          <div className="text-center py-16">
+            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">No products found</h3>
+            <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
+            <Link
+              href="/products"
+              className="inline-block px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors"
+            >
+              Clear All Filters
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

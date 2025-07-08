@@ -13,6 +13,7 @@ export interface IProduct {
   price: number;
   discount?: number;
   stock: number;
+  stockleft: number;
   isActive: boolean;
   tags: string[];
   weight: number;
@@ -45,6 +46,7 @@ const productSchema = new Schema<IProduct>(
     price: { type: Number, required: true, min: 0 },
     discount: { type: Number, default: 0, min: 0, max: 100 },
     stock: { type: Number, required: true, min: 0 },
+    stockleft: { type: Number, min: 0 },
     isActive: { type: Boolean, default: true },
     tags: [{ type: String, default: '' }],
     weight: { type: Number, required: true, min: 0 },
