@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { createProduct, updateProduct, ActionResponse } from '@/actions/products';
-import { IProduct } from '@/models/Product';
+import { createProduct, updateProduct,  } from '@/actions/products';
 import { Category } from '@/components/FetchCategory/FetchCategory';
 import { DollarSign, Info,  Plus, RotateCcw, Save, Tag, X } from 'lucide-react';
+import { ActionResponse, IProduct } from '@/types/product';
 
 interface ProductFormProps {
   product?: IProduct;

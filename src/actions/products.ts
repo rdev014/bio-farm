@@ -4,42 +4,12 @@ import { Types } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 import { randomUUID } from 'crypto';
 import connectDb from '@/lib/db';
-import Product, { IProduct } from '@/models/Product';
+import Product from '@/models/Product';
 import '@/models/categorySchema';
 import '@/models/UserSchema';
+import { ActionResponse, ProductFilter, ProductFormData, IProduct } from '@/types/product';
 
-export interface ActionResponse<T> {
-  success: boolean;
-  product?: T;
-  products?: T[];
-  error?: string;
-  message?: string;
-}
 
-interface ProductFormData {
-  name?: string;
-  description?: string;
-  sku?: string;
-  category?: string;
-  brand?: string;
-  images?: string[];
-  price?: string;
-  discount?: string;
-  stock?: string;
-  isActive?: string;
-  tags?: string[];
-  weight?: string;
-  unit?: IProduct['unit'];
-  specifications?: string;
-  createdBy?: string;
-  productId?: string;
-}
-
-interface ProductFilter {
-  $or?: Array<{ [key in keyof IProduct]?: { $regex: string; $options: string } }>;
-  category?: Types.ObjectId;
-  isActive?: boolean;
-}
 
 function isValidObjectId(id: string): boolean {
   return Types.ObjectId.isValid(id);
@@ -196,6 +166,7 @@ export async function getProducts(
       description: product.description,
       price: product.price,
       stock: product.stock,
+      stockleft: product.stockleft,
       isActive: product.isActive,
       createdAt: product.createdAt || undefined, // Use Date or undefined
       updatedAt: product.updatedAt || undefined, // Use Date or undefined
@@ -380,5 +351,118 @@ export async function toggleProductStatus(identifier: string): Promise<ActionRes
       success: false,
       error: error instanceof Error ? error.message : 'Failed to toggle product status',
     };
+  }
+}
+
+
+
+// frontend
+
+
+
+// Extend IProduct to include _id
+interface IProductExtended extends Omit<IProduct, 'specifications'> {
+  _id: Types.ObjectId;
+  specifications: Record<string, string>;
+}
+
+// Server action to fetch public products with pagination, search, and filters
+export async function getPublicProducts({
+  page = 1,
+  limit = 12,
+  search = "",
+  category = "",
+  minPrice = 0,
+  maxPrice = Number.MAX_SAFE_INTEGER,
+  sort = "createdAt",
+  order = "desc",
+}: {
+  page: number;
+  limit: number;
+  search: string;
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  sort: string;
+  order: string;
+}) {
+  try {
+    await connectDb();
+
+    const query = {
+      isActive: true,
+      price: { $gte: minPrice, $lte: maxPrice },
+      ...(search && { name: { $regex: search, $options: "i" } }),
+      ...(category && { category }),
+    };
+
+    const sortOptions: { [key: string]: 1 | -1 } = {
+      [sort]: order === "desc" ? -1 : 1,
+    };
+
+    const [rawProducts, total] = await Promise.all([
+      Product.find(query)
+        .sort(sortOptions)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean() as Promise<IProductExtended[]>,
+      Product.countDocuments(query) as Promise<number>,
+    ]);
+
+    const products = rawProducts.map((product) => ({
+      _id: product._id.toString(),
+      productId: product.productId || "",
+      name: product.name,
+      sku: product.sku,
+      brand: product.brand ?? "",
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      discount: product.discount,
+      isActive: product.isActive,
+      createdAt: product.createdAt || undefined,
+      updatedAt: product.updatedAt || undefined,
+      images: product.images || [],
+      tags: product.tags || [],
+      weight: product.weight || 0,
+      unit: product.unit || "unit",
+      specifications: new Map<string, string>(
+        Object.entries(product.specifications || {})
+      ),
+      category: product.category?._id?.toString() || product.category?.toString() || "",
+      createdBy: product.createdBy?._id?.toString() || product.createdBy?.toString() || "",
+    }));
+
+    return {
+      products,
+      total,
+      pages: Math.ceil(total / limit),
+      page,
+      limit,
+    };
+  } catch (error: unknown) {
+    console.error("Error fetching products:", error);
+    throw new Error("Failed to fetch products");
+  }
+}
+
+
+export async function getProductById(productId: string) {
+  try {
+    await connectDb();
+    const product = await Product.findOne({ productId }).lean() as IProduct | null;
+    if (!product) return null;
+
+    return {
+      ...product,
+      category: product.category?.toString() || "",
+      createdBy: product.createdBy?.toString() || "",
+      specifications: new Map<string, string>(
+        Object.entries(product.specifications || {})
+      ),
+    };
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    throw new Error("Failed to fetch product");
   }
 }

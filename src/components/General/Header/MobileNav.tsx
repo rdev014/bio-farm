@@ -2,7 +2,7 @@
 import { nav } from '@/data/nav';
 import { useHeaderStore } from '@/store/headerStore';
 import { NavItem, User } from '@/types';
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Home } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import React, { useEffect, useMemo } from 'react'
@@ -31,6 +31,26 @@ export default function MobileNav({ user }: { user: User | null }) {
             {isMobileMenuOpen && (
                 <div className="lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200/50 shadow-xl">
                     <div className="max-w-7xl mx-auto px-4 py-4 space-y-2">
+                        {user?.role && ['user', 'admin', 'moderator'].includes(user.role) ? (
+                            <Link
+                                href="/home"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/dashboard'
+                                    ? 'bg-green-50 text-green-700 shadow-sm'
+                                    : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                                    }`}
+                            >
+                                <Home className="w-4 h-4" />   Home
+                            </Link>
+                        ) : <Link
+                            href={'/'}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${pathname === '/'
+                                ? 'bg-green-50 text-green-700 shadow-sm'
+                                : 'text-gray-600 hover:text-green-600 hover:bg-gray-50'
+                                }`}
+                        >
+                            <Home className="w-4 h-4" />
+                            Home
+                        </Link>}
                         {navItems.map((item) => (
                             <div key={`mobile-${item.name}`} className="space-y-1">
                                 {item.singlelink ? (

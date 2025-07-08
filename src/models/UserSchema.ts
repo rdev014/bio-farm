@@ -88,7 +88,23 @@ const UserSchema = new mongoose.Schema({
     language: { type: String, default: "en" },
     receiveReports: { type: Boolean, default: true },
   },
+  wishlist: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
 
+  cart: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      quantity: { type: Number, required: true, min: 1 },
+    },
+  ],
   purchaseHistory: [
     {
       // productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
@@ -157,7 +173,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     select: false,
   },
-  
+
 },
   {
     timestamps: true,

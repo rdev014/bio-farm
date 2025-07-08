@@ -2,9 +2,9 @@
 import React, { useState, useEffect, FormEvent, useCallback } from 'react';
 import { getProducts, deleteProduct, toggleProductStatus } from '@/actions/products';
 import ProductForm from '@/components/dashboard/products/ProductForm';
-import { IProduct } from '@/models/Product';
 import { Category } from '@/components/FetchCategory/FetchCategory';
 import { Search, Filter, Trash2, ToggleLeft, ToggleRight, ChevronLeft, ChevronRight, Package, AlertCircle, CheckCircle, X, Plus, Eye } from 'lucide-react';
+import { IProduct } from '@/types/product';
 
 interface Alert {
   type: 'success' | 'error';
