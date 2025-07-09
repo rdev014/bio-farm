@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 interface WishlistItem {
   _id: string;
+  productId: string;
   name: string;
   price: number;
   images: string[];
@@ -78,7 +79,7 @@ const WishlistPage: React.FC = () => {
               <h2 className="text-xl font-semibold">{item.name}</h2>
               <p className="text-lg font-bold">${item.price.toFixed(2)}</p>
               <div className="flex justify-between mt-4">
-                <Link href={`/products/${item._id}`} className="text-blue-600 hover:underline">
+                <Link href={`/our-products/${item.productId}`} className="text-blue-600 hover:underline">
                   View Product
                 </Link>
                 <button

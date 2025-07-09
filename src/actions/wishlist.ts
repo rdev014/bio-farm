@@ -3,12 +3,13 @@
 import { connectDb } from '@/lib/db';
 import { getSession } from '@/lib/getSession';
 import { User } from '@/models/UserSchema';
-import  '@/models/Product';
+import '@/models/Product';
 import { Types, Document } from 'mongoose';
 import { revalidatePath } from 'next/cache';
 
 interface WishlistItem {
   _id: string;
+  productId: string;
   name: string;
   price: number;
   images: string[];
@@ -17,6 +18,7 @@ interface WishlistItem {
 interface WishlistUser extends Document {
   wishlist: Array<{
     _id: Types.ObjectId;
+    productId: string;
     name: string;
     price: number;
     images: string[];
@@ -37,15 +39,14 @@ export async function getWishlist(): Promise<WishlistItem[]> {
     const email = await ensureAuthorized();
     const user = (await User.findOne({ email })
       .select('wishlist')
-      .populate('wishlist', 'name price images')
+      .populate('wishlist', 'productId name price images')
       .lean()) as WishlistUser | null;
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
-    return user.wishlist?.map(item => ({
+    return user.wishlist?.map((item) => ({
       _id: item._id.toString(),
+      productId: item.productId,
       name: item.name,
       price: item.price,
       images: item.images,
@@ -71,16 +72,16 @@ export async function addToWishlist(productId: string): Promise<WishlistItem[]> 
       { new: true }
     )
       .select('wishlist')
-      .populate('wishlist', 'name price images')
+      .populate('wishlist', 'productId name price images')
       .lean()) as WishlistUser | null;
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
     revalidatePath('/wishlist');
-    return user.wishlist.map(item => ({
+
+    return user.wishlist.map((item) => ({
       _id: item._id.toString(),
+      productId: item.productId,
       name: item.name,
       price: item.price,
       images: item.images,
@@ -106,16 +107,16 @@ export async function removeFromWishlist(productId: string): Promise<WishlistIte
       { new: true }
     )
       .select('wishlist')
-      .populate('wishlist', 'name price images')
+      .populate('wishlist', 'productId name price images')
       .lean()) as WishlistUser | null;
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
     revalidatePath('/wishlist');
-    return user.wishlist.map(item => ({
+
+    return user.wishlist.map((item) => ({
       _id: item._id.toString(),
+      productId: item.productId,
       name: item.name,
       price: item.price,
       images: item.images,
@@ -139,11 +140,10 @@ export async function clearWishlist(): Promise<WishlistItem[]> {
       .select('wishlist')
       .lean()) as WishlistUser | null;
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+    if (!user) throw new Error('User not found');
 
     revalidatePath('/wishlist');
+
     return [];
   } catch (error) {
     console.error('Error clearing wishlist:', error);
