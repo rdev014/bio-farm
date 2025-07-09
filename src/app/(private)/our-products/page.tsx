@@ -135,7 +135,7 @@ export default async function Page({
                 />
                 {product.discount && product.discount > 0 && (
                   <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                    {Math.round((product.discount / product.price) * 100)}% OFF
+                    {product.discount}% OFF
                   </div>
                 )}
 

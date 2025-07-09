@@ -31,7 +31,7 @@ function sanitizeFormData(formData: ProductFormData): Partial<IProduct> {
     brand: formData.brand?.trim() || undefined,
     images: formData.images?.filter((img) => img && img.trim() !== "") ?? [],
     price: formData.price ? parseFloat(formData.price) : 0,
-    discount: formData.discount ? parseFloat(formData.discount) : 0,
+    discount: formData.discount ? Number(formData.discount) : 0,
     stock: formData.stock ? parseInt(formData.stock, 10) : 0,
     isActive: formData.isActive === "true",
     tags: formData.tags?.filter((tag) => tag && tag.trim() !== "") ?? [],

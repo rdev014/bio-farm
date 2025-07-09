@@ -73,7 +73,7 @@ export default async function Page() {
     badge:
       product.stock > 0
         ? product.discount && product.discount > 0
-          ? `${Math.round((product.discount / product.price) * 100)}% OFF`
+          ? `${product.discount}% OFF`
           : "In Stock"
         : "Out of Stock",
     badgeColor:

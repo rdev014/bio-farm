@@ -92,6 +92,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
     const formData: FormState = {
       ...form,
       createdBy: user_id,
+      discount: form.discount || '',
       category: form.category || initialCategories[0]?._id || '',
       images: form.images.filter((img) => img.trim()),
       tags: form.tags.filter((tag) => tag.trim()),
