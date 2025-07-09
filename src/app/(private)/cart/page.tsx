@@ -6,8 +6,9 @@ import { toast } from 'sonner';
 
 const Cart: React.FC = () => {
   const { cart, setCart, updateQuantity, removeFromCart: remove, clearCart: clear } = useCartStore();
+  console.log(cart);
 
- 
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -25,7 +26,7 @@ const Cart: React.FC = () => {
     };
     fetchCart();
   }, [setCart]);
- console.log(cart);
+  console.log(cart);
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
     try {
       updateQuantity(productId, quantity);
@@ -68,8 +69,8 @@ const Cart: React.FC = () => {
             {cart.map((item) => (
               <div key={item.productId} className="flex items-center justify-between p-4 bg-gray-100 rounded">
                 <div>
-                  <h2 className="text-lg font-semibold">{item.product?.name || 'Product'}</h2>
-                  <p>Price: ${item.product?.price || 0}</p>
+                  <h2 className="text-lg font-semibold">{item.name || 'Product'}</h2>
+                  <p>Price: ${item.price || 0}</p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
                 <div className="flex items-center space-x-2">
