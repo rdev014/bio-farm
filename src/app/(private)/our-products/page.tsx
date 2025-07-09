@@ -6,6 +6,7 @@ import { Search, Star } from "lucide-react";
 import { Suspense } from "react";
 import ProductFilters from "@/components/dashboard/products/ProductFilters";
 import { AddToCartButton } from "@/components/dashboard/products/AddToCartButton";
+import { AddToWishlistButton } from "@/components/dashboard/products/AddToWishlistButton";
 
 
 
@@ -138,8 +139,13 @@ export default async function Page({
                   </div>
                 )}
 
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <AddToCartButton productId={product._id}  />
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity flex gap-4">
+                  <div className="">
+                    <AddToWishlistButton name={product.name} price={product.price} images={product.images} productId={product._id}/>
+                  </div>
+                  <div className="">
+                    <AddToCartButton productId={product._id} />
+                  </div>
                 </div>
               </div>
 

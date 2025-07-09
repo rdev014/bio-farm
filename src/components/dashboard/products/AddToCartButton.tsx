@@ -42,10 +42,9 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) =
     <button
       onClick={handleAddToCart}
       disabled={isLoading}
-      className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+      className="flex items-center gap-2 bg-green-600 text-white p-3 rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
     >
-      <ShoppingCart className="w-5 h-5" />
-      {isLoading ? 'Adding...' : 'Add to Cart'}
+      {isLoading ? <ShoppingCart className="w-5 h-5 animate-pulse" /> : <ShoppingCart className="w-5 h-5" />}
     </button>
   );
 };
