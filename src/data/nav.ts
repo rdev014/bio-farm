@@ -16,11 +16,9 @@ export const nav = [
     ]
   },
   {
-    name: "Resources",
+    name: "Blogs",
     icon: BookOpen,
-    links: [
-      { href: "/blogs", label: "Blogs" },
-    ]
+    singlelink: "/blogs"
   },
   {
     name: "Support",

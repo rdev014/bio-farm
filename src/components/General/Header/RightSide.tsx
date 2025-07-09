@@ -29,11 +29,11 @@ export default function RightSide({ user, }: { user: UserType | null }) {
                 <div className="relative">
                     <button
                         onClick={() => handleDropdownToggle('user')}
-                        className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+                        className="flex items-center gap-2 p-2 rounded-lg  "
                         aria-haspopup="true"
                         aria-expanded={activeDropdown === 'user'}
                     >
-                        {user.image ? <Image width={10} height={10}
+                        {user.image ? <Image width={40} height={40}
                             src={user.image}
                             alt={user.name || 'User avatar'}
                             className="w-9 h-9 rounded-full border-2 border-gray-200"

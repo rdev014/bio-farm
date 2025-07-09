@@ -31,7 +31,7 @@ function sanitizeFormData(formData: ProductFormData): Partial<IProduct> {
     brand: formData.brand?.trim() || undefined,
     images: formData.images?.filter((img) => img && img.trim() !== "") ?? [],
     price: formData.price ? parseFloat(formData.price) : 0,
-    discount: formData.discount ? parseFloat(formData.discount) : 0,
+    discount: formData.discount ? Number(formData.discount) : 0,
     stock: formData.stock ? parseInt(formData.stock, 10) : 0,
     isActive: formData.isActive === "true",
     tags: formData.tags?.filter((tag) => tag && tag.trim() !== "") ?? [],
@@ -207,8 +207,8 @@ export async function getProducts(
         product.specifications instanceof Map
           ? product.specifications
           : new Map<string, string>(
-              Object.entries(product.specifications || {})
-            ),
+            Object.entries(product.specifications || {})
+          ),
       category: product.category?._id || product.category,
       createdBy: product.createdBy?._id || product.createdBy,
     }));
@@ -218,11 +218,10 @@ export async function getProducts(
     return {
       success: true,
       products,
-      message: `Found ${products.length} products (${total} total)${
-        appliedFilters.length
+      message: `Found ${products.length} products (${total} total)${appliedFilters.length
           ? " with filters: " + appliedFilters.join(", ")
           : ""
-      }`,
+        }`,
     };
   } catch (error) {
     console.error("Get products error:", error);
@@ -393,9 +392,8 @@ export async function toggleProductStatus(
     return {
       success: true,
       product: updatedProduct as unknown as IProduct,
-      message: `Product ${
-        product.isActive ? "activated" : "deactivated"
-      } successfully`,
+      message: `Product ${product.isActive ? "activated" : "deactivated"
+        } successfully`,
     };
   } catch (error) {
     console.error("Toggle product status error:", error);
@@ -504,14 +502,14 @@ export async function getPublicProducts({
 export async function getProductById(productId: string) {
   try {
     await connectDb();
-    const product = (await Product.findOne({
+    const product = await Product.findOne({
       productId,
-    }).lean()) as IProduct | null;
+    }).populate<{ category: { name: string } }>('category').lean();
     if (!product) return null;
 
     return {
       ...product,
-      category: product.category?.toString() || "",
+      category: product.category?.name || "",
       createdBy: product.createdBy?.toString() || "",
       specifications: new Map<string, string>(
         Object.entries(product.specifications || {})
@@ -555,8 +553,8 @@ export async function getHomeProducts() {
         product.specifications instanceof Map
           ? product.specifications
           : new Map<string, string>(
-              Object.entries(product.specifications || {})
-            ),
+            Object.entries(product.specifications || {})
+          ),
       category: product.category?._id || product.category,
       createdBy: product.createdBy?._id || product.createdBy,
     }));

@@ -91,3 +91,68 @@
       savings: 14
     }
   ];
+
+
+  const orders: Order[] = [
+  {
+    id: 'ORD-1001',
+    date: '2025-07-02',
+    status: 'Delivered',
+    total: 12500,
+    customer: {
+      name: 'Ravi Kumar',
+      type: 'B2C',
+      email: 'ravi.kumar@email.com',
+      phone: '+91 98765 43210',
+      address: 'Sector 15, Gurgaon, Haryana'
+    },
+    items: [
+      {
+        id: '1',
+        name: 'Organic Compost Premium Grade (25kg)',
+        qty: 2,
+        price: 5000,
+        img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=150&h=150&fit=crop',
+        sku: 'OCP-25KG'
+      },
+      {
+        id: '2',
+        name: 'Liquid Bio-Fertilizer (1L)',
+        qty: 1,
+        price: 2500,
+        img: 'https://images.unsplash.com/photo-1574323043725-7b57d1c3f8c8?w=150&h=150&fit=crop',
+        sku: 'LBF-1L'
+      }
+    ],
+    shippingAddress: 'B-204, Sector 15, Gurgaon, Haryana - 122001',
+    paymentMethod: 'UPI',
+    trackingNumber: 'ARK123456789',
+    deliveryDate: '2025-07-05'
+  },
+  {
+    id: 'ORD-1002',
+    date: '2025-06-28',
+    status: 'Shipped',
+    total: 2499,
+    customer: {
+      name: 'Ravi Kumar',
+      type: 'B2C',
+      email: 'ravi.kumar@email.com',
+      phone: '+91 98765 43210',
+      address: 'Sector 15, Gurgaon, Haryana'
+    },
+    items: [
+      {
+        id: '3',
+        name: 'Neem Cake Powder Organic (5kg)',
+        qty: 1,
+        price: 2499,
+        img: 'https://images.unsplash.com/photo-1574323043725-7b57d1c3f8c8?w=150&h=150&fit=crop',
+        sku: 'NCP-5KG'
+      }
+    ],
+    shippingAddress: 'B-204, Sector 15, Gurgaon, Haryana - 122001',
+    paymentMethod: 'UPI',
+    trackingNumber: 'ARK987654321'
+  }
+];

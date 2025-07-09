@@ -1,7 +1,8 @@
 'use client'
 import React, { useState } from 'react';
-import { Package, Truck, Clock, CheckCircle, XCircle, Search, Eye, MapPin, Calendar,  ShoppingBag, Plus, ArrowRight} from 'lucide-react';
+import { Package, Truck, Clock, CheckCircle, XCircle, Search, Eye, MapPin, Calendar,  ShoppingBag, Plus, ArrowRight, } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface OrderItem {
   id: string;
@@ -35,67 +36,6 @@ interface Order {
 
 
 const orders: Order[] = [
-  {
-    id: 'ORD-1001',
-    date: '2025-07-02',
-    status: 'Delivered',
-    total: 12500,
-    customer: {
-      name: 'Ravi Kumar',
-      type: 'B2C',
-      email: 'ravi.kumar@email.com',
-      phone: '+91 98765 43210',
-      address: 'Sector 15, Gurgaon, Haryana'
-    },
-    items: [
-      {
-        id: '1',
-        name: 'Organic Compost Premium Grade (25kg)',
-        qty: 2,
-        price: 5000,
-        img: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=150&h=150&fit=crop',
-        sku: 'OCP-25KG'
-      },
-      {
-        id: '2',
-        name: 'Liquid Bio-Fertilizer (1L)',
-        qty: 1,
-        price: 2500,
-        img: 'https://images.unsplash.com/photo-1574323043725-7b57d1c3f8c8?w=150&h=150&fit=crop',
-        sku: 'LBF-1L'
-      }
-    ],
-    shippingAddress: 'B-204, Sector 15, Gurgaon, Haryana - 122001',
-    paymentMethod: 'UPI',
-    trackingNumber: 'ARK123456789',
-    deliveryDate: '2025-07-05'
-  },
-  {
-    id: 'ORD-1002',
-    date: '2025-06-28',
-    status: 'Shipped',
-    total: 2499,
-    customer: {
-      name: 'Ravi Kumar',
-      type: 'B2C',
-      email: 'ravi.kumar@email.com',
-      phone: '+91 98765 43210',
-      address: 'Sector 15, Gurgaon, Haryana'
-    },
-    items: [
-      {
-        id: '3',
-        name: 'Neem Cake Powder Organic (5kg)',
-        qty: 1,
-        price: 2499,
-        img: 'https://images.unsplash.com/photo-1574323043725-7b57d1c3f8c8?w=150&h=150&fit=crop',
-        sku: 'NCP-5KG'
-      }
-    ],
-    shippingAddress: 'B-204, Sector 15, Gurgaon, Haryana - 122001',
-    paymentMethod: 'UPI',
-    trackingNumber: 'ARK987654321'
-  }
 ];
 
 const statusConfig = {
@@ -288,10 +228,10 @@ export default function MyOrdersPage() {
       <p className="text-gray-600 mb-8 max-w-md mx-auto">
         Start your organic farming journey by placing your first order. Browse our premium collection of organic fertilizers and compost.
       </p>
-      <button className="bg-green-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors inline-flex items-center space-x-2">
+      <Link href='/our-products' className="bg-green-600 text-white px-8 py-3 rounded-xl font-medium hover:bg-green-700 transition-colors inline-flex items-center space-x-2">
         <Plus className="w-5 h-5" />
         <span>Start Shopping</span>
-      </button>
+      </Link>
     </div>
   );
 

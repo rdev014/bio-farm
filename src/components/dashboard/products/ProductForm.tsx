@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { createProduct, updateProduct,  } from '@/actions/products';
+import { createProduct, updateProduct, } from '@/actions/products';
 import { Category } from '@/components/FetchCategory/FetchCategory';
-import { DollarSign, Info,  Plus, RotateCcw, Save, Tag, X } from 'lucide-react';
+import { DollarSign, Info, Plus, RotateCcw, Save, Tag, X } from 'lucide-react';
 import { ActionResponse, IProduct } from '@/types/product';
 
 interface ProductFormProps {
@@ -27,7 +27,7 @@ interface FormState {
   tags: string[];
   weight: string;
   unit: IProduct['unit'];
-  specifications: string;
+  specifications: { key: string; value: string }[];
   createdBy?: string;
   productId?: string;
 }
@@ -52,7 +52,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
     tags: product?.tags?.length ? product.tags : [''],
     weight: product?.weight?.toString() || '',
     unit: product?.unit || 'unit',
-    specifications: product?.specifications ? JSON.stringify(Object.fromEntries(product.specifications)) : '{}',
+    specifications: product?.specifications
+      ? Array.from(product.specifications.entries()).map(([key, value]) => ({ key, value }))
+      : [{ key: '', value: '' }],
     createdBy: user_id,
     productId: product?.productId,
   });
@@ -75,7 +77,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
         tags: product.tags?.length ? product.tags : [''],
         weight: product.weight?.toString() || '',
         unit: product.unit || 'unit',
-        specifications: product.specifications ? JSON.stringify(Object.fromEntries(product.specifications)) : '{}',
+        specifications: product.specifications
+          ? Array.from(product.specifications.entries()).map(([key, value]) => ({ key, value }))
+          : [{ key: '', value: '' }],
         createdBy: user_id,
         productId: product.productId,
       });
@@ -87,16 +91,24 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
     setIsSubmitting(true);
     const formData: FormState = {
       ...form,
+      createdBy: user_id,
+      discount: form.discount || '',
       category: form.category || initialCategories[0]?._id || '',
       images: form.images.filter((img) => img.trim()),
       tags: form.tags.filter((tag) => tag.trim()),
+      specifications: form.specifications.filter((spec) => spec.key.trim() && spec.value.trim()),
     };
-
+    const formDataWithSpecString = {
+      ...formData,
+      specifications: JSON.stringify(
+        Object.fromEntries(formData.specifications.map((spec) => [spec.key, spec.value]))
+      ),
+    };
     let response: ActionResponse<IProduct>;
     if (product?.productId) {
-      response = await updateProduct(product.productId, formData);
+      response = await updateProduct(product.productId, formDataWithSpecString);
     } else {
-      response = await createProduct(formData);
+      response = await createProduct(formDataWithSpecString);
     }
 
     if (response.success) {
@@ -126,7 +138,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
       tags: [''],
       weight: '',
       unit: 'unit',
-      specifications: '{}',
+      specifications: [{ key: '', value: '' }],
       createdBy: user_id,
     });
   };
@@ -158,7 +170,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
     newTags[index] = value;
     setForm({ ...form, tags: newTags });
   };
+  const addSpecField = () => {
+    setForm({ ...form, specifications: [...form.specifications, { key: '', value: '' }] });
+  };
 
+  const removeSpecField = (index: number) => {
+    setForm({ ...form, specifications: form.specifications.filter((_, i) => i !== index) });
+  };
+
+  const updateSpecField = (index: number, field: 'key' | 'value', value: string) => {
+    const newSpecs = [...form.specifications];
+    newSpecs[index] = { ...newSpecs[index], [field]: value };
+    setForm({ ...form, specifications: newSpecs });
+  };
   return (
     <div className="bg-white p-6">
       {alert && (
@@ -450,31 +474,71 @@ const ProductForm: React.FC<ProductFormProps> = ({ user_id, product, initialCate
             <Info className="w-5 h-5 text-indigo-600" />
             <h2 className="text-xl font-semibold text-gray-900">Specifications</h2>
           </div>
-
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Specifications (JSON Format)
-              </label>
-              <textarea
-                value={form.specifications}
-                onChange={(e) => setForm({ ...form, specifications: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors font-mono text-sm"
-                rows={6}
-                placeholder='{"color": "Blue", "material": "Cotton", "size": "Large"}'
-              />
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Info className="w-5 h-5 text-indigo-600" />
+              <h2 className="text-xl font-semibold text-gray-900">Specifications</h2>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Created By
-              </label>
-              <input
-                type="text"
-                value={form.createdBy || ''}
-                disabled
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-              />
+            <div className="space-y-4">
+              {form.specifications.map((spec, index) => (
+                <div key={index} className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Key
+                    </label>
+                    <input
+                      type="text"
+                      value={spec.key}
+                      onChange={(e) => updateSpecField(index, 'key', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="e.g., color"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Value
+                    </label>
+                    <input
+                      type="text"
+                      value={spec.value}
+                      onChange={(e) => updateSpecField(index, 'value', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      placeholder="e.g., Blue"
+                    />
+                  </div>
+                  {form.specifications.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeSpecField(index)}
+                      className="p-3 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={addSpecField}
+                className="flex items-center gap-2 px-4 py-3 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Specification
+              </button>
+
+              {/* <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Created By
+                </label>
+                <input
+                  type="text"
+                  value={form.createdBy || ''}
+                  disabled
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                />
+              </div> */}
             </div>
           </div>
         </div>

@@ -120,7 +120,7 @@ export default async function Home() {
               </Link>
 
               <Link href='/profile' className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <Image width={10} height={10}
+                <Image width={40} height={40}
                   src={user.avatar}
                   alt={user.name}
                   className="w-9 h-9 rounded-full border-2 border-gray-200"
@@ -318,22 +318,26 @@ export default async function Home() {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Summary</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Loyalty Points</span>
-                  <span className="font-semibold text-gray-900">1122</span>
+                  <span className="text-sm text-gray-600">Name</span>
+                  <span className="font-semibold text-gray-900">{user.name}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Points Value</span>
-                  <span className="font-semibold text-green-600">$3333</span>
+                  <span className="text-sm text-gray-600">Email</span>
+                  <span className="font-semibold text-green-600">{user.email}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Next Delivery</span>
-                  <span className="font-semibold text-gray-900">{user.nextDelivery}</span>
+                  <span className="text-sm text-gray-600">Account Type</span>
+                  <span className="font-semibold text-gray-900">{user.accountType}</span>
                 </div>
                 <div className="pt-4 border-t border-gray-200">
-                  <button className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition-colors">
-                    Redeem Points
-                  </button>
+                  <Link
+                    href="/profile"
+                    className="block w-full bg-green-600 text-white text-center py-2 rounded-lg hover:bg-green-700 transition-colors"
+                  >
+                    View Details
+                  </Link>
                 </div>
+
               </div>
             </div>
 
