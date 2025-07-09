@@ -10,32 +10,25 @@ interface AddToCartButtonProps {
   productId: string;
 }
 
-interface ServerCartProduct {
-  product: {
-    _id: string;
-    name?: string;
-    price: number;
-  };
-  quantity: number;
-}
+
 
 export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) => {
-  const { addToCart, setCart } = useCartStore();
+  const { setCart } = useCartStore();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddToCart = async () => {
     setIsLoading(true);
     try {
-      await addToCart(productId, 1);
-      const serverCart: ServerCartProduct[] = await addToCartServer(productId, 1);
+      const serverCart = await addToCartServer(productId, 1);
       setCart(
-        serverCart.map((item) => ({
-          productId: item.product._id,
+        serverCart.map(item => ({
+          productId: item._id,
           quantity: item.quantity,
-          name: item.product.name,
-          price: item.product.price,
-        }))
-      );
+          _id: item._id,
+          name: item.name,
+          price: item.price,
+          image: item.image
+        })))
       toast.success('Added to cart');
     } catch (error) {
       toast.error('Failed to add to cart');

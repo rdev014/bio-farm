@@ -3,30 +3,33 @@ import React, { useEffect } from 'react';
 import { useCartStore } from '@/store/cart';
 import { getCart, updateCartItem, removeFromCart, clearCart } from '@/actions/cart';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 const Cart: React.FC = () => {
   const { cart, setCart, updateQuantity, removeFromCart: remove, clearCart: clear } = useCartStore();
-  console.log(cart);
 
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const cartData = await getCart();
-        setCart(cartData.map(item => ({
-          productId: item.product._id,
-          quantity: item.quantity,
-          name: item.product.name,
-          price: item.product.price,
-          image: item.product.images[0]
-        })));
+        setCart(
+          cartData.map(item => ({
+            productId: item._id,
+            quantity: item.quantity,
+            _id: item._id,
+            name: item.name,
+            price: item.price,
+            image: item.image
+          }))
+        );
+
       } catch (error) {
         console.error('Failed to fetch cart:', error);
       }
     };
     fetchCart();
   }, [setCart]);
-  console.log(cart);
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
     try {
       updateQuantity(productId, quantity);
@@ -68,10 +71,16 @@ const Cart: React.FC = () => {
           <div className="space-y-4">
             {cart.map((item) => (
               <div key={item.productId} className="flex items-center justify-between p-4 bg-gray-100 rounded">
-                <div>
-                  <h2 className="text-lg font-semibold">{item.name || 'Product'}</h2>
-                  <p>Price: ${item.price || 0}</p>
-                  <p>Quantity: {item.quantity}</p>
+
+                <div className='flex gap-4'>
+                  <div>
+                    <Image src={item.image} alt={item.name} width={100} height={100} className='rounded-md' />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold">{item.name || 'Product'}</h2>
+                    <p>Price: ${item.price || 0}</p>
+                    <p>Quantity: {item.quantity}</p>
+                  </div>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input

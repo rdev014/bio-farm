@@ -8,16 +8,14 @@ import { getSession } from '@/lib/getSession';
 import { Types } from 'mongoose';
 import Product from '@/models/Product';
 
-// Define types clearly
-interface PopulatedProduct {
+
+
+
+interface CartItem {
   _id: string;
   name: string;
   price: number;
-  images: string[];
-}
-
-interface CartItem {
-  product: PopulatedProduct;
+  image: string;
   quantity: number;
 }
 
@@ -34,12 +32,10 @@ interface RawCartItem {
 // Helper function to transform raw cart items
 function transformCartItems(rawCart: RawCartItem[]): CartItem[] {
   return rawCart.map((item): CartItem => ({
-    product: {
-      _id: item.product._id.toString(),
-      name: item.product.name,
-      price: item.product.price,
-      images: item.product.images,
-    },
+    _id: item.product._id.toString(),
+    name: item.product.name,
+    price: item.product.price,
+    image: item.product.images[0],
     quantity: item.quantity,
   }));
 }
