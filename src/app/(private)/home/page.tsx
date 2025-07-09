@@ -120,7 +120,7 @@ export default async function Home() {
               </Link>
 
               <Link href='/profile' className="flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <Image width={10} height={10}
+                <Image width={40} height={40}
                   src={user.avatar}
                   alt={user.name}
                   className="w-9 h-9 rounded-full border-2 border-gray-200"
