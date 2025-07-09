@@ -139,7 +139,7 @@ export default async function Page({
                 )}
 
                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <AddToCartButton productId={product._id} />
+                 <AddToCartButton productId={product._id}  />
                 </div>
               </div>
 

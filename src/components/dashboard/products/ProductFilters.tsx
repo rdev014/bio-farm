@@ -151,7 +151,7 @@ export default function ProductFilters({ categories, currentParams }: ProductFil
               <SlidersHorizontal className="w-5 h-5" />
               <span>Price Range</span>
             </summary>
-            <div className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-xl p-4 shadow-lg z-10 min-w-[300px]">
+            <div className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-xl p-4 shadow-lg z-10 min-w-[300px]">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">

@@ -5,9 +5,9 @@ export type CartItem = {
   quantity: number;
   product?: {
     _id: string;
-    name?: string;
-    price?: number;
-    images?: string[];
+    name: string;
+    price: number;
+    images: string[];
   };
 };
 
@@ -37,7 +37,7 @@ export const useCartStore = create<CartStore>((set) => ({
         };
       }
       return {
-        cart: [...state.cart, { productId, quantity, product: { _id: productId, name: '', price: 0, images: [] } }],
+        cart: [...state.cart, { productId, quantity }],
       };
     }),
   updateQuantity: (productId, quantity) =>

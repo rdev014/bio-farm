@@ -6,6 +6,7 @@ import '@/models/Product';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/getSession';
 import { Types } from 'mongoose';
+import Product from '@/models/Product';
 
 // Define types clearly
 interface PopulatedProduct {
@@ -67,21 +68,31 @@ export async function addToCart(productId: string, quantity: number = 1): Promis
     const session = await getSession();
     if (!session?.user?.email) throw new Error('Unauthorized');
 
-    // Check if item already exists in cart
-    const existingUser = await User.findOne({ 
+    // Verify product exists and has stock
+    const product = await Product.findById(productId);
+    if (!product) throw new Error('Product not found');
+    if (product.stock < quantity) throw new Error('Insufficient stock');
+
+    const existingUser = await User.findOne({
       email: session.user.email,
-      'cart.product': productId 
+      'cart.product': productId
     });
 
     let user;
     if (existingUser) {
-      // Update existing item
+      // Check stock for updated quantity
+      const cartItem = existingUser.cart.find((item: { product: Types.ObjectId; quantity: number }) =>
+        item.product.toString() === productId
+      );
+      if (cartItem && cartItem.quantity + quantity > product.stock) {
+        throw new Error('Requested quantity exceeds available stock');
+      }
       user = await User.findOneAndUpdate(
-        { 
+        {
           email: session.user.email,
-          'cart.product': productId 
+          'cart.product': productId
         },
-        { 
+        {
           $inc: { 'cart.$.quantity': Math.max(1, quantity) }
         },
         { new: true }
@@ -90,7 +101,6 @@ export async function addToCart(productId: string, quantity: number = 1): Promis
         .populate('cart.product', '_id name price images')
         .lean<{ cart: RawCartItem[] }>();
     } else {
-      // Add new item
       user = await User.findOneAndUpdate(
         { email: session.user.email },
         {
@@ -112,9 +122,10 @@ export async function addToCart(productId: string, quantity: number = 1): Promis
     return user?.cart ? transformCartItems(user.cart) : [];
   } catch (error) {
     console.error('Error adding to cart:', error);
-    throw new Error('Failed to add to cart');
+    throw new Error((error as Error).message || 'Failed to add to cart');
   }
 }
+
 
 export async function updateCartItem(productId: string, quantity: number): Promise<CartItem[]> {
   try {
@@ -128,14 +139,14 @@ export async function updateCartItem(productId: string, quantity: number): Promi
     }
 
     const user = await User.findOneAndUpdate(
-      { 
+      {
         email: session.user.email,
-        'cart.product': productId 
+        'cart.product': productId
       },
-      { 
-        $set: { 
-          'cart.$.quantity': Math.max(1, quantity) 
-        } 
+      {
+        $set: {
+          'cart.$.quantity': Math.max(1, quantity)
+        }
       },
       { new: true }
     )

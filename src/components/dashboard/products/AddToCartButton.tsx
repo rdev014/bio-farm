@@ -26,21 +26,16 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) =
   const handleAddToCart = async () => {
     setIsLoading(true);
     try {
-      // 1. Update local store
-      addToCart(productId);
-
-      // 2. Sync with DB
+      await addToCart(productId, 1);
       const serverCart: ServerCartProduct[] = await addToCartServer(productId, 1);
-
-      // 3. Update local store with server data
       setCart(
         serverCart.map((item) => ({
           productId: item.product._id,
           quantity: item.quantity,
-          product: item.product,
+          name: item.product.name,
+          price: item.product.price,
         }))
       );
-
       toast.success('Added to cart');
     } catch (error) {
       toast.error('Failed to add to cart');

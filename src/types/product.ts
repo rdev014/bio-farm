@@ -1,5 +1,6 @@
 import mongoose, { Types } from "mongoose";
 
+
 export interface IProduct {
   productId: string;
   name: string;

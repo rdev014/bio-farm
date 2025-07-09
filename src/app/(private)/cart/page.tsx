@@ -2,17 +2,22 @@
 import React, { useEffect } from 'react';
 import { useCartStore } from '@/store/cart';
 import { getCart, updateCartItem, removeFromCart, clearCart } from '@/actions/cart';
+import { toast } from 'sonner';
 
 const Cart: React.FC = () => {
   const { cart, setCart, updateQuantity, removeFromCart: remove, clearCart: clear } = useCartStore();
 
+ 
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const cartData = await getCart();
         setCart(cartData.map(item => ({
           productId: item.product._id,
-          quantity: item.quantity
+          quantity: item.quantity,
+          name: item.product.name,
+          price: item.product.price,
+          image: item.product.images[0]
         })));
       } catch (error) {
         console.error('Failed to fetch cart:', error);
@@ -20,12 +25,13 @@ const Cart: React.FC = () => {
     };
     fetchCart();
   }, [setCart]);
-
+ console.log(cart);
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
     try {
       updateQuantity(productId, quantity);
       await updateCartItem(productId, quantity);
     } catch (error) {
+      toast.error('Failed to update quantity');
       console.error('Failed to update quantity:', error);
     }
   };
@@ -35,6 +41,7 @@ const Cart: React.FC = () => {
       remove(productId);
       await removeFromCart(productId);
     } catch (error) {
+      toast.error('Failed to remove from cart');
       console.error('Failed to remove from cart:', error);
     }
   };
@@ -43,7 +50,9 @@ const Cart: React.FC = () => {
     try {
       clear();
       await clearCart();
+      toast.success('Cart cleared');
     } catch (error) {
+      toast.error('Failed to clear cart');
       console.error('Failed to clear cart:', error);
     }
   };
@@ -59,7 +68,8 @@ const Cart: React.FC = () => {
             {cart.map((item) => (
               <div key={item.productId} className="flex items-center justify-between p-4 bg-gray-100 rounded">
                 <div>
-                  <h2 className="text-lg font-semibold">Product ID: {item.productId}</h2>
+                  <h2 className="text-lg font-semibold">{item.product?.name || 'Product'}</h2>
+                  <p>Price: ${item.product?.price || 0}</p>
                   <p>Quantity: {item.quantity}</p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -87,7 +97,7 @@ const Cart: React.FC = () => {
             >
               Clear Cart
             </button>
-         
+
           </div>
         </>
       )}
