@@ -28,6 +28,7 @@ interface Feature {
 
 interface Product {
   title: string;
+  productId: string; // Added productId for unique identification
   description: string;
   image: string;
   price: string;
@@ -71,6 +72,9 @@ interface BlogPost {
 interface BlogProps {
   blogs: BlogPost[];
 }
+interface ProductsProps {
+  products: Product[];
+}
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -113,7 +117,7 @@ const itemVariants = {
   },
 };
 
-export default function Home({ blogs }: BlogProps) {
+export default function Home({ blogs, products }: BlogProps & ProductsProps) {
   const [landSize, setLandSize] = useState<number>(0);
   const [cropType, setCropType] = useState<string>("");
   const [recommendations, setRecommendations] = useState<
@@ -656,87 +660,55 @@ export default function Home({ blogs }: BlogProps) {
             viewport={{ once: true }}
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12"
           >
-            {(
-              [
-                {
-                  title: "Organic Fertilizers",
-                  description:
-                    "Nutrient-rich formulas for optimal plant growth",
-                  image: "/organic.png",
-                  // price: "$29.99",
-                  badge: "Best Seller",
-                  badgeColor: "bg-amber-500",
-                },
-                {
-                  title: "Soil Enrichment",
-                  description: "Premium soil blends for maximum yield",
-                  image: "/organic2.png",
-                  // price: "$24.99",
-                  badge: "Organic",
-                  badgeColor: "bg-emerald-500",
-                },
-                {
-                  title: "Growth Boosters",
-                  description: "Natural supplements for accelerated growth",
-                  image: "/organic3.jpeg",
-                  // price: "$34.99",
-                  badge: "New",
-                  badgeColor: "bg-blue-500",
-                },
-              ] as Product[]
-            ).map((product, index) => (
+            {products.map((product, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                className="group relative"
-                whileHover={{
-                  scale: 1.02,
-                  transition: { duration: 0.2 },
-                }}
+                className="group"
+                whileHover={{ scale: 1.02 }}
               >
-                <div className="relative bg-white rounded-2xl shadow-xl overflow-hidden">
-                  <div
-                    className={`absolute top-4 left-4 ${product.badgeColor} text-white text-sm font-medium px-3 py-1 rounded-full z-10`}
-                  >
-                    {product.badge}
-                  </div>
-
-                  <div className="relative h-64 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-green-100 transform group-hover:scale-105 transition-transform duration-500"></div>
+                <div className="flex flex-col h-full bg-white rounded-2xl shadow-lg overflow-hidden border border-emerald-100 hover:shadow-xl transition-all duration-300">
+                  <div className="relative h-56 w-full overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.title}
-                      className="absolute inset-0 w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500"
+                      className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                       width={400}
-                      height={300}
+                      height={224}
                     />
+                    <div className="absolute top-4 left-4">
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white ${product.badgeColor} bg-opacity-90`}
+                      >
+                        {product.badge}
+                      </span>
+                    </div>
                   </div>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <div className="flex flex-col flex-grow p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">
                       {product.title}
                     </h3>
-                    <p className="text-gray-600 mb-4">{product.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-emerald-600">
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      {product.description}
+                    </p>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-xl font-bold text-emerald-700">
                         {product.price}
                       </span>
-                      <button className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition-colors duration-300">
-                        Notify Me
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </button>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${product.badgeColor} text-white`}
+                      >
+                        {product.badge}
+                      </span>
+                    </div>
+                    <div className="flex gap-2 mt-auto">
+                      <Link
+                        href={`/products/${product.productId}`}
+                        className="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-xl font-semibold transition-colors"
+                      >
+                        View Details
+                      </Link>
+                      
                     </div>
                   </div>
                 </div>
@@ -905,100 +877,6 @@ export default function Home({ blogs }: BlogProps) {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      {/* <section className="py-16 lg:py-32 bg-gradient-to-b from-emerald-50/50 to-white relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 -translate-y-1/2 right-0 w-72 h-72 bg-green-100/30 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            variants={itemVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center max-w-3xl mx-auto mb-16 lg:mb-24"
-          >
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 font-medium text-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Testimonials
-            </span>
-            <h2 className="text-4xl lg:text-5xl font-bold mt-6 mb-6 bg-gradient-to-r from-gray-900 via-emerald-800 to-gray-900 text-transparent bg-clip-text">
-              What Our Clients Say
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              Discover why farmers and gardeners trust our sustainable solutions for their growing needs.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {([
-              {
-                name: "John Smith",
-                role: "Organic Farmer",
-                content: "The sustainable solutions provided byArkin have transformed our farming practices. We've seen incredible improvements in soil health and crop yields.",
-                image: "/plant.png"
-              },
-              {
-                name: "Sarah Johnson",
-                role: "Community Garden Director",
-                content: "Their commitment to environmental stewardship and community support has made them an invaluable partner in our urban farming initiatives.",
-                image: "/plant.png"
-              },
-              {
-                name: "Michael Chen",
-                role: "Agricultural Consultant",
-                content: "I've recommendedArkin to countless clients. Their innovative approach to sustainable farming consistently delivers outstanding results.",
-                image: "/plant.png"
-              }
-            ] as Testimonial[]).map((testimonial, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                className="group"
-                whileHover={{
-                  scale: 1.02,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <div className="relative bg-white p-6 rounded-2xl shadow-xl">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-green-500 rounded-t-2xl"></div>
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                      <Image
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        className="object-cover"
-                        fill
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-gray-900">{testimonial.name}</h3>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
-                    </div>
-                  </div>
-                  <blockquote className="text-gray-600 leading-relaxed">
-                    {testimonial.content}
-                  </blockquote>
-                  <div className="mt-4 flex justify-end">
-                    <svg className="w-6 h-6 text-emerald-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                    </svg>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section> */}
-
       {/* Farm Calculator Section */}
       <section className="py-16 lg:py-24 bg-gradient-to-br from-emerald-50 to-white relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -1133,8 +1011,8 @@ export default function Home({ blogs }: BlogProps) {
         </div>
       </section>
 
+      {/* Latest News & Insights */}
       <div>
-        {/* Latest News & Insights */}
         <section className="py-16 lg:py-24 bg-white relative overflow-hidden">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute w-full h-1/2 bg-gradient-to-b from-emerald-50/50 to-transparent"></div>
