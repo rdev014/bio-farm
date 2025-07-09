@@ -133,7 +133,10 @@ export async function updateCartItem(productId: string, quantity: number): Promi
       // Remove item if quantity is 0 or negative
       return await removeFromCart(productId);
     }
-
+    const product = await Product.findById(productId).select('stock');
+    if (!product || product.stock < quantity) {
+      throw new Error('Not enough stock available');
+    }
     const user = await User.findOneAndUpdate(
       {
         email: session.user.email,
