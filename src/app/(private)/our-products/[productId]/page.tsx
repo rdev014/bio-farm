@@ -54,7 +54,7 @@ export default async function Page({
   const finalPrice = product.discount ? product.price - product.discount : product.price;
   const hasDiscount = !!product.discount && product.discount > 0;
   const discountPercentage = hasDiscount && product.price > 0
-    ? Math.round(((product.discount ?? 0) / product.price) * 100)
+    ? Math.round(((product.discount ?? 0)))
     : 0;
   const isInStock = product.stock > 0;
   const isLowStock = product.stock <= 5 && product.stock > 0;
