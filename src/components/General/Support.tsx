@@ -183,24 +183,86 @@ export default function SupportPage() {
             Explore Our Comprehensive Resources
           </motion.h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-            {supportOptions.map((option, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <Link
-                  href={option.link}
-                  className="group bg-white rounded-xl p-7 flex flex-col items-center text-center space-y-4
-                             border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:border-green-300"
-                >
-                  <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
-                    <option.icon className="text-green-600 text-3xl group-hover:text-green-700 transition-colors" />
-                  </div>
-                  <h3 className="font-semibold text-xl text-gray-800 group-hover:text-green-800 transition-colors">
-                    {option.title}
-                  </h3>
-                  <p className="text-gray-600 text-base">{option.description}</p>
-                  <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </motion.div>
-            ))}
+            {/* FAQ */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/faq"
+                className="group bg-white rounded-2xl p-8 flex flex-col items-center text-center space-y-4 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
+                  <FaQuestionCircle className="text-green-600 text-3xl group-hover:text-green-700 transition-colors" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">FAQs</h3>
+                  <p className="text-gray-600">Find answers to common questions about our products and services.</p>
+                </div>
+                <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+            {/* Shipping Info */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/support/shipping-info"
+                className="group bg-white rounded-2xl p-8 flex flex-col items-center text-center space-y-4 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
+                  <svg className="w-8 h-8 text-green-600 group-hover:text-green-700 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10l1.553-4.66A2 2 0 016.447 4h11.106a2 2 0 011.894 1.34L21 10M3 10v7a2 2 0 002 2h14a2 2 0 002-2v-7M3 10h18" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Shipping Info</h3>
+                  <p className="text-gray-600">Learn about our shipping process, delivery times, and costs.</p>
+                </div>
+                <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+            {/* Return Policy */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/support/returns"
+                className="group bg-white rounded-2xl p-8 flex flex-col items-center text-center space-y-4 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
+                  <svg className="w-8 h-8 text-green-600 group-hover:text-green-700 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582a2 2 0 011.789 1.106l1.387 2.773A2 2 0 0010.553 14h2.894a2 2 0 001.795-1.121l1.387-2.773A2 2 0 0119.418 9H20V4M4 4h16" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Return Policy</h3>
+                  <p className="text-gray-600">Read our hassle-free return and refund policy for your peace of mind.</p>
+                </div>
+                <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+            {/* Privacy Policy */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/legal/privacy"
+                className="group bg-white rounded-2xl p-8 flex flex-col items-center text-center space-y-4 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
+                  <svg className="w-8 h-8 text-green-600 group-hover:text-green-700 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Privacy Policy</h3>
+                  <p className="text-gray-600">Understand how we protect your data and privacy at every step.</p>
+                </div>
+                <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+            {/* Terms & Conditions */}
+            <motion.div variants={itemVariants}>
+              <Link
+                href="/legal/terms"
+                className="group bg-white rounded-2xl p-8 flex flex-col items-center text-center space-y-4 border border-gray-100 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+              >
+                <div className="p-4 bg-green-50 rounded-full group-hover:bg-green-100 transition-colors">
+                  <svg className="w-8 h-8 text-green-600 group-hover:text-green-700 transition-colors" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Terms & Conditions</h3>
+                  <p className="text-gray-600">Review the terms and conditions for using our website and services.</p>
+                </div>
+                <FaArrowRight className="text-green-500 group-hover:text-green-700 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
       </section>
@@ -233,14 +295,14 @@ export default function SupportPage() {
 
           <motion.a
             variants={itemVariants}
-            href="mailto:support@arkin.com" // Replace with your actual email
+            href="support@arkinorganics.com" 
             className="inline-flex items-center px-10 py-5 rounded-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold text-xl
                        shadow-xl shadow-green-500/30 hover:shadow-2xl hover:shadow-green-500/40
                        transform hover:-translate-y-1 transition-all duration-300 ease-in-out
                        focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
             <FaEnvelope className="mr-4 text-white text-2xl" />
-            support@arkin.com
+           support@arkinorganics.com
           </motion.a>
 
           <motion.p

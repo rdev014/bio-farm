@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Get detailed information about our shipping policies, delivery timelines, coverage areas, and handling procedures at Arkin Organics.",
 };
 
-export default function ShippingInfoPage() {
+export default function ShippingInfo() {
   return (
     <div className="bg-green-50 text-green-900 font-sans p-8">
       <div className="max-w-4xl mx-auto">
