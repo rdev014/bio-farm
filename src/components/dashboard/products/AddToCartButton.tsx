@@ -1,7 +1,7 @@
 'use client';
 
 import { useCartStore } from '@/store/cart';
-import { ShoppingCart } from 'lucide-react';
+import { FaShoppingCart } from 'react-icons/fa';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { addToCart as addToCartServer } from '@/actions/cart';
@@ -42,9 +42,15 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ productId }) =
     <button
       onClick={handleAddToCart}
       disabled={isLoading}
-      className="flex items-center gap-2 bg-green-600 text-white p-3 rounded-md hover:bg-green-700 disabled:opacity-50 transition-colors"
+      aria-label="Add to cart"
+      className="w-10 h-10 flex items-center justify-center rounded-full border border-emerald-300 bg-white text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 focus:ring-2 focus:ring-emerald-300 transition-all shadow-sm disabled:opacity-50"
+      title="Add to cart"
     >
-      {isLoading ? <ShoppingCart className="w-5 h-5 animate-pulse" /> : <ShoppingCart className="w-5 h-5" />}
+      {isLoading ? (
+        <FaShoppingCart className="w-5 h-5 animate-pulse" />
+      ) : (
+        <FaShoppingCart className="w-6 h-6" />
+      )}
     </button>
   );
 };

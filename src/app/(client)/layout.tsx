@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <HeaderProvider />
       <div className='py-16'>
         {children}
-        <Toaster />
+        <Toaster position="top-right" richColors />
       </div>
       <Footer />
     </>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Heart, HeartOff } from 'lucide-react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { addToWishlist, removeFromWishlist } from '@/actions/wishlist';
 import { useWishlistStore } from '@/store/wishlist';
 
@@ -59,14 +59,16 @@ export const AddToWishlistButton: React.FC<AddToWishlistButtonProps> = ({
     <button
       onClick={handleToggleWishlist}
       disabled={isLoading}
-      className="flex items-center gap-2 bg-green-600/50 text-white p-3 rounded-lg hover:bg-green-700/50  transition-colors"
+      aria-label={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+      className="w-10 h-10 flex items-center justify-center rounded-full border border-emerald-300 bg-white text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 focus:ring-2 focus:ring-emerald-300 transition-all shadow-sm disabled:opacity-50"
+      title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
     >
       {isLoading ? (
-        <Heart className="w-5 h-5 animate-pulse" />
+        <FaHeart className="w-5 h-5 animate-pulse" />
       ) : isInWishlist ? (
-        <HeartOff className="w-5 h-5 fill-white" />
+        <FaHeart className="w-6 h-6 fill-emerald-500 text-emerald-500" />
       ) : (
-        <Heart className="w-5 h-5" />
+        <FaRegHeart className="w-6 h-6" />
       )}
     </button>
   );

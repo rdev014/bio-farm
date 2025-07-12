@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next'
 import SwiperCarousel from '@/components/General/SwiperCarousel';
+import { AddToWishlistButton } from '@/components/dashboard/products/AddToWishlistButton';
+import { AddToCartButton } from '@/components/dashboard/products/AddToCartButton';
 import { getProductById } from '@/actions/products';
 import {
   Star,
@@ -67,153 +69,167 @@ export default async function Page({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50">
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-emerald-50">
       {/* Header */}
-      <header className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-8 mb-8 shadow-lg">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-white/20 rounded-lg">
-              <Leaf className="w-8 h-8" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold">Arkin Organics</h1>
-              <p className="text-green-100">Purely Natural, Organically Yours</p>
-            </div>
+      <header className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-10 mb-12 shadow-xl rounded-b-3xl">
+        <div className="container mx-auto px-6 flex items-center gap-5">
+          <div className="p-3 bg-white/30 rounded-xl shadow-md">
+            <Leaf className="w-10 h-10" />
+          </div>
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight">Arkin Organics</h1>
+            <p className="text-green-100 text-lg font-medium">Purely Natural, Organically Yours</p>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-4 max-w-6xl">
 
 
         {/* Main Product Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-          <div className="grid lg:grid-cols-2 gap-8 p-8">
+        <div className="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden mb-12">
+          <div className="grid lg:grid-cols-2 gap-12 p-10">
             {/* Product Images */}
-            <div className="space-y-4">
-              <div className="bg-gray-50 rounded-2xl overflow-hidden">
+            <div className="space-y-6 relative group">
+              {/* Floating Action Bar (Wishlist/Cart) */}
+              <div
+                className="absolute top-4 right-4 z-20 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 flex flex-col md:flex-row gap-2 md:gap-3 hover:opacity-100 focus-within:opacity-100"
+                tabIndex={0}
+                aria-label="Quick actions"
+              >
+                <AddToWishlistButton
+                  name={product.name}
+                  price={product.price}
+                  images={product.images}
+                  productId={product._id.toString()}
+                />
+                <AddToCartButton
+                  productId={product._id.toString()}
+                />
+              </div>
+              <div className="bg-gray-100 rounded-3xl overflow-hidden shadow-md p-2 flex items-center justify-center min-h-[350px]">
                 <SwiperCarousel name={product.name} images={product.images} />
               </div>
 
               {/* Trust Badges */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
-                  <Leaf className="w-5 h-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">100% Organic</span>
+              <div className="flex gap-4 mt-4">
+                <div className="flex items-center gap-2 p-3 bg-green-50 rounded-xl shadow-sm border border-green-100">
+                  <Leaf className="w-6 h-6 text-green-600" />
+                  <span className="text-base font-semibold text-green-800">100% Organic</span>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                  <Shield className="w-5 h-5 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Quality Assured</span>
+                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl shadow-sm border border-blue-100">
+                  <Shield className="w-6 h-6 text-blue-600" />
+                  <span className="text-base font-semibold text-blue-800">Quality Assured</span>
                 </div>
               </div>
             </div>
 
             {/* Product Details */}
-            <div className="space-y-6">
+            <div className="space-y-8">
               {/* Title and Rating */}
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-3">{product.name}</h2>
-                <div className="flex items-center gap-4 mb-4">
+                <h2 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight leading-tight">{product.name}</h2>
+                <div className="flex items-center gap-6 mb-4">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
                       {renderStars(4.5)}
                     </div>
-                    <span className="text-sm text-gray-600">(4.5) • 127 reviews</span>
+                    <span className="text-base text-gray-500">(4.5) • 127 reviews</span>
                   </div>
-                  <div className="flex items-center gap-1 text-sm text-green-600">
-                    <Award className="w-4 h-4" />
+                  <div className="flex items-center gap-1 text-base text-green-700 font-semibold bg-green-100 px-3 py-1 rounded-full">
+                    <Award className="w-5 h-5" />
                     <span>Best Seller</span>
                   </div>
                 </div>
               </div>
 
               {/* Price */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center gap-4 mb-2">
-                  <span className="text-3xl font-bold text-green-600">
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 shadow-sm border border-gray-100">
+                <div className="flex items-end gap-4 mb-2">
+                  <span className="text-4xl font-extrabold text-green-700">
                     ${finalPrice.toFixed(2)}
                   </span>
                   {hasDiscount && (
                     <>
-                      <span className="text-xl text-gray-400 line-through">
+                      <span className="text-2xl text-gray-400 line-through font-semibold">
                         ${product.price.toFixed(2)}
                       </span>
-                      <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      <span className="bg-red-500 text-white px-4 py-1 rounded-full text-base font-bold shadow-sm animate-pulse">
                         {discountPercentage}% OFF
                       </span>
                     </>
                   )}
                 </div>
-                <p className="text-sm text-gray-600">Price per {product.unit}</p>
+                <p className="text-base text-gray-500">Price per {product.unit}</p>
               </div>
 
               {/* Stock Status */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-2">
                 {isInStock ? (
                   <>
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                    <span className="text-green-600 font-medium">
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                    <span className="text-green-700 font-semibold text-lg">
                       {isLowStock ? `Only ${product.stock} left in stock` : 'In Stock'}
                     </span>
                   </>
                 ) : (
                   <>
-                    <AlertCircle className="w-5 h-5 text-red-600" />
-                    <span className="text-red-600 font-medium">Out of Stock</span>
+                    <AlertCircle className="w-6 h-6 text-red-600" />
+                    <span className="text-red-600 font-semibold text-lg">Out of Stock</span>
                   </>
                 )}
               </div>
 
               {/* Description */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">Description</h3>
-                <p className="text-gray-600 leading-relaxed">{product.description}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 tracking-tight">Description</h3>
+                <p className="text-gray-700 leading-relaxed text-base">{product.description}</p>
               </div>
 
               {/* Product Details Grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Package className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">SKU</span>
+                <div className="bg-gray-50 rounded-xl p-5 shadow-sm flex flex-col gap-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Package className="w-5 h-5 text-gray-600" />
+                    <span className="text-base font-semibold text-gray-700">SKU</span>
                   </div>
-                  <span className="text-sm text-gray-600">{product.sku}</span>
+                  <span className="text-base text-gray-600">{product.sku}</span>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Award className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">Brand</span>
+                <div className="bg-gray-50 rounded-xl p-5 shadow-sm flex flex-col gap-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Award className="w-5 h-5 text-gray-600" />
+                    <span className="text-base font-semibold text-gray-700">Brand</span>
                   </div>
-                  <span className="text-sm text-gray-600">{product.brand}</span>
+                  <span className="text-base text-gray-600">{product.brand}</span>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Scale className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">Weight</span>
+                <div className="bg-gray-50 rounded-xl p-5 shadow-sm flex flex-col gap-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Scale className="w-5 h-5 text-gray-600" />
+                    <span className="text-base font-semibold text-gray-700">Weight</span>
                   </div>
-                  <span className="text-sm text-gray-600">{product.weight} {product.unit}</span>
+                  <span className="text-base text-gray-600">{product.weight} {product.unit}</span>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Tag className="w-4 h-4 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">Category</span>
+                <div className="bg-gray-50 rounded-xl p-5 shadow-sm flex flex-col gap-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Tag className="w-5 h-5 text-gray-600" />
+                    <span className="text-base font-semibold text-gray-700">Category</span>
                   </div>
-                  <span className="text-sm text-gray-600">{product.category}</span>
+                  <span className="text-base text-gray-600">{product.category}</span>
                 </div>
               </div>
 
               {/* Tags */}
               {product.tags.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Tags</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">Tags</h3>
                   <div className="flex flex-wrap gap-2">
                     {product.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium"
+                        className="px-4 py-1 bg-green-200 text-green-900 rounded-full text-base font-semibold shadow-sm hover:bg-green-300 transition-colors duration-150"
                       >
                         {tag}
                       </span>
