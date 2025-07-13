@@ -156,24 +156,28 @@ export default function Sustainability() {
               variants={fadeInUp}
               className="flex flex-wrap gap-4"
             >
-              <motion.button 
-                whileHover={{ y: -4 }}
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-green-500 text-white 
-                         rounded-xl font-medium hover:bg-green-400 transition-all duration-300 
-                         shadow-lg hover:shadow-green-500/30"
-              >
-                Learn More
-                <ArrowRight className="w-5 h-5 transform transition-transform group-hover:translate-x-1" />
-              </motion.button>
-              <motion.button 
-                whileHover={{ y: -4 }}
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm 
-                         text-white rounded-xl font-medium hover:bg-white/20 transition-all duration-300 
-                         border border-white/20"
-              >
-                View Impact Report
-                <Download className="w-5 h-5 transform transition-transform group-hover:translate-y-1" />
-              </motion.button>
+              <a href="/about-us" className="no-underline">
+                <motion.button 
+                  whileHover={{ y: -4 }}
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-green-600 text-white 
+                           rounded-xl font-semibold hover:bg-green-500 transition-all duration-300 
+                           shadow-lg hover:shadow-green-500/30 tracking-wide text-lg"
+                >
+                  Learn More
+                  <ArrowRight className="w-5 h-5 transform transition-transform group-hover:translate-x-1" />
+                </motion.button>
+              </a>
+              <a href="/sustainability-report.pdf" download className="no-underline">
+                <motion.button 
+                  whileHover={{ y: -4 }}
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-white/20 backdrop-blur-sm 
+                           text-white rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 
+                           border border-white/30 tracking-wide text-lg"
+                >
+                  Download Impact Report
+                  <Download className="w-5 h-5 transform transition-transform group-hover:translate-y-1" />
+                </motion.button>
+              </a>
             </motion.div>
           </motion.div>
         </div>
@@ -422,25 +426,28 @@ export default function Sustainability() {
               variants={fadeInUp}
               className="flex flex-wrap gap-4 justify-center"
             >
-              <motion.button
-                whileHover={{ y: -4 }}
-                className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-green-600 
-                         rounded-xl font-medium hover:bg-green-50 transition-all duration-300 
-                         shadow-xl hover:shadow-2xl"
-              >
-                Download Report
-                <Download className="w-5 h-5 transform transition-transform group-hover:translate-y-1" />
-              </motion.button>
-
-              <motion.button
-                whileHover={{ y: -4 }}
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl 
-                         font-medium border-2 border-white/30 text-white hover:bg-white/10 
-                         transition-all duration-300"
-              >
-                Learn More
-                <ArrowRight className="w-5 h-5 transform transition-transform group-hover:translate-x-1" />
-              </motion.button>
+              <a href="/sustainability-report.pdf" download className="no-underline">
+                <motion.button
+                  whileHover={{ y: -4 }}
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-green-700 
+                           rounded-xl font-semibold hover:bg-green-50 transition-all duration-300 
+                           shadow-xl hover:shadow-2xl tracking-wide text-lg border border-green-100"
+                >
+                  Download Sustainability Report
+                  <Download className="w-5 h-5 transform transition-transform group-hover:translate-y-1" />
+                </motion.button>
+              </a>
+              <a href="/blogs" className="no-underline">
+                <motion.button
+                  whileHover={{ y: -4 }}
+                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl 
+                           font-semibold border-2 border-white/30 text-white hover:bg-white/10 
+                           transition-all duration-300 tracking-wide text-lg"
+                >
+                  Learn More
+                  <ArrowRight className="w-5 h-5 transform transition-transform group-hover:translate-x-1" />
+                </motion.button>
+              </a>
             </motion.div>
           </motion.div>
         </div>
