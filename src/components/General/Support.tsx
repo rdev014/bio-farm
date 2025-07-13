@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { FaQuestionCircle, FaEnvelope, FaBookOpen, FaUsers, FaArrowRight } from "react-icons/fa";
+import { FaQuestionCircle, FaEnvelope, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion"; // Keeping motion for subtle, modern animations
 
 // SVG Illustration Component (Example - replace with your actual SVG imports)
@@ -71,27 +71,7 @@ const SupportIllustration = () => (
 
 
 export default function SupportPage() {
-  const supportOptions = [
-    {
-      icon: FaQuestionCircle,
-      title: "FAQs",
-      description: "Find quick answers to common questions.",
-      link: "/faqs",
-    },
-    {
-      icon: FaBookOpen,
-      title: "Knowledge Base",
-      description: "Explore our extensive library of articles.",
-      link: "/kb",
-    },
-    {
-      icon: FaUsers,
-      title: "Community Forum",
-      description: "Connect with fellow users and experts.",
-      link: "/community",
-    },
-  ];
-
+ 
   // Animation variants for section titles and main content
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },

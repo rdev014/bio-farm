@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Leaf, Droplet, Sun, Recycle, Wind, TreePine, Download, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface Stat {
   value: string;
@@ -426,7 +427,7 @@ export default function Sustainability() {
               variants={fadeInUp}
               className="flex flex-wrap gap-4 justify-center"
             >
-              <a href="/sustainability-report.pdf" download className="no-underline">
+              <Link href="/sustainability-report.pdf" download className="no-underline">
                 <motion.button
                   whileHover={{ y: -4 }}
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-green-700 
@@ -436,8 +437,8 @@ export default function Sustainability() {
                   Download Sustainability Report
                   <Download className="w-5 h-5 transform transition-transform group-hover:translate-y-1" />
                 </motion.button>
-              </a>
-              <a href="/blogs" className="no-underline">
+              </Link>
+              <Link href="/blogs" className="no-underline">
                 <motion.button
                   whileHover={{ y: -4 }}
                   className="group inline-flex items-center gap-2 px-8 py-4 rounded-xl 
@@ -447,7 +448,7 @@ export default function Sustainability() {
                   Learn More
                   <ArrowRight className="w-5 h-5 transform transition-transform group-hover:translate-x-1" />
                 </motion.button>
-              </a>
+              </Link>
             </motion.div>
           </motion.div>
         </div>
