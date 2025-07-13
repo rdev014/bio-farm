@@ -380,7 +380,7 @@ const Cart: React.FC = () => {
                 Wait! Are you sure you want to empty your cart?
               </h3>
               <p className="text-gray-600 mb-6">
-                You currently have **{calculateTotalItems()} amazing organic items** totaling **${calculateTotal().toFixed(2)}** in your cart. Clearing it means you'll lose all these selections and have to start over.
+                You currently have **{calculateTotalItems()} amazing organic items** totaling **${calculateTotal().toFixed(2)}** in your cart. Clearing it means you&apos;ll lose all these selections and have to start over.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
