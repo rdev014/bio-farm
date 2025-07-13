@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function OrganicFertilizerPage() {
   return (
@@ -46,8 +45,8 @@ export default function OrganicFertilizerPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
           <div className="relative aspect-square md:aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
             <Image
-              src="https://cdn.pixabay.com/photo/2020/12/04/16/08/tree-5803607_1280.jpg"
-              alt="Rich organic compost being held in hands"
+              src="https://cdn.pixabay.com/photo/2019/08/21/08/29/compost-4420313_1280.jpg"
+              alt="Rich organic compost"
               fill
               className="object-cover"
             />
@@ -93,19 +92,19 @@ export default function OrganicFertilizerPage() {
               <Image src="https://cdn.pixabay.com/photo/2016/03/27/22/22/fox-1284512_1280.jpg" alt="Vibrant lettuce field" fill className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2017/08/04/21/28/vegetables-2581912_1280.jpg" alt="Healthy root vegetables in a basket" fill className="object-cover" />
+              <Image src="https://cdn.pixabay.com/photo/2017/08/04/21/28/vegetables-2581912_1280.jpg" alt="Healthy root vegetables" fill className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
               <Image src="https://cdn.pixabay.com/photo/2020/04/18/21/53/seedling-5060809_1280.jpg" alt="A healthy seedling sprouting from rich soil" fill className="object-cover" />
             </div>
              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2019/07/28/18/45/tomatoes-4369431_1280.jpg" alt="Abundant tomato harvest on the vine" fill className="object-cover" />
+              <Image src="https://cdn.pixabay.com/photo/2019/07/28/18/45/tomatoes-4369431_1280.jpg" alt="Abundant tomato harvest" fill className="object-cover" />
             </div>
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <Image src="https://cdn.pixabay.com/photo/2021/05/27/09/22/hands-6287515_1280.jpg" alt="Farmer holding rich, dark soil in hands" fill className="object-cover" />
+                <Image src="https://cdn.pixabay.com/photo/2021/05/27/09/22/hands-6287515_1280.jpg" alt="Farmer holding rich soil" fill className="object-cover" />
             </div>
              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <Image src="https://cdn.pixabay.com/photo/2021/09/24/09/32/leaves-6651239_1280.jpg" alt="Close-up of healthy, dew-kissed plant leaves" fill className="object-cover" />
+                <Image src="https://cdn.pixabay.com/photo/2021/09/24/09/32/leaves-6651239_1280.jpg" alt="Close-up of healthy plant leaves" fill className="object-cover" />
             </div>
           </div>
         </div>
@@ -118,9 +117,9 @@ export default function OrganicFertilizerPage() {
           <p className="text-lg text-gray-700 mb-10">
             Find out how our organic fertilizers can transform your farm, garden, or nursery. Contact our specialists today for a consultation or to place an order.
           </p>
-          <Link href="/contact-us" className="inline-block px-10 py-4 bg-green-600 text-white rounded-lg font-bold text-lg shadow-lg hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1">
+          <a href="mailto:sales@ourfertilizer.com" className="inline-block px-10 py-4 bg-green-600 text-white rounded-lg font-bold text-lg shadow-lg hover:bg-green-700 transition-all duration-300 transform hover:-translate-y-1">
             Contact Our Team
-          </Link>
+          </a>
         </div>
       </section>
     </main>
