@@ -70,20 +70,9 @@ export default async function Page({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-emerald-50">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-green-700 to-emerald-700 text-white py-10 mb-12 shadow-xl rounded-b-3xl">
-        <div className="container mx-auto px-6 flex items-center gap-5">
-          <div className="p-3 bg-white/30 rounded-xl shadow-md">
-            <Leaf className="w-10 h-10" />
-          </div>
-          <div>
-            <h1 className="text-4xl font-extrabold tracking-tight">Arkin Organics</h1>
-            <p className="text-green-100 text-lg font-medium">Purely Natural, Organically Yours</p>
-          </div>
-        </div>
-      </header>
+ 
 
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className=" mx-auto px-4 py-20 max-w-6xl">
 
 
         {/* Main Product Section */}
@@ -128,7 +117,7 @@ export default async function Page({
             <div className="space-y-8">
               {/* Title and Rating */}
               <div>
-                <h2 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight leading-tight">{product.name}</h2>
+                <h2 className="text-4xl font-semibold text-gray-900 mb-2 tracking-tight leading-tight">{product.name}</h2>
                 <div className="flex items-center gap-6 mb-4">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
@@ -146,7 +135,7 @@ export default async function Page({
               {/* Price */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 shadow-sm border border-gray-100">
                 <div className="flex items-end gap-4 mb-2">
-                  <span className="text-4xl font-extrabold text-green-700">
+                  <span className="text-4xl font-semibold text-green-700">
                     ${finalPrice.toFixed(2)}
                   </span>
                   {hasDiscount && (
@@ -154,7 +143,7 @@ export default async function Page({
                       <span className="text-2xl text-gray-400 line-through font-semibold">
                         ${product.price.toFixed(2)}
                       </span>
-                      <span className="bg-red-500 text-white px-4 py-1 rounded-full text-base font-bold shadow-sm animate-pulse">
+                      <span className="bg-red-500 text-white px-2 py-1 rounded-full text-base font-bold shadow-sm animate-pulse">
                         {discountPercentage}% OFF
                       </span>
                     </>
@@ -238,7 +227,7 @@ export default async function Page({
                 </div>
               )}
 
-         
+
             </div>
           </div>
         </div>
