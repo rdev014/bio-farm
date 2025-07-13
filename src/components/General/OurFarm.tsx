@@ -83,28 +83,39 @@ export default function OrganicFertilizerPage() {
         </div>
       </section>
 
-      {/* Gallery Section */}
+      {/* Commitment to Sustainability Section */}
       <section className="py-24 px-4 bg-gradient-to-b from-emerald-50 to-green-100">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-green-800 mb-12 text-center">See the Results</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2016/03/27/22/22/fox-1284512_1280.jpg" alt="Vibrant lettuce field" fill className="object-cover" />
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-green-800 mb-12">Our Commitment to a Greener Planet</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="p-4 bg-green-200 rounded-full mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#047857" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M10 9l6 3-6 3V9z"></path></svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-green-800 mb-3">Reduced Environmental Footprint</h3>
+              <p className="text-gray-600">
+                Our organic fertilizers minimize pollution, conserve water, and reduce reliance on energy-intensive synthetic chemicals, protecting our ecosystems.
+              </p>
             </div>
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2017/08/04/21/28/vegetables-2581912_1280.jpg" alt="Healthy root vegetables" fill className="object-cover" />
+
+            <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="p-4 bg-blue-200 rounded-full mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.75 4.25c.875 1-.875 1.5-.875 1.5.875 1-.875 1.5-.875 1.5s.875 1-.875 1.5-.875 1.5-.875 1.5c.875 1-.875 1.5-.875 1.5s.875 1-.875 1.5-.875 1.5-.875 1.5M10.25 4.25c.875 1-.875 1.5-.875 1.5.875 1-.875 1.5-.875 1.5s.875 1-.875 1.5-.875 1.5-.875 1.5c.875 1-.875 1.5-.875 1.5s.875 1-.875 1.5-.875 1.5-.875 1.5M12 21v-4M16.5 17.5h-9"></path><path d="M12 17.5a4.5 4.5 0 0 1-4.5-4.5V11a4.5 4.5 0 0 1 4.5-4.5h0a4.5 4.5 0 0 1 4.5 4.5v2A4.5 4.5 0 0 1 12 17.5z"></path></svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-green-800 mb-3">Biodiversity & Soil Health</h3>
+              <p className="text-gray-600">
+                By fostering a rich microbial life and enhancing soil structure, our products support a thriving ecosystem both above and below ground.
+              </p>
             </div>
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2020/04/18/21/53/seedling-5060809_1280.jpg" alt="A healthy seedling sprouting from rich soil" fill className="object-cover" />
-            </div>
-             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-              <Image src="https://cdn.pixabay.com/photo/2019/07/28/18/45/tomatoes-4369431_1280.jpg" alt="Abundant tomato harvest" fill className="object-cover" />
-            </div>
-            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <Image src="https://cdn.pixabay.com/photo/2021/05/27/09/22/hands-6287515_1280.jpg" alt="Farmer holding rich soil" fill className="object-cover" />
-            </div>
-             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300">
-                <Image src="https://cdn.pixabay.com/photo/2021/09/24/09/32/leaves-6651239_1280.jpg" alt="Close-up of healthy plant leaves" fill className="object-cover" />
+
+            <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300">
+              <div className="p-4 bg-yellow-200 rounded-full mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 12c.7 0 1.3.3 1.7.8 1.4 1.4 2.3 3.4 2.6 5.1-.3-.4-.6-.8-1.1-1.1-.6-.5-1.4-.8-2.3-.8H17V12z"></path><path d="M17 12h-2c-2.8 0-5 2.2-5 5v5h7c1.7 0 3.3-.7 4.5-2l-.3-.5c-.8-1.4-1.7-3.4-2.6-5.1-.4-.5-1-.8-1.7-.8z"></path><path d="M17 12V6c0-2.8-2.2-5-5-5H7c-1.7 0-3.3.7-4.5 2l.3.5c.8 1.4 1.7 3.4 2.6 5.1.4.5 1 .8 1.7.8h2V12z"></path><path d="M7 12c-.7 0-1.3.3-1.7.8-1.4 1.4-2.3 3.4-2.6 5.1.3-.4.6-.8 1.1-1.1.6-.5 1.4-.8 2.3-.8H7V12z"></path></svg>
+              </div>
+              <h3 className="text-2xl font-semibold text-green-800 mb-3">Sustainable Future Farming</h3>
+              <p className="text-gray-600">
+                We empower farmers and gardeners to adopt practices that are not only productive today but also preserve the land for generations to come.
+              </p>
             </div>
           </div>
         </div>

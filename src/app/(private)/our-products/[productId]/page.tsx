@@ -179,7 +179,7 @@ export default async function Page({
                   tabIndex={0}
                   aria-label="Quick actions"
                 >
-                  <div className="w-full md:w-auto">
+                  {/* <div className="w-full md:w-auto">
                     <div className="rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 shadow-sm px-4 py-2 transition-colors duration-150 w-full md:w-auto">
                       <AddToWishlistButton
                         name={product.name}
@@ -188,14 +188,14 @@ export default async function Page({
                         productId={product._id.toString()}
                       />
                     </div>
-                  </div>
-                  <div className="w-full md:w-auto">
+                  </div> */}
+                  {/* <div className="w-full md:w-auto">
                     <div className="rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold border border-emerald-700 shadow px-4 py-2 transition-colors duration-150 w-full md:w-auto">
                       <AddToCartButton
                         productId={product._id.toString()}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 {/* Product Info Cards */}
                 <div className="bg-gray-50 rounded-xl p-5 shadow-sm flex flex-col gap-1">

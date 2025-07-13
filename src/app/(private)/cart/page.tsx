@@ -4,13 +4,15 @@ import { useCartStore } from '@/store/cart';
 import { getCart, updateCartItem, removeFromCart, clearCart } from '@/actions/cart';
 import { toast } from 'sonner';
 import Image from 'next/image';
-import { Trash2, Plus, Minus, ShoppingBag, Package, Leaf, ShieldCheck } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, Package, Leaf, ShieldCheck, X } from 'lucide-react';
 import Link from 'next/link';
 
 const Cart: React.FC = () => {
   const { cart, setCart, updateQuantity, removeFromCart: remove, clearCart: clear } = useCartStore();
   const [isLoading, setIsLoading] = useState(true);
   const [processingItems, setProcessingItems] = useState<Set<string>>(new Set());
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [isClearCartModalOpen, setIsClearCartModalOpen] = useState(false); // State for clear cart modal
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -75,17 +77,24 @@ const Cart: React.FC = () => {
     }
   };
 
-  const handleClearCart = async () => {
-    if (!confirm('Are you sure you want to clear your entire cart?')) return;
+  const handleClearCartPrompt = () => {
+    setIsClearCartModalOpen(true); // Open the clear cart confirmation modal
+  };
 
+  const handleConfirmClearCart = async () => {
     try {
       clear();
       await clearCart();
       toast.success('Cart cleared successfully');
+      setIsClearCartModalOpen(false); // Close the modal
     } catch (error) {
       toast.error('Failed to clear cart');
       console.error('Failed to clear cart:', error);
     }
+  };
+
+  const handleProceedToCheckout = () => {
+    setIsCheckoutModalOpen(true);
   };
 
   const calculateTotal = () => {
@@ -283,16 +292,21 @@ const Cart: React.FC = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+                  <button
+                    onClick={handleProceedToCheckout}
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-3 px-6 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
                     Proceed to Checkout
                   </button>
 
-                  <button className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200">
-                    Continue Shopping
-                  </button>
+                  <Link href="/our-products" passHref>
+                    <button className="w-full bg-gray-100 text-gray-700 py-3 px-6 rounded-xl font-medium hover:bg-gray-200 transition-colors duration-200">
+                      Continue Shopping
+                    </button>
+                  </Link>
 
                   <button
-                    onClick={handleClearCart}
+                    onClick={handleClearCartPrompt} // Call the new prompt function
                     className="w-full text-red-600 py-2 px-4 rounded-lg font-medium hover:bg-red-50 transition-colors duration-200"
                   >
                     Clear Cart
@@ -316,6 +330,80 @@ const Cart: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Checkout Not Available Modal */}
+      {isCheckoutModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+            <button
+              onClick={() => setIsCheckoutModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-100 rounded-full mb-4">
+                <ShoppingBag className="w-8 h-8 text-yellow-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Checkout Temporarily Unavailable
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Thank you for your interest! We are currently working on implementing our payment gateway. This service is not yet available in your area.
+              </p>
+              <button
+                onClick={() => setIsCheckoutModalOpen(false)}
+                className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-md"
+              >
+                Got It!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Clear Cart Confirmation Modal */}
+      {isClearCartModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 relative">
+            <button
+              onClick={() => setIsClearCartModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
+                <Trash2 className="w-8 h-8 text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Wait! Are you sure you want to empty your cart?
+              </h3>
+              <p className="text-gray-600 mb-6">
+                You currently have **{calculateTotalItems()} amazing organic items** totaling **${calculateTotal().toFixed(2)}** in your cart. Clearing it means you'll lose all these selections and have to start over.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={() => setIsClearCartModalOpen(false)}
+                  className="bg-green-100 text-green-700 px-6 py-3 rounded-xl font-semibold hover:bg-green-200 transition-colors duration-200 order-2 sm:order-1"
+                >
+                  Keep Shopping
+                </button>
+                <button
+                  onClick={handleConfirmClearCart}
+                  // Modified classes for a less prominent, "dirty" or less appealing look
+                  className="bg-gray-200 text-gray-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-colors duration-200 shadow-sm order-1 sm:order-2 border border-gray-300"
+                >
+                  Yes, Clear My Cart
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-4">
+                (You can always remove individual items if you change your mind later.)
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
