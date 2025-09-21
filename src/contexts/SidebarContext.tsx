@@ -5,16 +5,23 @@ import { createContext, useContext, useState, useEffect } from 'react'
 interface SidebarContextType {
   isCollapsed: boolean
   setIsCollapsed: (value: boolean) => void
+  isMobile: boolean
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const handleResize = () => {
-      setIsCollapsed(window.innerWidth < 768)
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      // Auto-collapse on mobile
+      if (mobile) {
+        setIsCollapsed(true)
+      }
     }
     
     handleResize()
@@ -23,7 +30,7 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed }}>
+    <SidebarContext.Provider value={{ isCollapsed, setIsCollapsed, isMobile }}>
       {children}
     </SidebarContext.Provider>
   )
