@@ -14,6 +14,7 @@ export async function GET(request: Request, {params}:{params:Params}) {
         return NextResponse.json(blog,{status:200})
     
     } catch (error) {
+         console.log(error);
     return NextResponse.json({error:"something went wrong try again later"},{status:500})
     }
 }
